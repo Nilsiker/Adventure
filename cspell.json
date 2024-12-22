@@ -12,6 +12,8 @@
     "addons/**/*.*"
   ],
   "words": [
+    "Andreas",
+    "Nilsson",
     "animatable",
     "assemblyfilters",
     "automerge",
@@ -64,6 +66,7 @@
     "renovatebot",
     "reportgenerator",
     "reporttypes",
+    "Shellguard",
     "Shouldly",
     "spir",
     "subfolders",
