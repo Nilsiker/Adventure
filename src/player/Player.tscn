@@ -1,0 +1,78 @@
+[gd_scene load_steps=8 format=3 uid="uid://dlmofixc40ggb"]
+
+[ext_resource type="Script" path="res://src/player/Player.cs" id="1_sqh1h"]
+[ext_resource type="Texture2D" uid="uid://cjlq8w8njidxs" path="res://src/player/visuals/player.png" id="2_gaj1x"]
+[ext_resource type="Script" path="res://src/egg/EggCollector.cs" id="3_q263r"]
+
+[sub_resource type="Animation" id="Animation_4d00e"]
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PlayerModel/Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_lg582"]
+_data = {
+"idle": SubResource("Animation_4d00e")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dfajr"]
+radius = 11.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_so1ov"]
+radius = 15.0
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_sqh1h")
+
+[node name="PlayerModel" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="PlayerModel"]
+unique_name_in_owner = true
+texture_filter = 1
+position = Vector2(0, -14)
+texture = ExtResource("2_gaj1x")
+hframes = 2
+vframes = 2
+metadata/_aseprite_wizard_interface_config_ = {
+"output_section": true,
+"pending_changes": {}
+}
+metadata/_aseprite_wizard_config_ = {
+"i_mode": -1,
+"keep_anim_length": false,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "res://src/player/visuals",
+"o_name": "",
+"only_visible": false,
+"player": "PlayerModel/AnimationPlayer",
+"slice": "",
+"source": "res://src/player/visuals/player.aseprite"
+}
+metadata/_aseprite_wizard_source_file_hash_ = "9bb380ff0666b13aa9c519f80de490eb"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PlayerModel"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_lg582")
+}
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_dfajr")
+
+[node name="EggCollector" type="Area2D" parent="."]
+script = ExtResource("3_q263r")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EggCollector"]
+shape = SubResource("CircleShape2D_so1ov")

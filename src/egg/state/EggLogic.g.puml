@@ -1,0 +1,12 @@
+@startuml EggLogic
+state "EggLogic State" as Shellguard_Egg_State_EggLogic_State {
+  state "Idle" as Shellguard_Egg_State_EggLogic_State_Idle
+  state "Collected" as Shellguard_Egg_State_EggLogic_State_Collected
+}
+
+Shellguard_Egg_State_EggLogic_State_Idle --> Shellguard_Egg_State_EggLogic_State_Collected : Collect
+
+Shellguard_Egg_State_EggLogic_State_Collected : OnEnter → Collected
+
+[*] --> Shellguard_Egg_State_EggLogic_State_Idle
+@enduml

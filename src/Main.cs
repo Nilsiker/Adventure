@@ -39,5 +39,5 @@ public partial class Main : Node2D
     _ = GoTest.RunTests(Assembly.GetExecutingAssembly(), this, Environment);
 #endif
 
-  private void RunScene() => GetTree().ChangeSceneToFile("res://src/Game.tscn");
+  private void RunScene() => GetTree().ChangeSceneToFile("res://src/game/Game.tscn");
 }

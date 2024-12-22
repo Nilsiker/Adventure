@@ -1,0 +1,10 @@
+@startuml PlayerLogic
+state "PlayerLogic State" as Shellguard_Player_State_PlayerLogic_State {
+  state "Idle" as Shellguard_Player_State_PlayerLogic_State_Idle
+  state "Moving" as Shellguard_Player_State_PlayerLogic_State_Moving
+}
+
+Shellguard_Player_State_PlayerLogic_State_Idle --> Shellguard_Player_State_PlayerLogic_State_Idle : Move
+Shellguard_Player_State_PlayerLogic_State_Idle --> Shellguard_Player_State_PlayerLogic_State_Moving : Move
+[*] --> Shellguard_Player_State_PlayerLogic_State_Idle
+@enduml

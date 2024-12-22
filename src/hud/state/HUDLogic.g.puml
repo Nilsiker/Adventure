@@ -1,0 +1,4 @@
+@startuml HUDLogic
+state "HUDLogic State" as Egant_UI_HUDLogic_State
+Egant_UI_HUDLogic_State : OnEggsCollectedSynced() → EggCount
+@enduml
