@@ -5,6 +5,8 @@
   "ignorePaths": [
     "**/*.tscn",
     "**/*.import",
+    "**/*.cs",
+    "**/*.g.puml",
     "badges/**/*.*",
     "coverage/**/*.*",
     ".godot/**/*.*",
