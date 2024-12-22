@@ -15,7 +15,6 @@
   ],
   "words": [
     "Andreas",
-    "Nilsson",
     "animatable",
     "assemblyfilters",
     "automerge",
@@ -54,6 +53,7 @@
     "multisample",
     "nameof",
     "netstandard",
+    "Nilsson",
     "NOLOGO",
     "nupkg",
     "occluder",
@@ -69,6 +69,7 @@
     "renovatebot",
     "reportgenerator",
     "reporttypes",
+    "ruleset",
     "Shellguard",
     "Shouldly",
     "spir",
