@@ -3,9 +3,9 @@ namespace Shellguard.Game;
 using Chickensoft.AutoInject;
 using Chickensoft.GoDotLog;
 using Chickensoft.Introspection;
+using Godot;
 using Shellguard.Game.Domain;
 using Shellguard.Game.State;
-using Godot;
 
 [Meta(typeof(IAutoNode))]
 public partial class Game : Node2D, IProvide<IGameRepo>

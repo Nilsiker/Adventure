@@ -3,8 +3,8 @@ namespace Shellguard.Player;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
-using Shellguard.Player.State;
 using Godot;
+using Shellguard.Player.State;
 
 [Meta(typeof(IAutoNode))]
 public partial class PlayerModel : Node2D

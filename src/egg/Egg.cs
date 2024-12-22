@@ -3,9 +3,9 @@ namespace Shellguard.Egg;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
+using Godot;
 using Shellguard.Egg.State;
 using Shellguard.Game.Domain;
-using Godot;
 
 public interface IEgg : IArea2D
 {

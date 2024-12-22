@@ -2,8 +2,8 @@ namespace Shellguard.UI;
 
 using Chickensoft.AutoInject;
 using Chickensoft.Introspection;
-using Shellguard.Game.Domain;
 using Godot;
+using Shellguard.Game.Domain;
 
 [Meta(typeof(IAutoNode))]
 public partial class HUD : Node
