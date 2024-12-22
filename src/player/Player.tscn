@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://dlmofixc40ggb"]
+[gd_scene load_steps=9 format=3 uid="uid://dlmofixc40ggb"]
 
 [ext_resource type="Script" path="res://src/player/Player.cs" id="1_sqh1h"]
 [ext_resource type="Texture2D" uid="uid://cjlq8w8njidxs" path="res://src/player/visuals/player.png" id="2_gaj1x"]
 [ext_resource type="Script" path="res://src/egg/EggCollector.cs" id="3_q263r"]
+[ext_resource type="PackedScene" uid="uid://dkn7dwcv3q4sy" path="res://src/weapon/Weapon.tscn" id="4_diodw"]
 
 [sub_resource type="Animation" id="Animation_4d00e"]
 length = 0.4
@@ -59,7 +60,7 @@ metadata/_aseprite_wizard_config_ = {
 "slice": "",
 "source": "res://src/player/visuals/player.aseprite"
 }
-metadata/_aseprite_wizard_source_file_hash_ = "9bb380ff0666b13aa9c519f80de490eb"
+metadata/_aseprite_wizard_source_file_hash_ = "26cb8c328ed753b212d4f8c3575224cc"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="PlayerModel"]
 root_node = NodePath("../..")
@@ -76,3 +77,7 @@ script = ExtResource("3_q263r")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EggCollector"]
 shape = SubResource("CircleShape2D_so1ov")
+
+[node name="Weapon" parent="." instance=ExtResource("4_diodw")]
+unique_name_in_owner = true
+position = Vector2(0, -11)

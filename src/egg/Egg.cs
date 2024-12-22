@@ -1,5 +1,6 @@
 namespace Shellguard.Egg;
 
+using System.Data.Common;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
@@ -9,7 +10,7 @@ using Shellguard.Game.Domain;
 
 public interface IEgg : IArea2D
 {
-  public IEggLogic Logic { get; }
+  IEggLogic Logic { get; }
   void OnCollectorDetectorAreaEntered(Node body);
 }
 
@@ -23,6 +24,11 @@ public partial class Egg : Area2D, IEgg
   public IGameRepo GameRepo => this.DependOn<IGameRepo>();
   #endregion
 
+  #region Nodes
+  [Node("%Sprite")]
+  Sprite2D Sprite { get; set; } = default!;
+  #endregion
+
   public IEggLogic Logic { get; private set; } = default!;
   private EggLogic.IBinding Binding { get; set; } = default!;
 
@@ -32,11 +38,15 @@ public partial class Egg : Area2D, IEgg
   {
     Logic = new EggLogic();
     Logic.Set(GameRepo);
+    Logic.Set(new EggLogic.Data());
 
     Binding = Logic.Bind();
-
-    Binding.Handle((in EggLogic.Output.Collected _) => QueueFree());
+    Binding.Handle((in EggLogic.Output.OffsetChanged output) => Sprite.Offset = output.Offset);
+    Binding.Handle((in EggLogic.Output.SelfDestruct _) => QueueFree());
   }
+
+  public override void _PhysicsProcess(double delta) =>
+    Logic.Input(new EggLogic.Input.PhysicsProcess(delta));
 
   public void OnCollectorDetectorAreaEntered(Node body)
   {
