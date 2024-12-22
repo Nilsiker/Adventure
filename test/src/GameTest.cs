@@ -7,13 +7,10 @@ using Chickensoft.GodotTestDriver.Drivers;
 using Godot;
 using Shouldly;
 
-public class GameTest : TestClass
+public class GameTest(Node testScene) : TestClass(testScene)
 {
   private Game _game = default!;
   private Fixture _fixture = default!;
-
-  public GameTest(Node testScene)
-    : base(testScene) { }
 
   [SetupAll]
   public async Task Setup()
