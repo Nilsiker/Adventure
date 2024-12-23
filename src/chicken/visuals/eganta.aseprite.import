@@ -1,0 +1,14 @@
+[remap]
+
+importer="aseprite_wizard.plugin.noop"
+type="PackedDataContainer"
+uid="uid://do0p2k6rxtmna"
+path="res://.godot/imported/eganta.aseprite-7efa861df6d88a6e1402ba721c4530ee.res"
+
+[deps]
+
+source_file="res://src/chicken/visuals/eganta.aseprite"
+dest_files=["res://.godot/imported/eganta.aseprite-7efa861df6d88a6e1402ba721c4530ee.res"]
+
+[params]
+

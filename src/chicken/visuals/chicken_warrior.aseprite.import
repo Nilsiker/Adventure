@@ -1,0 +1,14 @@
+[remap]
+
+importer="aseprite_wizard.plugin.noop"
+type="PackedDataContainer"
+uid="uid://bi2smq0grxe4b"
+path="res://.godot/imported/chicken_warrior.aseprite-d9c08f7142e6287634957d5e895b57d3.res"
+
+[deps]
+
+source_file="res://src/chicken/visuals/chicken_warrior.aseprite"
+dest_files=["res://.godot/imported/chicken_warrior.aseprite-d9c08f7142e6287634957d5e895b57d3.res"]
+
+[params]
+
