@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=4 uid="uid://bmmkpsnp7c31l"]
+[gd_scene load_steps=14 format=4 uid="uid://bmmkpsnp7c31l"]
 
 [ext_resource type="Script" path="res://src/game/Game.cs" id="1_floyl"]
 [ext_resource type="PackedScene" uid="uid://dlmofixc40ggb" path="res://src/player/Player.tscn" id="2_i5xp0"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://4jk657hlgd4t" path="res://src/rat/Rat.tscn" id="5_wqg76"]
 [ext_resource type="Texture2D" uid="uid://b2u7d00v8ka4n" path="res://src/tilemap/visuals/tilemap.png" id="6_a1vec"]
 [ext_resource type="Script" path="res://src/tilemap/Ground.cs" id="6_w00go"]
+[ext_resource type="Texture2D" uid="uid://c28wec0h5po4a" path="res://src/coop.png" id="8_ir73l"]
+[ext_resource type="Texture2D" uid="uid://qx536tka6pe4" path="res://src/chicken/visuals/eganta.png" id="9_gspk6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1toge"]
 texture = ExtResource("6_a1vec")
@@ -76,13 +78,23 @@ script = ExtResource("6_w00go")
 color = Color(0.370364, 0.370364, 0.370364, 1)
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-position = Vector2(4, -58)
+position = Vector2(118, 12)
 color = Color(1, 0.802, 0.73, 1)
 texture = SubResource("GradientTexture2D_6w2od")
 
 [node name="PointLight2D2" type="PointLight2D" parent="."]
-position = Vector2(8, 14)
+position = Vector2(14, -59)
 color = Color(1, 0.802, 0.73, 1)
 energy = 0.5
 shadow_color = Color(0.25, 0.1325, 0.1325, 0)
 texture = SubResource("GradientTexture2D_6w2od")
+
+[node name="Coop" type="Sprite2D" parent="."]
+position = Vector2(60, -48)
+texture = ExtResource("8_ir73l")
+offset = Vector2(0, -28.035)
+
+[node name="Eganta" type="Sprite2D" parent="."]
+position = Vector2(46, -20)
+texture = ExtResource("9_gspk6")
+offset = Vector2(0, -15)
