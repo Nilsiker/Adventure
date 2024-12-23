@@ -17,7 +17,7 @@ public partial class Weapon : Area2D, IWeapon
   public override void _Notification(int what) => this.Notify(what);
 
   [Export]
-  float AngleOffset;
+  private float _angleOffset;
   #region State
   private WeaponLogic Logic { get; set; } = default!;
   private WeaponLogic.IBinding Binding { get; set; } = default!;
@@ -41,8 +41,8 @@ public partial class Weapon : Area2D, IWeapon
   public void Aim(Vector2 atPosition)
   {
     var direct_angle = GlobalPosition.DirectionTo(atPosition).Angle();
-    GlobalRotation = direct_angle + Mathf.DegToRad(AngleOffset);
-  } // FIXME go through logic?
+    GlobalRotation = direct_angle + Mathf.DegToRad(_angleOffset);
+  }
 
   public void Attack() => Logic.Input(new WeaponLogic.Input.QueueAttack());
 }

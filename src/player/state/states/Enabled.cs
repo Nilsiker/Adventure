@@ -4,6 +4,6 @@ public partial class PlayerLogic
 {
   public abstract partial record State
   {
-    public partial record Moving : State { }
+    public record Enabled : State { }
   }
 }

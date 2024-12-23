@@ -15,7 +15,6 @@ script = ExtResource("1_floyl")
 process_mode = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(3, 3)
 
 [node name="Egg" parent="." instance=ExtResource("3_2703n")]
 position = Vector2(-112, -46)

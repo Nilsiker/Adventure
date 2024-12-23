@@ -1,10 +1,18 @@
 @startuml PlayerLogic
 state "PlayerLogic State" as Shellguard_Player_State_PlayerLogic_State {
+  state "Disabled" as Shellguard_Player_State_PlayerLogic_State_Disabled
+  state "Enabled" as Shellguard_Player_State_PlayerLogic_State_Enabled
   state "Idle" as Shellguard_Player_State_PlayerLogic_State_Idle
   state "Moving" as Shellguard_Player_State_PlayerLogic_State_Moving
 }
 
+Shellguard_Player_State_PlayerLogic_State_Disabled --> Shellguard_Player_State_PlayerLogic_State_Idle : Enable
 Shellguard_Player_State_PlayerLogic_State_Idle --> Shellguard_Player_State_PlayerLogic_State_Idle : Move
 Shellguard_Player_State_PlayerLogic_State_Idle --> Shellguard_Player_State_PlayerLogic_State_Moving : Move
+Shellguard_Player_State_PlayerLogic_State_Moving --> Shellguard_Player_State_PlayerLogic_State_Idle : Move
+Shellguard_Player_State_PlayerLogic_State_Moving --> Shellguard_Player_State_PlayerLogic_State_Moving : Move
+
+Shellguard_Player_State_PlayerLogic_State_Moving : OnMove → Movement
+
 [*] --> Shellguard_Player_State_PlayerLogic_State_Idle
 @enduml

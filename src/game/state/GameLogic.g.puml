@@ -1,7 +1,7 @@
 @startuml GameLogic
 state "GameLogic State" as Shellguard_Game_State_GameLogic_State {
-  state "Paused" as Shellguard_Game_State_GameLogic_State_Paused
   state "Playing" as Shellguard_Game_State_GameLogic_State_Playing
+  state "Paused" as Shellguard_Game_State_GameLogic_State_Paused
 }
 
 Shellguard_Game_State_GameLogic_State_Paused --> Shellguard_Game_State_GameLogic_State_Playing : PauseButtonPressed

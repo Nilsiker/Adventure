@@ -1,0 +1,4 @@
+@startuml StatsLogic
+state "StatsLogic State" as Shellguard_Stats_StatsLogic_State
+[*] --> Shellguard_Stats_StatsLogic_State
+@enduml
