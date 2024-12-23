@@ -3,7 +3,6 @@ namespace Shellguard.Player;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
-using Chickensoft.LogicBlocks;
 using Godot;
 using Shellguard.Player.State;
 using Shellguard.Weapon;
@@ -13,9 +12,6 @@ public interface IPlayer : ICharacterBody2D { }
 [Meta(typeof(IAutoNode))]
 public partial class Player : CharacterBody2D, IPlayer
 {
-  string side = "s";
-  string action = "idle";
-
   #region State
   private PlayerLogic Logic { get; set; } = default!;
   private PlayerLogic.IBinding Binding { get; set; } = default!;
@@ -26,12 +22,18 @@ public partial class Player : CharacterBody2D, IPlayer
   private Weapon Weapon { get; set; } = default!;
 
   [Node("StateLabel")]
-  private Label StateLabel { get; set; } = default!;
+  Label StateLabel { get; set; } = default!;
+
+  [Node("PlayerModel/AnimationPlayer")]
+  AnimationPlayer AnimationPlayer { get; set; } = default!;
   #endregion
   public override void _Notification(int what) => this.Notify(what);
 
   [Export]
   private float _speed = 100.0f;
+
+  [Export]
+  private PackedScene _bonk;
 
   public void Setup() => Logic = new();
 
@@ -58,26 +60,25 @@ public partial class Player : CharacterBody2D, IPlayer
 
     // Aim weapon
     Weapon.Aim(GetGlobalMousePosition());
+    if (AnimationPlayer.CurrentAnimation == "hammer")
+    {
+      return;
+    }
+
     if (direction.IsZeroApprox())
     {
-      action = "idle";
-      GetNode<AnimationPlayer>("PlayerModel/AnimationPlayer").Play($"idle_{side}");
+      AnimationPlayer.Play($"idle_s");
     }
     else
     {
-      action = "run";
-      GetNode<AnimationPlayer>("PlayerModel/AnimationPlayer").Play($"run_{side}");
+      AnimationPlayer.Play($"run_s");
       if (direction.X != 0)
       {
         GetNode<Sprite2D>("PlayerModel/Sprite2D").FlipH = direction.X > 0;
-        side = "s";
-      }
-      else
-      {
-        GetNode<Sprite2D>("PlayerModel/Sprite2D").FlipH = false;
-        side = direction.Y < 0 ? "b" : "f";
       }
     }
+
+    Weapon.Aim(GetGlobalMousePosition());
   }
 
   public override void _UnhandledInput(InputEvent @event)
@@ -85,6 +86,10 @@ public partial class Player : CharacterBody2D, IPlayer
     if (@event.IsActionPressed("attack"))
     {
       Weapon.Attack();
+      AnimationPlayer.Play("hammer");
+
+      GetNode<Sprite2D>("PlayerModel/Sprite2D").FlipH =
+        GetNode<Node2D>("Weapon/Sprite2D").GlobalPosition > GlobalPosition;
     }
   }
 
@@ -96,6 +101,10 @@ public partial class Player : CharacterBody2D, IPlayer
 
   private void OnMovementOutput(PlayerLogic.Output.Movement output)
   {
+    if (AnimationPlayer.CurrentAnimation == "hammer")
+    {
+      return;
+    }
     Velocity = output.Velocity;
     MoveAndSlide();
   }

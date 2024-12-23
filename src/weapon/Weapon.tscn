@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dkn7dwcv3q4sy"]
 
 [ext_resource type="Script" path="res://src/weapon/Weapon.cs" id="1_2ae6a"]
-[ext_resource type="Texture2D" uid="uid://drx3s8l121slx" path="res://src/weapon/crossbow.png" id="2_dde8h"]
+[ext_resource type="Texture2D" uid="uid://d43sw60ib1iq" path="res://icon.png" id="2_rghhs"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yrtpv"]
 
@@ -10,8 +10,9 @@ script = ExtResource("1_2ae6a")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
-position = Vector2(11, 0)
-texture = ExtResource("2_dde8h")
+position = Vector2(19, 0)
+scale = Vector2(0.005, 0.005)
+texture = ExtResource("2_rghhs")
 metadata/_aseprite_wizard_interface_config_ = {
 "pending_changes": {}
 }
@@ -30,5 +31,5 @@ metadata/_aseprite_wizard_config_ = {
 metadata/_aseprite_wizard_source_file_hash_ = "54d1207b182e912153b5e59361edf66e"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(11, 0)
+position = Vector2(19, 0)
 shape = SubResource("RectangleShape2D_yrtpv")

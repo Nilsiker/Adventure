@@ -55,6 +55,7 @@ position = Vector2(-50, 130)
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="HUD" parent="UI" instance=ExtResource("4_4llmj")]
+mouse_filter = 1
 
 [node name="Rat" parent="." instance=ExtResource("5_wqg76")]
 position = Vector2(-53, -67)
