@@ -6,6 +6,8 @@ using Chickensoft.Collections;
 public interface IGameRepo : IDisposable
 {
   event Action<EGameOverReason>? Ended;
+  event Action? Paused;
+  event Action? Resumed;
 
   IAutoProp<int> EggsCollected { get; }
   IAutoProp<bool> IsPaused { get; }
@@ -24,6 +26,8 @@ public class GameRepo : IGameRepo
   public IAutoProp<bool> IsPaused => _isPaused;
 
   public event Action<EGameOverReason>? Ended;
+  public event Action? Paused;
+  public event Action? Resumed;
 
   private readonly AutoProp<int> _eggsCollected;
   private readonly AutoProp<bool> _isPaused;

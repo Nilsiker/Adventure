@@ -1,4 +1,5 @@
-using System;
+namespace Shellguard.UI;
+
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
@@ -21,10 +22,24 @@ public partial class PauseMenu : Control, IPauseMenu
 
   #region Dependencies
   [Dependency]
-  IGameRepo GameRepo => this.DependOn<IGameRepo>();
+  private IGameRepo GameRepo => this.DependOn<IGameRepo>();
+
+  [Dependency]
+  private IAppRepo AppRepo => this.DependOn<IAppRepo>();
   #endregion
 
   #region Nodes
+  [Node("%Resume")]
+  private IButton ResumeButton { get; set; } = default!;
+
+  [Node("%Options")]
+  private IButton OptionsButton { get; set; } = default!;
+
+  [Node("%QuitToMainMenu")]
+  private IButton QuitToMainMenuButton { get; set; } = default!;
+
+  [Node("%QuitToDesktop")]
+  private IButton QuitToDesktopButton { get; set; } = default!;
   #endregion
 
   #region Dependency Lifecycle
@@ -35,6 +50,8 @@ public partial class PauseMenu : Control, IPauseMenu
     Binding = Logic.Bind();
 
     Logic.Set(GameRepo);
+    Logic.Set(AppRepo);
+
     // Bind functions to state outputs here
     Binding.Handle((in PauseMenuLogic.Output.VisibilityChanged output) => Visible = output.Visible);
 
@@ -47,22 +64,28 @@ public partial class PauseMenu : Control, IPauseMenu
 
   public void OnReady()
   {
-    SetProcess(true);
-    SetPhysicsProcess(true);
+    GD.Print(ResumeButton);
+    ResumeButton.Pressed += OnResumeButtonPressed;
+    QuitToMainMenuButton.Pressed += OnQuitMainMenuButtonPressed;
   }
-
-  public void OnProcess(double delta) { }
-
-  public void OnPhysicsProcess(double delta) { }
 
   public void OnExitTree()
   {
+    ResumeButton.Pressed -= OnResumeButtonPressed;
+    QuitToMainMenuButton.Pressed -= OnQuitMainMenuButtonPressed;
+
     Logic.Stop();
     Binding.Dispose();
   }
+
   #endregion
 
+
   #region Input Callbacks
+  private void OnResumeButtonPressed() => Logic.Input(new PauseMenuLogic.Input.Resume());
+
+  private void OnQuitMainMenuButtonPressed() =>
+    Logic.Input(new PauseMenuLogic.Input.QuitToMainMenu());
   #endregion
 
   #region Output Callbacks
@@ -77,14 +100,23 @@ public partial class PauseMenuLogic : LogicBlock<PauseMenuLogic.State>, IPauseMe
 {
   public override Transition GetInitialState() => To<State>();
 
-  public static class Input { }
+  public static class Input
+  {
+    public record struct Resume;
+
+    public record struct OpenOptions;
+
+    public record struct QuitToMainMenu;
+
+    public record struct QuitToDesktop;
+  }
 
   public static class Output
   {
     public partial record struct VisibilityChanged(bool Visible);
   }
 
-  public partial record State : StateLogic<State>
+  public partial record State : StateLogic<State>, IGet<Input.QuitToMainMenu>, IGet<Input.Resume>
   {
     public State()
     {
@@ -98,6 +130,18 @@ public partial class PauseMenuLogic : LogicBlock<PauseMenuLogic.State>, IPauseMe
         var gameRepo = Get<IGameRepo>();
         gameRepo.IsPaused.Sync -= OnGameIsPaused;
       });
+    }
+
+    public Transition On(in Input.QuitToMainMenu input)
+    {
+      Get<IAppRepo>().RequestMainMenu();
+      return ToSelf();
+    }
+
+    public Transition On(in Input.Resume input)
+    {
+      Get<IGameRepo>().Resume();
+      return ToSelf();
     }
 
     private void OnGameIsPaused(bool paused) => Output(new Output.VisibilityChanged(paused));

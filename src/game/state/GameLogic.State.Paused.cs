@@ -1,6 +1,5 @@
 namespace Shellguard.Game.State;
 
-using Chickensoft.LogicBlocks;
 using Shellguard.Game.Domain;
 
 public partial class GameLogic
@@ -11,12 +10,24 @@ public partial class GameLogic
     {
       public Paused()
       {
-        this.OnEnter(() => Get<IGameRepo>().Pause());
-        this.OnExit(() =>
+        OnAttach(() =>
         {
-          Get<IGameRepo>().Resume();
-          Output(new Output.ExitPauseMenu());
+          Get<IGameRepo>().IsPaused.Changed += OnIsPausedChanged;
+          Get<IGameRepo>().Pause();
         });
+        OnDetach(() =>
+        {
+          Get<IGameRepo>().IsPaused.Changed -= OnIsPausedChanged;
+          Get<IGameRepo>().Resume();
+        });
+      }
+
+      private void OnIsPausedChanged(bool isPaused)
+      {
+        if (!isPaused)
+        {
+          Input(new Input.PauseButtonPressed());
+        }
       }
 
       public Transition On(in Input.PauseButtonPressed input) => To<Playing>();

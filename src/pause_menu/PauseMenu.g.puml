@@ -1,6 +1,10 @@
 @startuml PauseMenuLogic
-state "PauseMenuLogic State" as PauseMenuLogic_State
-PauseMenuLogic_State : OnGameIsPaused() → VisibilityChanged
+state "PauseMenuLogic State" as Shellguard_UI_PauseMenuLogic_State
 
-[*] --> PauseMenuLogic_State
+Shellguard_UI_PauseMenuLogic_State --> Shellguard_UI_PauseMenuLogic_State : QuitToMainMenu
+Shellguard_UI_PauseMenuLogic_State --> Shellguard_UI_PauseMenuLogic_State : Resume
+
+Shellguard_UI_PauseMenuLogic_State : OnGameIsPaused() → VisibilityChanged
+
+[*] --> Shellguard_UI_PauseMenuLogic_State
 @enduml

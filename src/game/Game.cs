@@ -16,8 +16,8 @@ public partial class Game : Node2D, IProvide<IGameRepo>
 
   #region State
   public IGameRepo GameRepo { get; set; } = default!;
-  public IGameLogic GameLogic { get; set; } = default!;
-  public GameLogic.IBinding GameBinding { get; set; } = default!;
+  public IGameLogic Logic { get; set; } = default!;
+  public GameLogic.IBinding Binding { get; set; } = default!;
   #endregion
 
   #region Provisions
@@ -28,16 +28,17 @@ public partial class Game : Node2D, IProvide<IGameRepo>
   public void Setup()
   {
     GameRepo = new GameRepo();
-    GameLogic = new GameLogic();
+    Logic = new GameLogic();
 
-    GameLogic.Set(GameRepo);
+    Logic.Set(GameRepo);
   }
 
   public void OnResolved()
   {
-    GameBinding = GameLogic.Bind();
+    Binding = Logic.Bind();
 
-    GameBinding.Handle((in GameLogic.Output.SetPauseMode output) => SetGamePaused(output.IsPaused));
+    Binding.When<GameLogic.State>(state => GD.Print(state.ToString()));
+    Binding.Handle((in GameLogic.Output.SetPauseMode output) => SetGamePaused(output.IsPaused));
 
     this.Provide();
   }
@@ -46,16 +47,17 @@ public partial class Game : Node2D, IProvide<IGameRepo>
 
   public override void _Input(InputEvent @event)
   {
-    if (Input.IsActionJustPressed("esc"))
+    if (Input.IsActionJustPressed(Inputs.Esc))
     {
-      GameLogic.Input(new GameLogic.Input.PauseButtonPressed());
+      GD.Print("esc");
+      Logic.Input(new GameLogic.Input.PauseButtonPressed());
     }
   }
 
   public void OnExitTree()
   {
-    GameLogic.Stop();
-    GameBinding.Dispose();
+    Logic.Stop();
+    Binding.Dispose();
     GameRepo.Dispose();
   }
 }

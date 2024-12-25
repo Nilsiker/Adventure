@@ -64,8 +64,11 @@ public partial class Player : CharacterBody2D, IPlayer
   #region Godot Lifecycle
   public override void _Notification(int what) => this.Notify(what);
 
-  public override void _Ready() =>
+  public override void _Ready()
+  {
     AnimationPlayer.AnimationFinished += OnAnimationPlayerAnimationFinished;
+    GetNode<Camera2D>("Camera2D").MakeCurrent();
+  }
 
   public override void _PhysicsProcess(double delta)
   {
@@ -84,7 +87,6 @@ public partial class Player : CharacterBody2D, IPlayer
     if (@event.IsActionPressed(Inputs.Attack))
     {
       Logic.Input(new PlayerLogic.Input.AttackInput());
-      GD.Print("Attacked");
     }
   }
 

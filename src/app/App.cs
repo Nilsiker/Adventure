@@ -27,10 +27,10 @@ public partial class App : Node, IApp
   #endregion
 
   #region Nodes
-  [Node("%GameViewport")]
-  private ISubViewport GameViewPort { get; set; } = default!;
+  [Node("GameContainer")]
+  private Node2D GameContainer { get; set; } = default!;
 
-  [Node("MainMenu")]
+  [Node("%MainMenu")]
   private IControl MainMenu { get; set; } = default!;
 
   [Node("AnimationPlayer")]
@@ -54,12 +54,18 @@ public partial class App : Node, IApp
     Binding
       .Handle((in AppLogic.Output.CloseApplication _) => OnQuitApp())
       .Handle((in AppLogic.Output.SetupGame _) => OnSetupGame())
-      .Handle((in AppLogic.Output.HideGame _) => GameViewPort.GetParent<Control>().Visible = false)
+      .Handle((in AppLogic.Output.HideGame _) => GameContainer.Visible = false)
       .Handle((in AppLogic.Output.RemoveGame _) => OnRemoveGame())
       .Handle((in AppLogic.Output.ShowMainMenu _) => MainMenu.Visible = true)
       .Handle((in AppLogic.Output.HideMainMenu _) => MainMenu.Visible = false)
-      .Handle((in AppLogic.Output.ShowGame _) => GameViewPort.GetParent<Control>().Visible = true)
-      .Handle((in AppLogic.Output.FadeIn _) => AnimationPlayer.Play("fade_in"))
+      .Handle((in AppLogic.Output.ShowGame _) => GameContainer.Visible = true)
+      .Handle(
+        (in AppLogic.Output.FadeIn _) =>
+        {
+          AnimationPlayer.Play("fade_in");
+          GD.Print("fadein");
+        }
+      )
       .Handle((in AppLogic.Output.FadeOut _) => AnimationPlayer.Play("fade_out"));
 
     Logic.Start();
@@ -105,13 +111,13 @@ public partial class App : Node, IApp
   public void OnSetupGame()
   {
     var game = _gameScene.Instantiate();
-    GameViewPort.AddChildEx(game);
+    GameContainer.AddChildEx(game);
   }
 
   public void OnRemoveGame()
   {
-    var game = GameViewPort.GetChild(1);
-    GameViewPort.RemoveChildEx(game);
+    var game = GameContainer.GetChild(0); // TODO this is called on every Main Menu state, and causes error on first app laod.
+    GameContainer.RemoveChildEx(game);
     game.QueueFree();
   }
 
@@ -159,64 +165,5 @@ public partial class AppLogic : LogicBlock<AppLogic.State>, IAppLogic
     public record struct FadeIn;
 
     public record struct FadeOut;
-  }
-
-  public abstract partial record State : StateLogic<State>, IGet<Input.QuitApp>
-  {
-    public State()
-    {
-      OnAttach(() => Get<IAppRepo>().AppQuit += OnAppQuit);
-      OnDetach(() => Get<IAppRepo>().AppQuit -= OnAppQuit);
-    }
-
-    public Transition On(in Input.QuitApp input) => To<ClosingApplication>();
-
-    private void OnAppQuit() => Input(new Input.QuitApp()); // NOTE: Is this kosher?
-
-    public partial record InMainMenu : State, IGet<Input.NewGame>, IGet<Input.QuitApp>
-    {
-      public InMainMenu()
-      {
-        OnAttach(() => Output(new Output.ShowMainMenu()));
-        OnDetach(() => { });
-      }
-
-      Transition IGet<Input.QuitApp>.On(in Input.QuitApp input) => To<ClosingApplication>();
-
-      Transition IGet<Input.NewGame>.On(in Input.NewGame input) => To<InGame>();
-    }
-
-    public partial record InGame : State, IGet<Input.BackToMainMenu>, IGet<Input.QuitApp>
-    {
-      public InGame()
-      {
-        OnAttach(() =>
-        {
-          Output(new Output.SetupGame());
-          Output(new Output.ShowGame());
-          Output(new Output.HideMainMenu());
-        });
-        OnDetach(() => { });
-      }
-
-      Transition IGet<Input.BackToMainMenu>.On(in Input.BackToMainMenu input) => To<InMainMenu>();
-
-      Transition IGet<Input.QuitApp>.On(in Input.QuitApp input) => To<ClosingApplication>();
-    }
-
-    public partial record ClosingApplication : State, IGet<Input.FadeOutFinished>
-    {
-      public ClosingApplication()
-      {
-        OnAttach(() => Output(new Output.FadeOut()));
-        OnDetach(() => { });
-      }
-
-      public Transition On(in Input.FadeOutFinished input)
-      {
-        Output(new Output.CloseApplication());
-        return ToSelf();
-      }
-    }
   }
 }
