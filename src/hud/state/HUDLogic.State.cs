@@ -11,10 +11,19 @@ public partial class HUDLogic
   {
     public State()
     {
-      OnAttach(() => Get<IGameRepo>().EggsCollected.Sync += OnEggsCollectedSynced);
-
-      OnDetach(() => Get<IGameRepo>().EggsCollected.Sync -= OnEggsCollectedSynced);
+      OnAttach(() =>
+      {
+        Get<IGameRepo>().EggsCollected.Sync += OnEggsCollectedSynced;
+        Get<IGameRepo>().IsPaused.Sync += OnIsPaused;
+      });
+      OnDetach(() =>
+      {
+        Get<IGameRepo>().EggsCollected.Sync -= OnEggsCollectedSynced;
+        Get<IGameRepo>().IsPaused.Sync -= OnIsPaused;
+      });
     }
+
+    private void OnIsPaused(bool paused) => Output(new Output.VisilibilityChanged(!paused));
 
     private void OnEggsCollectedSynced(int num) => Output(new Output.EggsCollectedChanged(num));
   }

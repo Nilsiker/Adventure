@@ -11,6 +11,8 @@ public partial class HUDLogic : LogicBlock<HUDLogic.State>
 
   public static class Output
   {
+    public record struct VisilibilityChanged(bool Visible);
+
     public record struct EggsCollectedChanged(int Count);
   }
 }

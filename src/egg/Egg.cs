@@ -1,6 +1,5 @@
 namespace Shellguard.Egg;
 
-using System.Data.Common;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
@@ -58,6 +57,8 @@ public partial class Egg : Area2D, IEgg
 
   public void OnExitTree()
   {
+    AreaEntered -= OnCollectorDetectorAreaEntered;
+
     Logic.Stop();
     Binding.Dispose();
   }

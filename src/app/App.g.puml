@@ -1,0 +1,7 @@
+@startuml AppLogic
+state "AppLogic State" as Shellguard_AppLogic_State
+Shellguard_AppLogic_State : OnAppQuit() → QuitApp
+Shellguard_AppLogic_State : OnGameStarted() → StartGame
+
+[*] --> Shellguard_AppLogic_State
+@enduml

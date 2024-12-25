@@ -6,7 +6,7 @@ using Godot;
 using Shellguard.Game.Domain;
 
 [Meta(typeof(IAutoNode))]
-public partial class HUD : Node
+public partial class HUD : Control
 {
   public override void _Notification(int what) => this.Notify(what);
 
@@ -32,9 +32,9 @@ public partial class HUD : Node
     Logic.Set(GameRepo);
 
     Binding = Logic.Bind();
-    Binding.Handle(
-      (in HUDLogic.Output.EggsCollectedChanged output) => SetEggLabelCount(output.Count)
-    );
+    Binding
+      .Handle((in HUDLogic.Output.EggsCollectedChanged output) => SetEggLabelCount(output.Count))
+      .Handle((in HUDLogic.Output.VisilibilityChanged output) => Visible = output.Visible);
 
     Logic.Start();
   }

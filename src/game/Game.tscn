@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://bmmkpsnp7c31l"]
+[gd_scene load_steps=15 format=4 uid="uid://bmmkpsnp7c31l"]
 
 [ext_resource type="Script" path="res://src/game/Game.cs" id="1_floyl"]
 [ext_resource type="PackedScene" uid="uid://dlmofixc40ggb" path="res://src/player/Player.tscn" id="2_i5xp0"]
@@ -7,8 +7,9 @@
 [ext_resource type="PackedScene" uid="uid://4jk657hlgd4t" path="res://src/rat/Rat.tscn" id="5_wqg76"]
 [ext_resource type="Texture2D" uid="uid://b2u7d00v8ka4n" path="res://src/tilemap/visuals/tilemap.png" id="6_a1vec"]
 [ext_resource type="Script" path="res://src/tilemap/Ground.cs" id="6_w00go"]
-[ext_resource type="PackedScene" uid="uid://ctqmgxbki7i03" path="res://src/coop/coop.tscn" id="8_j5ald"]
+[ext_resource type="PackedScene" uid="uid://ctqmgxbki7i03" path="res://src/coop/Coop.tscn" id="8_j5ald"]
 [ext_resource type="Texture2D" uid="uid://qx536tka6pe4" path="res://src/chicken/visuals/eganta.png" id="9_gspk6"]
+[ext_resource type="PackedScene" uid="uid://bugujp5udm6s4" path="res://src/pause_menu/PauseMenu.tscn" id="10_6ffr8"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1toge"]
 texture = ExtResource("6_a1vec")
@@ -36,6 +37,15 @@ process_mode = 3
 y_sort_enabled = true
 script = ExtResource("1_floyl")
 
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="PauseMenu" parent="UI" instance=ExtResource("10_6ffr8")]
+visible = false
+
+[node name="HUD" parent="UI" instance=ExtResource("4_4llmj")]
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
 [node name="Player" parent="." instance=ExtResource("2_i5xp0")]
 process_mode = 1
 position = Vector2(-7, -35)
@@ -53,11 +63,6 @@ position = Vector2(-154, 91)
 
 [node name="Egg3" parent="." instance=ExtResource("3_2703n")]
 position = Vector2(-50, 130)
-
-[node name="UI" type="CanvasLayer" parent="."]
-
-[node name="HUD" parent="UI" instance=ExtResource("4_4llmj")]
-mouse_filter = 1
 
 [node name="Rat" parent="." instance=ExtResource("5_wqg76")]
 position = Vector2(-53, -67)

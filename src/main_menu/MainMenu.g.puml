@@ -1,0 +1,7 @@
+@startuml MainMenuLogic
+state "MainMenuLogic State" as Shellguard_UI_MainMenuLogic_State
+
+Shellguard_UI_MainMenuLogic_State --> Shellguard_UI_MainMenuLogic_State : PlayButtonClick
+Shellguard_UI_MainMenuLogic_State --> Shellguard_UI_MainMenuLogic_State : QuitButtonClick
+[*] --> Shellguard_UI_MainMenuLogic_State
+@enduml

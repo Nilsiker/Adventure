@@ -1,0 +1,6 @@
+@startuml PauseMenuLogic
+state "PauseMenuLogic State" as PauseMenuLogic_State
+PauseMenuLogic_State : OnGameIsPaused() → VisibilityChanged
+
+[*] --> PauseMenuLogic_State
+@enduml

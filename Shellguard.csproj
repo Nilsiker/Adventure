@@ -15,6 +15,7 @@
     <Description>Shellguard</Description>
     <Copyright>© 2024 Andreas Nilsson</Copyright>
     <Authors>Andreas Nilsson</Authors>
+    <Nullable>enable</Nullable>
     <!-- Don't include unit tests in release builds. -->
     <DefaultItemExcludes Condition="'$(Configuration)' == 'ExportRelease'">
       $(DefaultItemExcludes);test/**/*
