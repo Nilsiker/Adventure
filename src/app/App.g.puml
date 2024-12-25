@@ -14,6 +14,7 @@ Shellguard_AppLogic_State_InMainMenu --> Shellguard_AppLogic_State_InGame : NewG
 
 Shellguard_AppLogic_State_ClosingApplication : None → FadeOut
 Shellguard_AppLogic_State_ClosingApplication : OnFadeOutFinished → CloseApplication
+Shellguard_AppLogic_State_InGame : None → HideMainMenu, SetupGame, ShowGame
 Shellguard_AppLogic_State_InMainMenu : None → ShowMainMenu
 
 [*] --> Shellguard_AppLogic_State_InMainMenu

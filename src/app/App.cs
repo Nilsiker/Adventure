@@ -52,11 +52,12 @@ public partial class App : Node, IApp
 
     // Bind functions to state outputs here
     Binding
-      .Handle((in AppLogic.Output.CloseApplication _) => QuitApp())
-      .Handle((in AppLogic.Output.SetupGame _) => SetupGame())
+      .Handle((in AppLogic.Output.CloseApplication _) => OnQuitApp())
+      .Handle((in AppLogic.Output.SetupGame _) => OnSetupGame())
       .Handle((in AppLogic.Output.HideGame _) => GameViewPort.GetParent<Control>().Visible = false)
-      .Handle((in AppLogic.Output.RemoveGame _) => RemoveGame())
+      .Handle((in AppLogic.Output.RemoveGame _) => OnRemoveGame())
       .Handle((in AppLogic.Output.ShowMainMenu _) => MainMenu.Visible = true)
+      .Handle((in AppLogic.Output.HideMainMenu _) => MainMenu.Visible = false)
       .Handle((in AppLogic.Output.ShowGame _) => GameViewPort.GetParent<Control>().Visible = true)
       .Handle((in AppLogic.Output.FadeIn _) => AnimationPlayer.Play("fade_in"))
       .Handle((in AppLogic.Output.FadeOut _) => AnimationPlayer.Play("fade_out"));
@@ -94,25 +95,28 @@ public partial class App : Node, IApp
       Logic.Input(new AppLogic.Input.FadeOutFinished());
     }
   }
+
+  private void NewGame() => Logic.Input(new AppLogic.Input.NewGame());
+
+  private void QuitApp() => Logic.Input(new AppLogic.Input.QuitApp());
   #endregion
 
   #region Output Callbacks
-  #endregion
-
-  public void SetupGame()
+  public void OnSetupGame()
   {
     var game = _gameScene.Instantiate();
     GameViewPort.AddChildEx(game);
   }
 
-  public void RemoveGame()
+  public void OnRemoveGame()
   {
     var game = GameViewPort.GetChild(1);
     GameViewPort.RemoveChildEx(game);
     game.QueueFree();
   }
 
-  public void QuitApp() => GetTree().Quit();
+  public void OnQuitApp() => GetTree().Quit();
+  #endregion
 }
 
 public interface IAppLogic : ILogicBlock<AppLogic.State>;
@@ -147,6 +151,8 @@ public partial class AppLogic : LogicBlock<AppLogic.State>, IAppLogic
     public record struct RemoveGame;
 
     public record struct ShowMainMenu;
+
+    public record struct HideMainMenu;
 
     public record struct CloseApplication;
 
@@ -184,7 +190,12 @@ public partial class AppLogic : LogicBlock<AppLogic.State>, IAppLogic
     {
       public InGame()
       {
-        OnAttach(() => { });
+        OnAttach(() =>
+        {
+          Output(new Output.SetupGame());
+          Output(new Output.ShowGame());
+          Output(new Output.HideMainMenu());
+        });
         OnDetach(() => { });
       }
 

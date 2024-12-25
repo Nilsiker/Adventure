@@ -99,3 +99,6 @@ libraries = {
 "": SubResource("AnimationLibrary_y4eqn")
 }
 speed_scale = 2.0
+
+[connection signal="PlayPressed" from="MainMenu" to="." method="NewGame"]
+[connection signal="QuitPressed" from="MainMenu" to="." method="QuitApp"]

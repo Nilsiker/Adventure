@@ -17,7 +17,7 @@ public partial class Player : CharacterBody2D, IPlayer
   private float _speed = 100.0f;
 
   [Export]
-  private PackedScene _bonk;
+  private PackedScene _bonk = default!;
   #endregion
 
   #region State
@@ -69,7 +69,11 @@ public partial class Player : CharacterBody2D, IPlayer
 
   public override void _PhysicsProcess(double delta)
   {
-    Logic.Input(new PlayerLogic.Input.MoveInput(Input.GetVector("left", "right", "up", "down")));
+    Logic.Input(
+      new PlayerLogic.Input.MoveInput(
+        Input.GetVector(Inputs.Left, Inputs.Right, Inputs.Up, Inputs.Down)
+      )
+    );
 
     // Aim weapon (Go through logic?)
     Weapon.Aim(GetGlobalMousePosition());
@@ -77,7 +81,7 @@ public partial class Player : CharacterBody2D, IPlayer
 
   public override void _UnhandledInput(InputEvent @event)
   {
-    if (@event.IsActionPressed("attack"))
+    if (@event.IsActionPressed(Inputs.Attack))
     {
       Logic.Input(new PlayerLogic.Input.AttackInput());
       GD.Print("Attacked");

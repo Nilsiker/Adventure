@@ -11,6 +11,15 @@ public interface IMainMenu : IControl { }
 [Meta(typeof(IAutoNode))]
 public partial class MainMenu : Control, IMainMenu
 {
+  #region Signals
+  [Signal]
+  public delegate void PlayPressedEventHandler();
+
+  [Signal]
+  public delegate void QuitPressedEventHandler();
+
+  #endregion
+
   #region Nodes
   [Node("%Play")]
   private IButton PlayButton { get; set; } = default!;
@@ -58,13 +67,13 @@ public partial class MainMenu : Control, IMainMenu
   #endregion
 
   #region Signal Callbacks
-  private void OnPlayButtonPressed() => AppRepo.StartGame();
+  private void OnPlayButtonPressed() => EmitSignal(SignalName.PlayPressed);
 
   private void OnCreditsButtonPressed() => throw new NotImplementedException();
 
   private void OnOptionsButtonPressed() => throw new NotImplementedException();
 
-  private void OnQuitButtonPressed() => AppRepo.QuitApp();
+  private void OnQuitButtonPressed() => EmitSignal(SignalName.QuitPressed);
 
   #endregion
 }
