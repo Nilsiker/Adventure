@@ -1,7 +1,20 @@
 @startuml AppLogic
-state "AppLogic State" as Shellguard_AppLogic_State
-Shellguard_AppLogic_State : OnAppQuit() → QuitApp
-Shellguard_AppLogic_State : OnGameStarted() → StartGame
+state "AppLogic State" as Shellguard_AppLogic_State {
+  state "InMainMenu" as Shellguard_AppLogic_State_InMainMenu
+  state "InGame" as Shellguard_AppLogic_State_InGame
+  state "ClosingApplication" as Shellguard_AppLogic_State_ClosingApplication
+}
 
-[*] --> Shellguard_AppLogic_State
+Shellguard_AppLogic_State --> Shellguard_AppLogic_State_ClosingApplication : QuitApp
+Shellguard_AppLogic_State_ClosingApplication --> Shellguard_AppLogic_State_ClosingApplication : FadeOutFinished
+Shellguard_AppLogic_State_InGame --> Shellguard_AppLogic_State_ClosingApplication : QuitApp
+Shellguard_AppLogic_State_InGame --> Shellguard_AppLogic_State_InMainMenu : BackToMainMenu
+Shellguard_AppLogic_State_InMainMenu --> Shellguard_AppLogic_State_ClosingApplication : QuitApp
+Shellguard_AppLogic_State_InMainMenu --> Shellguard_AppLogic_State_InGame : NewGame
+
+Shellguard_AppLogic_State_ClosingApplication : None → FadeOut
+Shellguard_AppLogic_State_ClosingApplication : OnFadeOutFinished → CloseApplication
+Shellguard_AppLogic_State_InMainMenu : None → ShowMainMenu
+
+[*] --> Shellguard_AppLogic_State_InMainMenu
 @enduml

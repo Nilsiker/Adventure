@@ -6,27 +6,11 @@ using Chickensoft.Introspection;
 using Chickensoft.LogicBlocks;
 using Godot;
 
-public interface IApp : INode, IProvide<IAppRepo>
-{
-  void StartGame();
-  void SaveGame();
-  void LoadGame();
-  void QuitApp();
-}
+public interface IApp : INode, IProvide<IAppRepo>;
 
 [Meta(typeof(IAutoNode))]
 public partial class App : Node, IApp
 {
-  #region Interface
-  public void StartGame() => GetTree().ChangeSceneToPacked(_gameScene);
-
-  public void SaveGame() => throw new System.NotImplementedException();
-
-  public void LoadGame() => throw new System.NotImplementedException();
-
-  public void QuitApp() => GetTree().Quit();
-  #endregion
-
   #region Exports
   [Export]
   private PackedScene _gameScene = default!;
@@ -43,6 +27,14 @@ public partial class App : Node, IApp
   #endregion
 
   #region Nodes
+  [Node("%GameViewport")]
+  private ISubViewport GameViewPort { get; set; } = default!;
+
+  [Node("MainMenu")]
+  private IControl MainMenu { get; set; } = default!;
+
+  [Node("AnimationPlayer")]
+  private IAnimationPlayer AnimationPlayer { get; set; } = default!;
   #endregion
 
   #region Dependency Lifecycle
@@ -60,8 +52,14 @@ public partial class App : Node, IApp
 
     // Bind functions to state outputs here
     Binding
-      .Handle((in AppLogic.Output.StartGame _) => StartGame())
-      .Handle((in AppLogic.Output.QuitApp _) => QuitApp());
+      .Handle((in AppLogic.Output.CloseApplication _) => QuitApp())
+      .Handle((in AppLogic.Output.SetupGame _) => SetupGame())
+      .Handle((in AppLogic.Output.HideGame _) => GameViewPort.GetParent<Control>().Visible = false)
+      .Handle((in AppLogic.Output.RemoveGame _) => RemoveGame())
+      .Handle((in AppLogic.Output.ShowMainMenu _) => MainMenu.Visible = true)
+      .Handle((in AppLogic.Output.ShowGame _) => GameViewPort.GetParent<Control>().Visible = true)
+      .Handle((in AppLogic.Output.FadeIn _) => AnimationPlayer.Play("fade_in"))
+      .Handle((in AppLogic.Output.FadeOut _) => AnimationPlayer.Play("fade_out"));
 
     Logic.Start();
     this.Provide();
@@ -73,26 +71,48 @@ public partial class App : Node, IApp
 
   public void OnReady()
   {
-    SetProcess(true);
-    SetPhysicsProcess(true);
+    SetProcess(false);
+    SetPhysicsProcess(false);
+
+    AnimationPlayer.AnimationFinished += OnAnimationFinished;
   }
-
-  public void OnProcess(double delta) { }
-
-  public void OnPhysicsProcess(double delta) { }
 
   public void OnExitTree()
   {
+    AnimationPlayer.AnimationFinished -= OnAnimationFinished;
+
     Logic.Stop();
     Binding.Dispose();
   }
   #endregion
 
   #region Input Callbacks
+  private void OnAnimationFinished(StringName animName)
+  {
+    if (animName == "fade_out")
+    {
+      Logic.Input(new AppLogic.Input.FadeOutFinished());
+    }
+  }
   #endregion
 
   #region Output Callbacks
   #endregion
+
+  public void SetupGame()
+  {
+    var game = _gameScene.Instantiate();
+    GameViewPort.AddChildEx(game);
+  }
+
+  public void RemoveGame()
+  {
+    var game = GameViewPort.GetChild(1);
+    GameViewPort.RemoveChildEx(game);
+    game.QueueFree();
+  }
+
+  public void QuitApp() => GetTree().Quit();
 }
 
 public interface IAppLogic : ILogicBlock<AppLogic.State>;
@@ -101,35 +121,91 @@ public interface IAppLogic : ILogicBlock<AppLogic.State>;
 [LogicBlock(typeof(State), Diagram = true)]
 public partial class AppLogic : LogicBlock<AppLogic.State>, IAppLogic
 {
-  public override Transition GetInitialState() => To<State>();
+  public override Transition GetInitialState() => To<State.InMainMenu>();
 
-  public static class Input { }
+  public static class Input
+  {
+    public record struct NewGame;
+
+    public record struct BackToMainMenu;
+
+    public record struct QuitGame;
+
+    public record struct QuitApp;
+
+    public record struct FadeOutFinished;
+  }
 
   public static class Output
   {
-    public record struct StartGame;
+    public record struct SetupGame;
 
-    public record struct QuitApp;
+    public record struct ShowGame;
+
+    public record struct HideGame;
+
+    public record struct RemoveGame;
+
+    public record struct ShowMainMenu;
+
+    public record struct CloseApplication;
+
+    public record struct FadeIn;
+
+    public record struct FadeOut;
   }
 
-  public partial record State : StateLogic<State>
+  public abstract partial record State : StateLogic<State>, IGet<Input.QuitApp>
   {
     public State()
     {
-      OnAttach(() =>
-      {
-        Get<IAppRepo>().AppQuit += OnAppQuit;
-        Get<IAppRepo>().GameStarted += OnGameStarted;
-      });
-      OnDetach(() =>
-      {
-        Get<IAppRepo>().AppQuit -= OnAppQuit;
-        Get<IAppRepo>().GameStarted -= OnGameStarted;
-      });
+      OnAttach(() => Get<IAppRepo>().AppQuit += OnAppQuit);
+      OnDetach(() => Get<IAppRepo>().AppQuit -= OnAppQuit);
     }
 
-    private void OnGameStarted() => Output(new Output.StartGame());
+    public Transition On(in Input.QuitApp input) => To<ClosingApplication>();
 
-    private void OnAppQuit() => Output(new Output.QuitApp());
+    private void OnAppQuit() => Input(new Input.QuitApp()); // NOTE: Is this kosher?
+
+    public partial record InMainMenu : State, IGet<Input.NewGame>, IGet<Input.QuitApp>
+    {
+      public InMainMenu()
+      {
+        OnAttach(() => Output(new Output.ShowMainMenu()));
+        OnDetach(() => { });
+      }
+
+      Transition IGet<Input.QuitApp>.On(in Input.QuitApp input) => To<ClosingApplication>();
+
+      Transition IGet<Input.NewGame>.On(in Input.NewGame input) => To<InGame>();
+    }
+
+    public partial record InGame : State, IGet<Input.BackToMainMenu>, IGet<Input.QuitApp>
+    {
+      public InGame()
+      {
+        OnAttach(() => { });
+        OnDetach(() => { });
+      }
+
+      Transition IGet<Input.BackToMainMenu>.On(in Input.BackToMainMenu input) => To<InMainMenu>();
+
+      Transition IGet<Input.QuitApp>.On(in Input.QuitApp input) => To<ClosingApplication>();
+    }
+
+    public partial record ClosingApplication : State, IGet<Input.FadeOutFinished>
+    {
+      public ClosingApplication()
+      {
+        OnAttach(() => Output(new Output.FadeOut()));
+        OnDetach(() => { });
+      }
+
+      public Transition On(in Input.FadeOutFinished input)
+      {
+        Output(new Output.CloseApplication());
+        return ToSelf();
+      }
+    }
   }
 }
