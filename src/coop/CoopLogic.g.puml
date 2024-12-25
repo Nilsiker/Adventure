@@ -1,0 +1,3 @@
+@startuml CoopLogic
+state "CoopLogic State" as Shellguard_Coop_CoopLogic_State
+@enduml

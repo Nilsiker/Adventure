@@ -26,7 +26,7 @@ public partial class Egg : Area2D, IEgg
 
   #region Nodes
   [Node("%Sprite")]
-  Sprite2D Sprite { get; set; } = default!;
+  private Sprite2D Sprite { get; set; } = default!;
   #endregion
 
   public IEggLogic Logic { get; private set; } = default!;

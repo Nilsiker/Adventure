@@ -10,6 +10,12 @@ public partial class PlayerLogic
 
     public readonly record struct Disable;
 
-    public readonly record struct Move(Vector2 Direction);
+    public readonly record struct MoveInput(Vector2 Direction);
+
+    public readonly record struct AttackInput();
+
+    public readonly record struct InteractInput();
+
+    public readonly record struct AnimationFinished(StringName Animation);
   }
 }

@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://4jk657hlgd4t" path="res://src/rat/Rat.tscn" id="5_wqg76"]
 [ext_resource type="Texture2D" uid="uid://b2u7d00v8ka4n" path="res://src/tilemap/visuals/tilemap.png" id="6_a1vec"]
 [ext_resource type="Script" path="res://src/tilemap/Ground.cs" id="6_w00go"]
-[ext_resource type="Texture2D" uid="uid://c28wec0h5po4a" path="res://src/coop.png" id="8_ir73l"]
+[ext_resource type="PackedScene" uid="uid://ctqmgxbki7i03" path="res://src/coop/coop.tscn" id="8_j5ald"]
 [ext_resource type="Texture2D" uid="uid://qx536tka6pe4" path="res://src/chicken/visuals/eganta.png" id="9_gspk6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1toge"]
@@ -89,10 +89,7 @@ energy = 0.5
 shadow_color = Color(0.25, 0.1325, 0.1325, 0)
 texture = SubResource("GradientTexture2D_6w2od")
 
-[node name="Coop" type="Sprite2D" parent="."]
-position = Vector2(60, -48)
-texture = ExtResource("8_ir73l")
-offset = Vector2(0, -28.035)
+[node name="Coop" parent="." instance=ExtResource("8_j5ald")]
 
 [node name="Eganta" type="Sprite2D" parent="."]
 position = Vector2(46, -20)

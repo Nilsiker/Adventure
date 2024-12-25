@@ -1,18 +1,25 @@
 @startuml PlayerLogic
 state "PlayerLogic State" as Shellguard_Player_State_PlayerLogic_State {
+  state "Attacking" as Shellguard_Player_State_PlayerLogic_State_Attacking
   state "Disabled" as Shellguard_Player_State_PlayerLogic_State_Disabled
-  state "Enabled" as Shellguard_Player_State_PlayerLogic_State_Enabled
   state "Idle" as Shellguard_Player_State_PlayerLogic_State_Idle
   state "Moving" as Shellguard_Player_State_PlayerLogic_State_Moving
 }
 
+Shellguard_Player_State_PlayerLogic_State_Attacking --> Shellguard_Player_State_PlayerLogic_State_Attacking : AnimationFinished
+Shellguard_Player_State_PlayerLogic_State_Attacking --> Shellguard_Player_State_PlayerLogic_State_Idle : AnimationFinished
 Shellguard_Player_State_PlayerLogic_State_Disabled --> Shellguard_Player_State_PlayerLogic_State_Idle : Enable
-Shellguard_Player_State_PlayerLogic_State_Idle --> Shellguard_Player_State_PlayerLogic_State_Idle : Move
-Shellguard_Player_State_PlayerLogic_State_Idle --> Shellguard_Player_State_PlayerLogic_State_Moving : Move
-Shellguard_Player_State_PlayerLogic_State_Moving --> Shellguard_Player_State_PlayerLogic_State_Idle : Move
-Shellguard_Player_State_PlayerLogic_State_Moving --> Shellguard_Player_State_PlayerLogic_State_Moving : Move
+Shellguard_Player_State_PlayerLogic_State_Idle --> Shellguard_Player_State_PlayerLogic_State_Attacking : AttackInput
+Shellguard_Player_State_PlayerLogic_State_Idle --> Shellguard_Player_State_PlayerLogic_State_Idle : MoveInput
+Shellguard_Player_State_PlayerLogic_State_Idle --> Shellguard_Player_State_PlayerLogic_State_Moving : MoveInput
+Shellguard_Player_State_PlayerLogic_State_Moving --> Shellguard_Player_State_PlayerLogic_State_Attacking : AttackInput
+Shellguard_Player_State_PlayerLogic_State_Moving --> Shellguard_Player_State_PlayerLogic_State_Idle : MoveInput
+Shellguard_Player_State_PlayerLogic_State_Moving --> Shellguard_Player_State_PlayerLogic_State_Moving : MoveInput
 
-Shellguard_Player_State_PlayerLogic_State_Moving : OnMove → Movement
+Shellguard_Player_State_PlayerLogic_State_Attacking : OnEnter → AnimationChanged, FaceDirectionChanged
+Shellguard_Player_State_PlayerLogic_State_Idle : OnEnter → AnimationChanged
+Shellguard_Player_State_PlayerLogic_State_Moving : OnEnter → AnimationChanged
+Shellguard_Player_State_PlayerLogic_State_Moving : OnMoveInput → FaceDirectionChanged, Movement
 
 [*] --> Shellguard_Player_State_PlayerLogic_State_Idle
 @enduml

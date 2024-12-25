@@ -12,6 +12,14 @@ public interface IPlayer : ICharacterBody2D { }
 [Meta(typeof(IAutoNode))]
 public partial class Player : CharacterBody2D, IPlayer
 {
+  #region Exports
+  [Export]
+  private float _speed = 100.0f;
+
+  [Export]
+  private PackedScene _bonk;
+  #endregion
+
   #region State
   private PlayerLogic Logic { get; set; } = default!;
   private PlayerLogic.IBinding Binding { get; set; } = default!;
@@ -19,65 +27,51 @@ public partial class Player : CharacterBody2D, IPlayer
 
   #region Nodes
   [Node("%Weapon")]
-  private Weapon Weapon { get; set; } = default!;
+  private IWeapon Weapon { get; set; } = default!;
 
-  [Node("StateLabel")]
-  Label StateLabel { get; set; } = default!;
+  [Node("%AnimationPlayer")]
+  private IAnimationPlayer AnimationPlayer { get; set; } = default!;
 
-  [Node("PlayerModel/AnimationPlayer")]
-  AnimationPlayer AnimationPlayer { get; set; } = default!;
+  [Node("%Sprite2D")]
+  private Sprite2D Sprite { get; set; } = default!;
   #endregion
-  public override void _Notification(int what) => this.Notify(what);
 
-  [Export]
-  private float _speed = 100.0f;
-
-  [Export]
-  private PackedScene _bonk;
-
+  #region Dependency Lifecycle
   public void Setup() => Logic = new();
 
   public void OnResolved()
   {
-    Binding = Logic.Bind();
-    Binding.When<PlayerLogic.State>(state => StateLabel.Text = state.GetType().Name);
-    Binding.Handle((in PlayerLogic.Output.Movement output) => OnMovementOutput(output));
+    Logic.Set(Weapon);
+    Logic.Set(AnimationPlayer);
+    Logic.Set(new PlayerLogic.Data(_speed));
 
+    Binding = Logic.Bind();
+    Binding
+      .Handle((in PlayerLogic.Output.Movement output) => OnMovementOutput(output.Velocity))
+      .Handle((in PlayerLogic.Output.Attack output) => OnAttackOutput(output.Direction))
+      .Handle(
+        (in PlayerLogic.Output.FaceDirectionChanged output) =>
+          OnFaceDirectionChangedOutput(output.FaceDirection)
+      )
+      .Handle(
+        (in PlayerLogic.Output.AnimationChanged output) => OnAnimationChanged(output.Animation)
+      );
     Logic.Start();
   }
+  #endregion
+
+
+  #region Godot Lifecycle
+  public override void _Notification(int what) => this.Notify(what);
+
+  public override void _Ready() =>
+    AnimationPlayer.AnimationFinished += OnAnimationPlayerAnimationFinished;
 
   public override void _PhysicsProcess(double delta)
   {
-    var velocity = Velocity;
+    Logic.Input(new PlayerLogic.Input.MoveInput(Input.GetVector("left", "right", "up", "down")));
 
-    // Get the input direction and handle the movement/deceleration.
-    // As good practice, you should replace UI actions with custom gameplay actions.
-    var direction = Input.GetVector("left", "right", "up", "down");
-    velocity =
-      direction != Vector2.Zero ? direction * _speed : Velocity.MoveToward(Vector2.Zero, _speed);
-
-    Logic.Input(new PlayerLogic.Input.Move(velocity));
-
-    // Aim weapon
-    Weapon.Aim(GetGlobalMousePosition());
-    if (AnimationPlayer.CurrentAnimation == "hammer")
-    {
-      return;
-    }
-
-    if (direction.IsZeroApprox())
-    {
-      AnimationPlayer.Play($"idle_s");
-    }
-    else
-    {
-      AnimationPlayer.Play($"run_s");
-      if (direction.X != 0)
-      {
-        GetNode<Sprite2D>("PlayerModel/Sprite2D").FlipH = direction.X > 0;
-      }
-    }
-
+    // Aim weapon (Go through logic?)
     Weapon.Aim(GetGlobalMousePosition());
   }
 
@@ -85,27 +79,51 @@ public partial class Player : CharacterBody2D, IPlayer
   {
     if (@event.IsActionPressed("attack"))
     {
-      Weapon.Attack();
-      AnimationPlayer.Play("hammer");
-
-      GetNode<Sprite2D>("PlayerModel/Sprite2D").FlipH =
-        GetNode<Node2D>("Weapon/Sprite2D").GlobalPosition > GlobalPosition;
+      Logic.Input(new PlayerLogic.Input.AttackInput());
+      GD.Print("Attacked");
     }
   }
 
-  public void OnExitTree()
+  public override void _ExitTree()
   {
+    base._ExitTree();
+
     Logic.Stop();
     Binding.Dispose();
-  }
 
-  private void OnMovementOutput(PlayerLogic.Output.Movement output)
+    AnimationPlayer.AnimationFinished -= OnAnimationPlayerAnimationFinished;
+  }
+  #endregion
+
+  #region Input Callbacks
+  private void OnAnimationPlayerAnimationFinished(StringName animName) =>
+    Logic.Input(new PlayerLogic.Input.AnimationFinished(animName));
+  #endregion
+
+  #region Output Callbacks
+  private void OnMovementOutput(Vector2 velocity)
   {
-    if (AnimationPlayer.CurrentAnimation == "hammer")
-    {
-      return;
-    }
-    Velocity = output.Velocity;
+    Velocity = velocity;
     MoveAndSlide();
   }
+
+  private void OnAttackOutput(Vector2 direction) => Weapon.Attack();
+
+  private void OnAnimationChanged(string animation) => AnimationPlayer.Play(animation);
+
+  private void OnFaceDirectionChangedOutput(PlayerLogic.FaceDirection faceDirection)
+  {
+    switch (faceDirection)
+    {
+      case PlayerLogic.FaceDirection.Left:
+        Sprite.FlipH = false;
+        break;
+      case PlayerLogic.FaceDirection.Right:
+        Sprite.FlipH = true;
+        break;
+      default:
+        break;
+    }
+  }
+  #endregion
 }

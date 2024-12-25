@@ -139,7 +139,7 @@ dotnet_style_collection_initializer = true:warning
 dotnet_style_explicit_tuple_names = true:warning
 dotnet_style_prefer_inferred_tuple_names = true:warning
 dotnet_style_prefer_inferred_anonymous_type_member_names = true:warning
-dotnet_style_prefer_auto_properties = true:warning
+dotnet_style_prefer_auto_properties = true:none
 dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
 dotnet_diagnostic.IDE0045.severity = suggestion
 dotnet_style_prefer_conditional_expression_over_return = true:suggestion
@@ -459,3 +459,6 @@ dotnet_diagnostic.CA1716.severity = none
 
 # IDE0055: Fix formatting, use csharpier instead
 dotnet_diagnostic.IDE0055.severity = none
+
+# IDE0032: Use auto property
+dotnet_diagnostic.IDE0032.severity = none

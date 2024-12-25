@@ -238,6 +238,7 @@ metadata/_aseprite_wizard_config_ = {
 metadata/_aseprite_wizard_source_file_hash_ = "41420c920ac3970b60ee1d342241ed58"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="PlayerModel"]
+unique_name_in_owner = true
 root_node = NodePath("../..")
 libraries = {
 "": SubResource("AnimationLibrary_lg582")
@@ -258,24 +259,7 @@ shape = SubResource("CapsuleShape2D_iscbd")
 [node name="Weapon" parent="." instance=ExtResource("4_diodw")]
 unique_name_in_owner = true
 position = Vector2(0, -5)
-
-[node name="StateLabel" type="Label" parent="."]
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -36.0
-offset_top = -53.0
-offset_right = 38.0
-offset_bottom = -30.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 6
-size_flags_vertical = 6
-text = "asdadasd"
-horizontal_alignment = 1
+_animation = "hammer"
 
 [node name="Footsteps" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_pv27v")

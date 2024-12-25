@@ -9,5 +9,10 @@ public interface IPlayerLogic : ILogicBlock<PlayerLogic.State>;
 [LogicBlock(typeof(State), Diagram = true)]
 public partial class PlayerLogic : LogicBlock<PlayerLogic.State>, IPlayerLogic
 {
+  public partial class Data(float speed)
+  {
+    public float Speed { get; set; } = speed;
+  }
+
   public override Transition GetInitialState() => To<State.Idle>();
 }

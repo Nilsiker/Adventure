@@ -7,8 +7,10 @@ using Godot;
 
 public interface IWeapon : IArea2D
 {
-  void Aim(Vector2 atPosition);
+  public string Animation { get; }
+  public Vector2 Direction { get; }
   void Attack();
+  void Aim(Vector2 atPosition);
 }
 
 [Meta(typeof(IAutoNode))]
@@ -16,14 +18,18 @@ public partial class Weapon : Area2D, IWeapon
 {
   public override void _Notification(int what) => this.Notify(what);
 
+  #region Exports
   [Export]
   private float _angleOffset;
+
+  [Export]
+  private string _animation;
+  #endregion
+
   #region State
   private WeaponLogic Logic { get; set; } = default!;
   private WeaponLogic.IBinding Binding { get; set; } = default!;
-
   #endregion
-
 
   public void Setup() => Logic = new WeaponLogic();
 
@@ -38,11 +44,16 @@ public partial class Weapon : Area2D, IWeapon
     Logic.Start();
   }
 
+  #region Interface
+  public Vector2 Direction => Vector2.FromAngle(GlobalRotation);
+  public string Animation => _animation;
+
+  public void Attack() => Logic.Input(new WeaponLogic.Input.QueueAttack());
+
   public void Aim(Vector2 atPosition)
   {
     var direct_angle = GlobalPosition.DirectionTo(atPosition).Angle();
     GlobalRotation = direct_angle + Mathf.DegToRad(_angleOffset);
   }
-
-  public void Attack() => Logic.Input(new WeaponLogic.Input.QueueAttack());
+  #endregion
 }

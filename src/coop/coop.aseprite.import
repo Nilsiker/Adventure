@@ -1,0 +1,16 @@
+[remap]
+
+importer="aseprite_wizard.plugin.static-texture"
+type="AtlasTexture"
+uid="uid://c0gfso138s1io"
+path="res://.godot/imported/coop.aseprite-3587fa50bf66da2cfe5e78e2ce79a7a1.res"
+
+[deps]
+
+source_file="res://src/coop/coop.aseprite"
+dest_files=["res://.godot/imported/coop.aseprite-3587fa50bf66da2cfe5e78e2ce79a7a1.res"]
+
+[params]
+
+exclude_layers_pattern=""
+only_visible_layers=false
