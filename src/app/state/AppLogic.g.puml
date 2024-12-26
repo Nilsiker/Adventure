@@ -1,0 +1,25 @@
+@startuml AppLogic
+state "AppLogic State" as Shellguard_AppLogic_State {
+  state "BlackingOut" as Shellguard_AppLogic_State_BlackingOut
+  state "ClosingApplication" as Shellguard_AppLogic_State_ClosingApplication
+  state "InGame" as Shellguard_AppLogic_State_InGame
+  state "InMainMenu" as Shellguard_AppLogic_State_InMainMenu
+  state "StartingGame" as Shellguard_AppLogic_State_StartingGame
+}
+
+Shellguard_AppLogic_State --> Shellguard_AppLogic_State_BlackingOut : QuitApp
+Shellguard_AppLogic_State_BlackingOut --> Shellguard_AppLogic_State_ClosingApplication : BlackoutFinished
+Shellguard_AppLogic_State_BlackingOut --> Shellguard_AppLogic_State_InMainMenu : BlackoutFinished
+Shellguard_AppLogic_State_BlackingOut --> Shellguard_AppLogic_State_StartingGame : BlackoutFinished
+Shellguard_AppLogic_State_InGame --> Shellguard_AppLogic_State_BlackingOut : BackToMainMenu
+Shellguard_AppLogic_State_InGame --> Shellguard_AppLogic_State_BlackingOut : QuitApp
+Shellguard_AppLogic_State_InMainMenu --> Shellguard_AppLogic_State_BlackingOut : NewGame
+Shellguard_AppLogic_State_StartingGame --> Shellguard_AppLogic_State_InGame : GameReady
+
+Shellguard_AppLogic_State_BlackingOut : None → Blackout
+Shellguard_AppLogic_State_ClosingApplication : None → CloseApplication
+Shellguard_AppLogic_State_InGame : None → FadeIn, HideMainMenu, SetupGame, ShowGame
+Shellguard_AppLogic_State_InMainMenu : None → FadeIn, HideMainMenu, RemoveGame, ShowMainMenu
+
+[*] --> Shellguard_AppLogic_State_InMainMenu
+@enduml

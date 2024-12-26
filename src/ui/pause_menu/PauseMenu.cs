@@ -1,5 +1,6 @@
 namespace Shellguard.UI;
 
+using System;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
@@ -67,18 +68,20 @@ public partial class PauseMenu : Control, IPauseMenu
     GD.Print(ResumeButton);
     ResumeButton.Pressed += OnResumeButtonPressed;
     QuitToMainMenuButton.Pressed += OnQuitMainMenuButtonPressed;
+    QuitToDesktopButton.Pressed += OnQuitToDesktopButtonPressed;
   }
 
   public void OnExitTree()
   {
     ResumeButton.Pressed -= OnResumeButtonPressed;
     QuitToMainMenuButton.Pressed -= OnQuitMainMenuButtonPressed;
+    QuitToDesktopButton.Pressed -= OnQuitToDesktopButtonPressed;
 
     Logic.Stop();
     Binding.Dispose();
   }
-
   #endregion
+
 
 
   #region Input Callbacks
@@ -86,6 +89,10 @@ public partial class PauseMenu : Control, IPauseMenu
 
   private void OnQuitMainMenuButtonPressed() =>
     Logic.Input(new PauseMenuLogic.Input.QuitToMainMenu());
+
+  private void OnQuitToDesktopButtonPressed() =>
+    Logic.Input(new PauseMenuLogic.Input.QuitToDesktop());
+
   #endregion
 
   #region Output Callbacks
@@ -116,7 +123,11 @@ public partial class PauseMenuLogic : LogicBlock<PauseMenuLogic.State>, IPauseMe
     public partial record struct VisibilityChanged(bool Visible);
   }
 
-  public partial record State : StateLogic<State>, IGet<Input.QuitToMainMenu>, IGet<Input.Resume>
+  public partial record State
+    : StateLogic<State>,
+      IGet<Input.QuitToMainMenu>,
+      IGet<Input.Resume>,
+      IGet<Input.QuitToDesktop>
   {
     public State()
     {
@@ -141,6 +152,12 @@ public partial class PauseMenuLogic : LogicBlock<PauseMenuLogic.State>, IPauseMe
     public Transition On(in Input.Resume input)
     {
       Get<IGameRepo>().Resume();
+      return ToSelf();
+    }
+
+    public Transition On(in Input.QuitToDesktop input)
+    {
+      Get<IAppRepo>().QuitApp();
       return ToSelf();
     }
 

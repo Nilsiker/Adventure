@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwmyhyib01v2r"
-path="res://.godot/imported/rat.png-7e5d03b2d041394ba5c1a779f1566d5d.ctex"
+uid="uid://dcqum2hakssii"
+path="res://.godot/imported/fence.png-2f629fb1d330ccb64eafe4c6161c69f2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://src/rat/visuals/rat.png"
-dest_files=["res://.godot/imported/rat.png-7e5d03b2d041394ba5c1a779f1566d5d.ctex"]
+source_file="res://src/fence.png"
+dest_files=["res://.godot/imported/fence.png-2f629fb1d330ccb64eafe4c6161c69f2.ctex"]
 
 [params]
 

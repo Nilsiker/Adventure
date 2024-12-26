@@ -3,8 +3,8 @@ namespace Shellguard;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
-using Chickensoft.LogicBlocks;
 using Godot;
+using Shellguard.Game;
 
 public interface IApp : INode, IProvide<IAppRepo>;
 
@@ -35,6 +35,8 @@ public partial class App : Node, IApp
 
   [Node("AnimationPlayer")]
   private IAnimationPlayer AnimationPlayer { get; set; } = default!;
+
+  private IGame Game { get; set; } = default!;
   #endregion
 
   #region Dependency Lifecycle
@@ -66,7 +68,7 @@ public partial class App : Node, IApp
           GD.Print("fadein");
         }
       )
-      .Handle((in AppLogic.Output.FadeOut _) => AnimationPlayer.Play("fade_out"));
+      .Handle((in AppLogic.Output.Blackout _) => AnimationPlayer.Play("fade_out"));
 
     Logic.Start();
     this.Provide();
@@ -98,7 +100,7 @@ public partial class App : Node, IApp
   {
     if (animName == "fade_out")
     {
-      Logic.Input(new AppLogic.Input.FadeOutFinished());
+      Logic.Input(new AppLogic.Input.BlackoutFinished());
     }
   }
 
@@ -116,6 +118,11 @@ public partial class App : Node, IApp
 
   public void OnRemoveGame()
   {
+    if (GameContainer.GetChildCount() == 0)
+    {
+      return;
+    }
+
     var game = GameContainer.GetChild(0); // TODO this is called on every Main Menu state, and causes error on first app laod.
     GameContainer.RemoveChildEx(game);
     game.QueueFree();
@@ -123,47 +130,4 @@ public partial class App : Node, IApp
 
   public void OnQuitApp() => GetTree().Quit();
   #endregion
-}
-
-public interface IAppLogic : ILogicBlock<AppLogic.State>;
-
-[Meta]
-[LogicBlock(typeof(State), Diagram = true)]
-public partial class AppLogic : LogicBlock<AppLogic.State>, IAppLogic
-{
-  public override Transition GetInitialState() => To<State.InMainMenu>();
-
-  public static class Input
-  {
-    public record struct NewGame;
-
-    public record struct BackToMainMenu;
-
-    public record struct QuitGame;
-
-    public record struct QuitApp;
-
-    public record struct FadeOutFinished;
-  }
-
-  public static class Output
-  {
-    public record struct SetupGame;
-
-    public record struct ShowGame;
-
-    public record struct HideGame;
-
-    public record struct RemoveGame;
-
-    public record struct ShowMainMenu;
-
-    public record struct HideMainMenu;
-
-    public record struct CloseApplication;
-
-    public record struct FadeIn;
-
-    public record struct FadeOut;
-  }
 }

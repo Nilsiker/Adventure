@@ -1,0 +1,4 @@
+@startuml SaveNotificationLogic
+state "SaveNotificationLogic State" as Shellguard_UI_SaveNotificationLogic_State
+[*] --> Shellguard_UI_SaveNotificationLogic_State
+@enduml

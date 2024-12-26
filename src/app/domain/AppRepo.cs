@@ -2,11 +2,21 @@ namespace Shellguard;
 
 using System;
 
+public enum EPostBlackoutAction
+{
+  StartNewGame,
+  LoadExistingGame,
+  GoToMainMenu,
+  QuitApp,
+}
+
 public interface IAppRepo : IDisposable
 {
   event Action? GameStarted;
   event Action? MainMenuRequested;
   event Action? AppQuit;
+
+  public EPostBlackoutAction PostBlackoutAction { get; set; }
 
   void StartGame();
   void RequestMainMenu();
@@ -15,6 +25,8 @@ public interface IAppRepo : IDisposable
 
 public partial class AppRepo : IAppRepo
 {
+  public EPostBlackoutAction PostBlackoutAction { get; set; }
+
   public event Action? GameStarted;
   public event Action? MainMenuRequested;
   public event Action? AppQuit;
@@ -25,7 +37,12 @@ public partial class AppRepo : IAppRepo
 
   public void QuitApp() => AppQuit?.Invoke();
 
-  public void Dispose(bool disposing) { }
+  public void Dispose(bool disposing)
+  {
+    GameStarted = null;
+    MainMenuRequested = null;
+    AppQuit = null;
+  }
 
   public void Dispose()
   {

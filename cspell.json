@@ -14,9 +14,9 @@
     "addons/**/*.*"
   ],
   "words": [
-    "Aseprite",
     "Andreas",
     "animatable",
+    "Aseprite",
     "assemblyfilters",
     "automerge",
     "binutils",
@@ -65,6 +65,8 @@
     "OPTOUT",
     "paramref",
     "pascalcase",
+    "quickload",
+    "quicksave",
     "randomizer",
     "raymarch",
     "renovatebot",

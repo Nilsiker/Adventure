@@ -1,6 +1,7 @@
 @startuml PauseMenuLogic
 state "PauseMenuLogic State" as Shellguard_UI_PauseMenuLogic_State
 
+Shellguard_UI_PauseMenuLogic_State --> Shellguard_UI_PauseMenuLogic_State : QuitToDesktop
 Shellguard_UI_PauseMenuLogic_State --> Shellguard_UI_PauseMenuLogic_State : QuitToMainMenu
 Shellguard_UI_PauseMenuLogic_State --> Shellguard_UI_PauseMenuLogic_State : Resume
 

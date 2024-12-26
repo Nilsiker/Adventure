@@ -1,0 +1,16 @@
+[remap]
+
+importer="aseprite_wizard.plugin.static-texture"
+type="AtlasTexture"
+uid="uid://dqaivglq088cs"
+path="res://.godot/imported/fence.aseprite-100faa5742f055d431457ec9d1c9680e.res"
+
+[deps]
+
+source_file="res://src/fence.aseprite"
+dest_files=["res://.godot/imported/fence.aseprite-100faa5742f055d431457ec9d1c9680e.res"]
+
+[params]
+
+exclude_layers_pattern=""
+only_visible_layers=false
