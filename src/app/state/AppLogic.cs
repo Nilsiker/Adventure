@@ -28,6 +28,8 @@ public partial class AppLogic : LogicBlock<AppLogic.State>, IAppLogic
     public record struct BlackoutFinished;
 
     public record struct GameReady;
+
+    public record struct ScanForGameFile;
   }
 
   public static class Output

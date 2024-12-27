@@ -13,6 +13,7 @@ public partial class AppLogic
           Output(new Output.FadeIn());
           Output(new Output.ShowMainMenu());
           Output(new Output.RemoveGame());
+          Get<IAppRepo>().ScanForGameFile();
         });
         OnDetach(() => Output(new Output.HideMainMenu()));
       }

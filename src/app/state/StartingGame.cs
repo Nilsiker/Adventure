@@ -1,5 +1,7 @@
 namespace Shellguard;
 
+using System;
+
 public partial class AppLogic
 {
   public abstract partial record State
@@ -8,7 +10,17 @@ public partial class AppLogic
     {
       public StartingGame()
       {
-        OnAttach(() => Input(new Input.GameReady()));
+        OnAttach(() =>
+        {
+          if (false) // TODO check for existing game? Maybe this shouldnt live here
+          {
+            throw new NotImplementedException();
+          }
+          else
+          {
+            Input(new Input.GameReady());
+          }
+        });
         OnDetach(() => { });
       }
 

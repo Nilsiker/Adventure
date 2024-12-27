@@ -43,10 +43,8 @@ public partial class Game : Node2D, IGame
   [Signal]
   public delegate void SaveFileLoadedEventHandler();
   public JsonSerializerOptions JsonOptions { get; set; } = default!;
-  public const string SAVE_FILE_NAME = "game.json";
   public IFileSystem FileSystem { get; set; } = default!;
   public IEnvironmentProvider Environment { get; set; } = default!;
-  public string SaveFilePath { get; set; } = default!;
   public EntityTable EntityTable { get; set; } = new();
 
   public ISaveFile<GameData> SaveFile { get; set; } = default!;
@@ -72,7 +70,6 @@ public partial class Game : Node2D, IGame
   public void Setup()
   {
     FileSystem = new FileSystem();
-    SaveFilePath = FileSystem.Path.Join(OS.GetUserDataDir(), SAVE_FILE_NAME);
     var resolver = new SerializableTypeResolver();
     // Tell our type type resolver about the Godot-specific converters.
     GodotSerialization.Setup();
@@ -98,18 +95,18 @@ public partial class Game : Node2D, IGame
       onSave: async (GameData data) =>
       {
         var json = JsonSerializer.Serialize(data, JsonOptions);
-        await FileSystem.File.WriteAllTextAsync(SaveFilePath, json);
+        await FileSystem.File.WriteAllTextAsync(AppRepo.SAVE_FILE_PATH, json);
       },
       onLoad: async () =>
       {
         // Load the game data from disk.
-        if (!FileSystem.File.Exists(SaveFilePath))
+        if (!FileSystem.File.Exists(AppRepo.SAVE_FILE_PATH))
         {
           GD.Print("No save file to load :'(");
           return null;
         }
 
-        var json = await FileSystem.File.ReadAllTextAsync(SaveFilePath);
+        var json = await FileSystem.File.ReadAllTextAsync(AppRepo.SAVE_FILE_PATH);
         return JsonSerializer.Deserialize<GameData>(json, JsonOptions);
       }
     );
