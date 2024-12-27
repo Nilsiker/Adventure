@@ -36,7 +36,6 @@ public partial class Weapon : Area2D, IWeapon
   public void OnResolved()
   {
     Binding = Logic.Bind();
-    Binding.Handle((in WeaponLogic.Output.Swing _) => GD.Print("Swing!"));
     Binding.Handle(
       (in WeaponLogic.Output.CheckForDamageables output) => Monitoring = output.Monitoring
     );

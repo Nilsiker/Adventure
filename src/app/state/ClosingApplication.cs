@@ -1,7 +1,5 @@
 namespace Shellguard;
 
-using Godot;
-
 public partial class AppLogic
 {
   public abstract partial record State

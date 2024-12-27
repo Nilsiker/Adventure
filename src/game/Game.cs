@@ -116,7 +116,6 @@ public partial class Game : Node2D, IGame
 
     Binding = Logic.Bind();
 
-    Binding.When<GameLogic.State>(state => GD.Print(state.ToString()));
     Binding.Handle((in GameLogic.Output.SetPauseMode output) => SetGamePaused(output.IsPaused));
 
     this.Provide();
@@ -135,7 +134,6 @@ public partial class Game : Node2D, IGame
   {
     if (Input.IsActionJustPressed(Inputs.Esc))
     {
-      GD.Print("esc");
       Logic.Input(new GameLogic.Input.PauseButtonPressed());
     }
     else if (Input.IsActionJustPressed(Inputs.Quicksave))

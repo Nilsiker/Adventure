@@ -47,7 +47,6 @@ public partial class MainMenu : Control, IMainMenu
     OptionsButton.Pressed += OnOptionsButtonPressed;
     CreditsButton.Pressed += OnCreditsButtonPressed;
     QuitButton.Pressed += OnQuitButtonPressed;
-    GD.Print(AppRepo);
   }
   #endregion
 

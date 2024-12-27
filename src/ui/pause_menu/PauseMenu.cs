@@ -65,7 +65,6 @@ public partial class PauseMenu : Control, IPauseMenu
 
   public void OnReady()
   {
-    GD.Print(ResumeButton);
     ResumeButton.Pressed += OnResumeButtonPressed;
     QuitToMainMenuButton.Pressed += OnQuitMainMenuButtonPressed;
     QuitToDesktopButton.Pressed += OnQuitToDesktopButtonPressed;

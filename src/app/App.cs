@@ -65,7 +65,6 @@ public partial class App : Node, IApp
         (in AppLogic.Output.FadeIn _) =>
         {
           AnimationPlayer.Play("fade_in");
-          GD.Print("fadein");
         }
       )
       .Handle((in AppLogic.Output.Blackout _) => AnimationPlayer.Play("fade_out"));
