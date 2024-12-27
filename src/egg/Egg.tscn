@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c3ntb3vrkivf6"]
 
 [ext_resource type="Script" path="res://src/egg/Egg.cs" id="1_olk00"]
-[ext_resource type="Texture2D" uid="uid://csffj5wtqupt4" path="res://src/egg/visuals/egg.png" id="2_d2p2y"]
+[ext_resource type="Texture2D" uid="uid://csffj5wtqupt4" path="res://assets/aseprite/egg.png" id="2_d2p2y"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_m5kh0"]
 radius = 3.0
