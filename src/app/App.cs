@@ -123,7 +123,7 @@ public partial class App : Node, IApp
       return;
     }
 
-    var game = GameContainer.GetChild(0); // TODO this is called on every Main Menu state, and causes error on first app laod.
+    var game = GameContainer.GetChild(0);
     GameContainer.RemoveChildEx(game);
     game.QueueFree();
   }
