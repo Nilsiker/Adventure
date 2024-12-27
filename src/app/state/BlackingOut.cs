@@ -16,7 +16,7 @@ public partial class AppLogic
         Get<IAppRepo>().PostBlackoutAction switch
         {
           EPostBlackoutAction.StartNewGame => To<StartingGame>(),
-          EPostBlackoutAction.LoadExistingGame => throw new System.NotImplementedException(),
+          EPostBlackoutAction.LoadExistingGame => To<LoadingGame>(),
           EPostBlackoutAction.QuitApp => To<ClosingApplication>(),
           EPostBlackoutAction.GoToMainMenu => To<InMainMenu>(),
           _ => To<InMainMenu>(),

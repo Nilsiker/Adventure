@@ -3,7 +3,9 @@ namespace Shellguard.Player;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
+using Chickensoft.SaveFileBuilder;
 using Godot;
+using Shellguard.Game;
 using Shellguard.Player.State;
 using Shellguard.Weapon;
 
@@ -23,6 +25,8 @@ public partial class Player : CharacterBody2D, IPlayer
   #region State
   private PlayerLogic Logic { get; set; } = default!;
   private PlayerLogic.IBinding Binding { get; set; } = default!;
+  private ISaveChunk<PlayerData> PlayerChunk { get; set; } = default!;
+
   #endregion
 
   #region Nodes
@@ -36,12 +40,39 @@ public partial class Player : CharacterBody2D, IPlayer
   private Sprite2D Sprite { get; set; } = default!;
   #endregion
 
+  #region Dependencies
+  [Dependency]
+  private ISaveChunk<GameData> GameChunk => this.DependOn<ISaveChunk<GameData>>();
+  #endregion
+
 
   #region Dependency Lifecycle
-  public void Setup() => Logic = new();
+  public void Setup()
+  {
+    Logic = new();
+
+    PlayerChunk = new SaveChunk<PlayerData>(
+      onSave: (chunk) =>
+        new PlayerData()
+        {
+          GlobalTransform = GlobalTransform,
+          StateMachine = Logic,
+          Velocity = Velocity,
+        },
+      onLoad: (chunk, data) =>
+      {
+        GlobalTransform = data.GlobalTransform;
+        Velocity = data.Velocity;
+        Logic.RestoreFrom(data.StateMachine);
+        Logic.Start();
+      }
+    );
+  }
 
   public void OnResolved()
   {
+    GameChunk.AddChunk(PlayerChunk);
+
     Logic.Set(Weapon);
     Logic.Set(AnimationPlayer);
     Logic.Set(new PlayerLogic.Data(_speed));

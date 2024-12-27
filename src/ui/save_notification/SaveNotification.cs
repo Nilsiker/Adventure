@@ -63,6 +63,8 @@ public partial class SaveNotification : TextureRect, ITextureRect
 
   private void OnGameSaving()
   {
+    GD.Print("Saving");
+
     Texture = _savingTexture;
     AnimationPlayer.Play("blink");
   }

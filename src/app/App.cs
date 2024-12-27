@@ -56,6 +56,7 @@ public partial class App : Node, IApp
     Binding
       .Handle((in AppLogic.Output.CloseApplication _) => OnQuitApp())
       .Handle((in AppLogic.Output.SetupGame _) => OnSetupGame())
+      .Handle((in AppLogic.Output.LoadGame _) => OnLoadGame())
       .Handle((in AppLogic.Output.HideGame _) => GameContainer.Visible = false)
       .Handle((in AppLogic.Output.RemoveGame _) => OnRemoveGame())
       .Handle((in AppLogic.Output.ShowMainMenu _) => MainMenu.Visible = true)
@@ -67,6 +68,7 @@ public partial class App : Node, IApp
     Logic.Start();
     this.Provide();
   }
+
   #endregion
 
   #region Godot Lifecycle
@@ -106,9 +108,11 @@ public partial class App : Node, IApp
   #region Output Callbacks
   public void OnSetupGame()
   {
-    var game = _gameScene.Instantiate();
-    GameContainer.AddChildEx(game);
+    Game = _gameScene.Instantiate<IGame>();
+    GameContainer.AddChildEx(Game);
   }
+
+  private void OnLoadGame() => Game.RequestLoadGame();
 
   public void OnRemoveGame()
   {

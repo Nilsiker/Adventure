@@ -12,7 +12,6 @@ public partial class AppLogic
         {
           Get<IAppRepo>().MainMenuRequested += OnMainMenuRequested;
 
-          Output(new Output.SetupGame());
           Output(new Output.ShowGame());
           Output(new Output.HideMainMenu());
           Output(new Output.FadeIn());

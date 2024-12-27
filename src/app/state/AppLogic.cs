@@ -38,6 +38,8 @@ public partial class AppLogic : LogicBlock<AppLogic.State>, IAppLogic
 
     public record struct ShowGame;
 
+    public record struct LoadGame;
+
     public record struct HideGame;
 
     public record struct RemoveGame;

@@ -4,13 +4,14 @@ public partial class AppLogic
 {
   public abstract partial record State
   {
-    public partial record StartingGame : State, IGet<Input.GameReady>
+    public partial record LoadingGame : State, IGet<Input.GameReady>
     {
-      public StartingGame()
+      public LoadingGame()
       {
         OnAttach(() =>
         {
           Output(new Output.SetupGame());
+          Output(new Output.LoadGame());
           Input(new Input.GameReady());
         });
         OnDetach(() => { });
