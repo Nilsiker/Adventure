@@ -23,7 +23,7 @@ public partial class App : Node, IApp
   #endregion
 
   #region Provisions
-  public IAppRepo Value => AppRepo;
+  public IAppRepo Value() => AppRepo;
   #endregion
 
   #region Nodes

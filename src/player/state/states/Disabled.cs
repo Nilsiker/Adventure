@@ -6,7 +6,7 @@ public partial class PlayerLogic
   {
     public partial record Disabled : State, IGet<Input.Enable>
     {
-      public Transition On(in Input.Enable _) => To<Idle>();
+      public Transition On(in Input.Enable input) => To<Idle>();
     }
   }
 }

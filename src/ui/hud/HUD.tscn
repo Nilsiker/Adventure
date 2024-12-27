@@ -5,6 +5,21 @@
 [ext_resource type="Texture2D" uid="uid://x0i13u0461i8" path="res://_assets/game-icons/egg-eye.svg" id="2_jwynr"]
 [ext_resource type="Script" path="res://src/ui/save_notification/SaveNotification.cs" id="3_o2ueq"]
 
+[sub_resource type="Animation" id="Animation_0kxik"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
 [sub_resource type="Animation" id="Animation_ycnoi"]
 resource_name = "blink"
 loop_mode = 1
@@ -19,21 +34,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0.168627), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_0kxik"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_222hf"]

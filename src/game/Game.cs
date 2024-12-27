@@ -48,11 +48,10 @@ public partial class Game : Node2D, IGame
   public IEnvironmentProvider Environment { get; set; } = default!;
   public string SaveFilePath { get; set; } = default!;
   public EntityTable EntityTable { get; set; } = new();
-  EntityTable IProvide<EntityTable>.Value => EntityTable;
+
   public ISaveFile<GameData> SaveFile { get; set; } = default!;
   public ISaveChunk<GameData> GameChunk { get; set; } = default!;
 
-  ISaveChunk<GameData> IProvide<ISaveChunk<GameData>>.Value => GameChunk;
   #endregion
 
   #region State
@@ -62,7 +61,11 @@ public partial class Game : Node2D, IGame
   #endregion
 
   #region Provisions
-  public IGameRepo Value => GameRepo;
+  EntityTable IProvide<EntityTable>.Value() => EntityTable;
+
+  ISaveChunk<GameData> IProvide<ISaveChunk<GameData>>.Value() => GameChunk;
+
+  public IGameRepo Value() => GameRepo;
   #endregion
 
   #region Dependency Lifecycle

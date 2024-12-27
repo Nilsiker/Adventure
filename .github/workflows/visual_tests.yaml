@@ -1,7 +1,7 @@
 name: 🖼 Visual Tests
-# on:
-#   push:
-#   pull_request:
+on:
+  push:
+  pull_request:
 
 jobs:
   visual_tests:

@@ -23,7 +23,7 @@ public partial class Weapon : Area2D, IWeapon
   private float _angleOffset;
 
   [Export]
-  private string _animation;
+  private string _animation = default!;
   #endregion
 
   #region State
