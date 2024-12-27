@@ -26,15 +26,16 @@ public partial class Player : CharacterBody2D, IPlayer
   #endregion
 
   #region Nodes
-  [Node("%Weapon")]
-  private Weapon Weapon { get; set; } = default!;
+  [Node]
+  private IWeapon Weapon { get; set; } = default!;
 
-  [Node("%AnimationPlayer")]
+  [Node]
   private AnimationPlayer AnimationPlayer { get; set; } = default!;
 
-  [Node("%Sprite2D")]
+  [Node]
   private Sprite2D Sprite { get; set; } = default!;
   #endregion
+
 
   #region Dependency Lifecycle
   public void Setup() => Logic = new();

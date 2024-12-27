@@ -61,12 +61,7 @@ public partial class App : Node, IApp
       .Handle((in AppLogic.Output.ShowMainMenu _) => MainMenu.Visible = true)
       .Handle((in AppLogic.Output.HideMainMenu _) => MainMenu.Visible = false)
       .Handle((in AppLogic.Output.ShowGame _) => GameContainer.Visible = true)
-      .Handle(
-        (in AppLogic.Output.FadeIn _) =>
-        {
-          AnimationPlayer.Play("fade_in");
-        }
-      )
+      .Handle((in AppLogic.Output.FadeIn _) => AnimationPlayer.Play("fade_in"))
       .Handle((in AppLogic.Output.Blackout _) => AnimationPlayer.Play("fade_out"));
 
     Logic.Start();

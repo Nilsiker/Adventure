@@ -1,10 +1,10 @@
 @startuml AppLogic
 state "AppLogic State" as Shellguard_AppLogic_State {
-  state "InGame" as Shellguard_AppLogic_State_InGame
   state "BlackingOut" as Shellguard_AppLogic_State_BlackingOut
-  state "StartingGame" as Shellguard_AppLogic_State_StartingGame
   state "ClosingApplication" as Shellguard_AppLogic_State_ClosingApplication
+  state "InGame" as Shellguard_AppLogic_State_InGame
   state "InMainMenu" as Shellguard_AppLogic_State_InMainMenu
+  state "StartingGame" as Shellguard_AppLogic_State_StartingGame
 }
 
 Shellguard_AppLogic_State_BlackingOut --> Shellguard_AppLogic_State_ClosingApplication : BlackoutFinished
