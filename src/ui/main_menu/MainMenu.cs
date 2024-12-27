@@ -22,16 +22,16 @@ public partial class MainMenu : Control, IMainMenu
 
   #region Nodes
   [Node("%Play")]
-  private IButton PlayButton { get; set; } = default!;
+  private Button PlayButton { get; set; } = default!;
 
   [Node("%Options")]
-  private IButton OptionsButton { get; set; } = default!;
+  private Button OptionsButton { get; set; } = default!;
 
   [Node("%Credits")]
-  private IButton CreditsButton { get; set; } = default!;
+  private Button CreditsButton { get; set; } = default!;
 
   [Node("%Quit")]
-  private IButton QuitButton { get; set; } = default!;
+  private Button QuitButton { get; set; } = default!;
   #endregion
 
   #region Dependencies

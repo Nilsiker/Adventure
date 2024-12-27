@@ -31,10 +31,10 @@ public partial class App : Node, IApp
   private Node2D GameContainer { get; set; } = default!;
 
   [Node("%MainMenu")]
-  private IControl MainMenu { get; set; } = default!;
+  private Control MainMenu { get; set; } = default!;
 
   [Node("AnimationPlayer")]
-  private IAnimationPlayer AnimationPlayer { get; set; } = default!;
+  private AnimationPlayer AnimationPlayer { get; set; } = default!;
 
   private IGame Game { get; set; } = default!;
   #endregion

@@ -27,10 +27,10 @@ public partial class Player : CharacterBody2D, IPlayer
 
   #region Nodes
   [Node("%Weapon")]
-  private IWeapon Weapon { get; set; } = default!;
+  private Weapon Weapon { get; set; } = default!;
 
   [Node("%AnimationPlayer")]
-  private IAnimationPlayer AnimationPlayer { get; set; } = default!;
+  private AnimationPlayer AnimationPlayer { get; set; } = default!;
 
   [Node("%Sprite2D")]
   private Sprite2D Sprite { get; set; } = default!;

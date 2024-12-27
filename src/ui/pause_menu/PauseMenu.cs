@@ -31,16 +31,16 @@ public partial class PauseMenu : Control, IPauseMenu
 
   #region Nodes
   [Node("%Resume")]
-  private IButton ResumeButton { get; set; } = default!;
+  private Button ResumeButton { get; set; } = default!;
 
   [Node("%Options")]
-  private IButton OptionsButton { get; set; } = default!;
+  private Button OptionsButton { get; set; } = default!;
 
   [Node("%QuitToMainMenu")]
-  private IButton QuitToMainMenuButton { get; set; } = default!;
+  private Button QuitToMainMenuButton { get; set; } = default!;
 
   [Node("%QuitToDesktop")]
-  private IButton QuitToDesktopButton { get; set; } = default!;
+  private Button QuitToDesktopButton { get; set; } = default!;
   #endregion
 
   #region Dependency Lifecycle

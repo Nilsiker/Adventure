@@ -24,7 +24,7 @@ public partial class SaveNotification : TextureRect, ITextureRect
 
   #region Nodes
   [Node("AnimationPlayer")]
-  private IAnimationPlayer AnimationPlayer { get; set; } = default!;
+  private AnimationPlayer AnimationPlayer { get; set; } = default!;
   #endregion
 
   #region Dependency Lifecycle
