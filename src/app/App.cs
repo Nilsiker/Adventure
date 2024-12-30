@@ -54,16 +54,16 @@ public partial class App : Node, IApp
 
     // Bind functions to state outputs here
     Binding
-      .Handle((in AppLogic.Output.CloseApplication _) => OnQuitApp())
-      .Handle((in AppLogic.Output.SetupGame _) => OnSetupGame())
-      .Handle((in AppLogic.Output.LoadGame _) => OnLoadGame())
+      .Handle((in AppLogic.Output.CloseApplication _) => OnOutputQuitApp())
+      .Handle((in AppLogic.Output.SetupGame _) => OnOutputSetupGame())
+      .Handle((in AppLogic.Output.LoadGame _) => OnOutputLoadGame())
       .Handle((in AppLogic.Output.HideGame _) => GameContainer.Visible = false)
-      .Handle((in AppLogic.Output.RemoveGame _) => OnRemoveGame())
+      .Handle((in AppLogic.Output.RemoveGame _) => OnOutputRemoveGame())
       .Handle((in AppLogic.Output.ShowMainMenu _) => MainMenu.Visible = true)
       .Handle((in AppLogic.Output.HideMainMenu _) => MainMenu.Visible = false)
       .Handle((in AppLogic.Output.ShowGame _) => GameContainer.Visible = true)
       .Handle((in AppLogic.Output.FadeIn _) => AnimationPlayer.Play("fade_in"))
-      .Handle((in AppLogic.Output.Blackout _) => AnimationPlayer.Play("fade_out"));
+      .Handle((in AppLogic.Output.FadeOut _) => AnimationPlayer.Play("fade_out"));
 
     Logic.Start();
     this.Provide();
@@ -96,25 +96,27 @@ public partial class App : Node, IApp
   {
     if (animName == "fade_out")
     {
-      Logic.Input(new AppLogic.Input.BlackoutFinished());
+      Logic.Input(new AppLogic.Input.FadeOutFinished());
     }
   }
 
   private void NewGame() => Logic.Input(new AppLogic.Input.NewGame());
 
+  private void LoadGame() => Logic.Input(new AppLogic.Input.LoadGame());
+
   private void QuitApp() => Logic.Input(new AppLogic.Input.QuitApp());
   #endregion
 
   #region Output Callbacks
-  public void OnSetupGame()
+  public void OnOutputSetupGame()
   {
     Game = _gameScene.Instantiate<IGame>();
     GameContainer.AddChildEx(Game);
   }
 
-  private void OnLoadGame() => Game.RequestLoadGame();
+  private void OnOutputLoadGame() => Game.RequestLoadGame();
 
-  public void OnRemoveGame()
+  public void OnOutputRemoveGame()
   {
     if (GameContainer.GetChildCount() == 0)
     {
@@ -126,6 +128,6 @@ public partial class App : Node, IApp
     game.QueueFree();
   }
 
-  public void OnQuitApp() => GetTree().Quit();
+  public void OnOutputQuitApp() => GetTree().Quit();
   #endregion
 }

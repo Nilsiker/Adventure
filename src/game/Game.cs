@@ -84,7 +84,6 @@ public partial class Game : Node2D, IGame
       (chunk) =>
       {
         var gameData = new GameData() { PlayerData = chunk.GetChunkSaveData<PlayerData>() };
-
         return gameData;
       },
       onLoad: (chunk, data) => chunk.LoadChunkSaveData(data.PlayerData)
@@ -131,7 +130,7 @@ public partial class Game : Node2D, IGame
   #region Input Callbacks
   public void StartNewGame() => Logic.Input(new GameLogic.Input.StartGame());
 
-  public void RequestLoadGame() => Logic.Input(new GameLogic.Input.LoadRequested());
+  public void RequestLoadGame() => SaveFile.Load();
 
   public void RequestSaveGame() => Logic.Input(new GameLogic.Input.SaveRequested());
   #endregion
@@ -139,7 +138,8 @@ public partial class Game : Node2D, IGame
   #region Output Callbacks
   private void SetGamePaused(bool isPaused) => GetTree().Paused = isPaused;
 
-  private void OnStartSaving() => SaveFile.Save().ContinueWith(_ => GD.Print("hello"));
+  private void OnStartSaving() =>
+    SaveFile.Save().ContinueWith(_ => Logic.Input(new GameLogic.Input.SaveCompleted()));
   #endregion
 
   #region Godot Lifecycle

@@ -5,26 +5,19 @@ using System.IO;
 using Chickensoft.Collections;
 using Godot;
 
-public enum EPostBlackoutAction
-{
-  StartNewGame,
-  LoadExistingGame,
-  GoToMainMenu,
-  QuitApp,
-}
-
 public interface IAppRepo : IDisposable
 {
-  event Action? GameStarted;
+  IAutoProp<bool> HasExistingGame { get; }
+  event Action? StartGameRequested;
+  event Action? LoadGameRequested;
   event Action? MainMenuRequested;
-  event Action? AppQuit;
+  event Action? AppQuitRequested;
 
-  EPostBlackoutAction PostBlackoutAction { get; set; }
-  public IAutoProp<bool> HasExistingGame { get; }
   void ScanForGameFile();
-  void StartGame();
   void RequestMainMenu();
-  void QuitApp();
+  void RequestStartGame();
+  void RequestLoadGame();
+  void RequestQuitApp();
 }
 
 public partial class AppRepo : IAppRepo
@@ -34,33 +27,35 @@ public partial class AppRepo : IAppRepo
   public IAutoProp<bool> HasExistingGame => _hasExistingGame;
   private readonly AutoProp<bool> _hasExistingGame;
 
-  public EPostBlackoutAction PostBlackoutAction { get; set; }
-
-  public event Action? GameStarted;
   public event Action? MainMenuRequested;
-  public event Action? AppQuit;
+  public event Action? AppQuitRequested;
+  public event Action? StartGameRequested;
+  public event Action? LoadGameRequested;
 
   public AppRepo()
   {
     _hasExistingGame = new AutoProp<bool>(false);
   }
 
-  public void StartGame() => GameStarted?.Invoke();
+  public void ScanForGameFile() => _hasExistingGame.OnNext(File.Exists(SAVE_FILE_PATH));
 
   public void RequestMainMenu() => MainMenuRequested?.Invoke();
 
-  public void QuitApp() => AppQuit?.Invoke();
+  public void RequestStartGame() => StartGameRequested?.Invoke();
 
-  public void ScanForGameFile() => _hasExistingGame.OnNext(File.Exists(SAVE_FILE_PATH));
+  public void RequestLoadGame() => LoadGameRequested?.Invoke();
+
+  public void RequestQuitApp() => AppQuitRequested?.Invoke();
 
   public void Dispose(bool disposing)
   {
     _hasExistingGame.OnCompleted();
     _hasExistingGame.Dispose();
 
-    GameStarted = null;
     MainMenuRequested = null;
-    AppQuit = null;
+    AppQuitRequested = null;
+    StartGameRequested = null;
+    LoadGameRequested = null;
   }
 
   public void Dispose()

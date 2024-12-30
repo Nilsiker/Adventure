@@ -34,7 +34,7 @@ public partial class SaveNotification : TextureRect, ITextureRect
   {
     // Bind functions to state outputs here
     GameRepo.Saving += OnGameSaving;
-    GameRepo.Saved += OnGameSaved;
+    GameRepo.Saved += OnGameSavedDeferred;
   }
   #endregion
 
@@ -51,12 +51,16 @@ public partial class SaveNotification : TextureRect, ITextureRect
   public void OnExitTree()
   {
     GameRepo.Saving -= OnGameSaving;
-    GameRepo.Saved -= OnGameSaved;
+    GameRepo.Saved -= OnGameSavedDeferred;
   }
   #endregion
 
+
+  private void OnGameSavedDeferred() => CallDeferred(nameof(OnGameSaved));
+
   private void OnGameSaved()
   {
+    GD.Print("Saved");
     Texture = _savedTexture;
     AnimationPlayer.Play("fade_out");
   }

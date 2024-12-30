@@ -155,7 +155,7 @@ public partial class PauseMenuLogic : LogicBlock<PauseMenuLogic.State>, IPauseMe
 
     public Transition On(in Input.QuitToDesktop input)
     {
-      Get<IAppRepo>().QuitApp();
+      Get<IAppRepo>().RequestQuitApp();
       return ToSelf();
     }
 

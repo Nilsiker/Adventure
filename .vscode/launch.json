@@ -53,7 +53,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       "program": "${env:GODOT}",
-      "args": [],
+      "args": ["--verbose"],
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,
       "console": "integratedTerminal"

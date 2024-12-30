@@ -1,5 +1,7 @@
 namespace Shellguard;
 
+using Chickensoft.LogicBlocks;
+
 public partial class AppLogic
 {
   public abstract partial record State
@@ -8,13 +10,11 @@ public partial class AppLogic
     {
       public LoadingGame()
       {
-        OnAttach(() =>
+        this.OnEnter(() =>
         {
           Output(new Output.SetupGame());
           Output(new Output.LoadGame());
-          Input(new Input.GameReady());
         });
-        OnDetach(() => { });
       }
 
       public Transition On(in Input.GameReady input) => To<InGame>();

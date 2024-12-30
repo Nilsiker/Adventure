@@ -1,14 +1,16 @@
 namespace Shellguard;
 
+using Chickensoft.LogicBlocks;
+
 public partial class AppLogic
 {
   public abstract partial record State
   {
-    public partial record StartingGame : State, IGet<Input.GameReady>
+    public partial record StartingNewGame : State, IGet<Input.GameReady>
     {
-      public StartingGame()
+      public StartingNewGame()
       {
-        OnAttach(() =>
+        this.OnEnter(() =>
         {
           Output(new Output.SetupGame());
           Input(new Input.GameReady());

@@ -52,20 +52,8 @@ public partial class Player : CharacterBody2D, IPlayer
     Logic = new();
 
     PlayerChunk = new SaveChunk<PlayerData>(
-      onSave: (chunk) =>
-        new PlayerData()
-        {
-          GlobalTransform = GlobalTransform,
-          StateMachine = Logic,
-          Velocity = Velocity,
-        },
-      onLoad: (chunk, data) =>
-      {
-        GlobalTransform = data.GlobalTransform;
-        Velocity = data.Velocity;
-        Logic.RestoreFrom(data.StateMachine);
-        Logic.Start();
-      }
+      onSave: (chunk) => new PlayerData() { GlobalTransform = GlobalTransform },
+      onLoad: (chunk, data) => GlobalTransform = data.GlobalTransform
     );
   }
 

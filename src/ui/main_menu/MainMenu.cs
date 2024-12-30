@@ -18,6 +18,9 @@ public partial class MainMenu : Control, IMainMenu
   [Signal]
   public delegate void QuitPressedEventHandler();
 
+  [Signal]
+  public delegate void LoadPressedEventHandler();
+
   #endregion
 
   #region Nodes
@@ -84,7 +87,7 @@ public partial class MainMenu : Control, IMainMenu
   #region Signal Callbacks
   private void OnPlayButtonPressed() => EmitSignal(SignalName.PlayPressed);
 
-  private void OnLoadButtonPressed() => throw new NotImplementedException();
+  private void OnLoadButtonPressed() => EmitSignal(SignalName.LoadPressed);
 
   private void OnCreditsButtonPressed() => throw new NotImplementedException();
 
