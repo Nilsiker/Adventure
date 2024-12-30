@@ -3,35 +3,32 @@ namespace Shellguard.Save;
 using System.IO;
 using System.IO.Abstractions;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Chickensoft.Collections;
 using Chickensoft.SaveFileBuilder;
 using Chickensoft.Serialization;
 using Godot;
 using Shellguard.Game;
-using Shellguard.Player;
 
 public interface ISaveService
 {
-  ISaveFile<GameData> GetSaveFile();
-  ISaveChunk<GameData> GetGameChunk();
-  void SaveGame();
-  void LoadGame();
+  Task Save();
+  Task Load();
 }
-
-public class SaveOptions { }
 
 public class SaveService : ISaveService
 {
-  private string _saveFilePath = Path.Join(OS.GetUserDataDir(), "game.json");
-
+  private readonly string _saveFilePath;
   private readonly IFileSystem _fileSystem;
   private readonly JsonSerializerOptions _jsonOptions;
+  private readonly SaveFile<GameData> _saveFile;
 
-  public SaveService()
+  public SaveService(ISaveChunk<GameData> chunk)
   {
     var upgradeDependencies = new Blackboard();
     var resolver = new SerializableTypeResolver();
 
+    _saveFilePath = Path.Join(OS.GetUserDataDir(), "game.json");
     _fileSystem = new FileSystem();
     _jsonOptions = new JsonSerializerOptions
     {
@@ -39,23 +36,9 @@ public class SaveService : ISaveService
       TypeInfoResolver = resolver,
       WriteIndented = true,
     };
-  }
 
-  public ISaveChunk<GameData> GetGameChunk() =>
-    new SaveChunk<GameData>(
-      (chunk) =>
-      {
-        var gameData = new GameData() { PlayerData = chunk.GetChunkSaveData<PlayerData>() };
-        return gameData;
-      },
-      onLoad: (chunk, data) => chunk.LoadChunkSaveData(data.PlayerData)
-    );
-
-  public ISaveFile<GameData> GetSaveFile()
-  {
-    var gameChunk = GetGameChunk();
-    return new SaveFile<GameData>(
-      root: gameChunk,
+    _saveFile = new SaveFile<GameData>(
+      root: chunk,
       onSave: async (GameData data) =>
       {
         var json = JsonSerializer.Serialize(data, _jsonOptions);
@@ -76,7 +59,7 @@ public class SaveService : ISaveService
     );
   }
 
-  public void LoadGame() => throw new System.NotImplementedException();
+  public Task Load() => _saveFile.Load();
 
-  public void SaveGame() => throw new System.NotImplementedException();
+  public Task Save() => _saveFile.Save();
 }

@@ -2,6 +2,8 @@ namespace Shellguard.Game.Domain;
 
 using System;
 using Chickensoft.Collections;
+using Chickensoft.SaveFileBuilder;
+using Shellguard.Save;
 
 public interface IGameRepo : IDisposable
 {
@@ -10,32 +12,30 @@ public interface IGameRepo : IDisposable
 
   event Action? Saving;
   event Action? Saved;
-
+  event Action? Loading;
+  event Action? Loaded;
   void OnEggCollected();
 
   void Pause();
   void Resume();
   void RequestSave();
-  void OnSaved();
+  void RequestLoad();
 }
 
-public class GameRepo : IGameRepo
+public class GameRepo(ISaveChunk<GameData> chunk) : IGameRepo
 {
   public IAutoProp<int> EggsCollected => _eggsCollected;
 
   public IAutoProp<bool> IsPaused => _isPaused;
 
-  private readonly AutoProp<int> _eggsCollected;
-  private readonly AutoProp<bool> _isPaused;
+  private readonly AutoProp<int> _eggsCollected = new(0);
+  private readonly AutoProp<bool> _isPaused = new(false);
+  private readonly SaveService _saveService = new(chunk);
 
   public event Action? Saving;
   public event Action? Saved;
-
-  public GameRepo()
-  {
-    _eggsCollected = new AutoProp<int>(0);
-    _isPaused = new AutoProp<bool>(false);
-  }
+  public event Action? Loading;
+  public event Action? Loaded;
 
   public void Pause() => _isPaused.OnNext(true);
 
@@ -48,6 +48,11 @@ public class GameRepo : IGameRepo
 
     _isPaused.OnCompleted();
     _isPaused.Dispose();
+
+    Saving = null;
+    Saved = null;
+    Loading = null;
+    Loaded = null;
   }
 
   public void Dispose()
@@ -58,7 +63,15 @@ public class GameRepo : IGameRepo
 
   public void OnEggCollected() => _eggsCollected.OnNext(_eggsCollected.Value + 1);
 
-  public void RequestSave() => Saving?.Invoke();
+  public void RequestSave()
+  {
+    Saving?.Invoke();
+    _saveService.Save().ContinueWith((_) => Saved?.Invoke());
+  }
 
-  public void OnSaved() => Saved?.Invoke();
+  public void RequestLoad()
+  {
+    Loading?.Invoke();
+    _saveService.Load().ContinueWith((_) => Loaded?.Invoke());
+  }
 }

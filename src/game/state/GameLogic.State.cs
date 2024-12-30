@@ -42,7 +42,7 @@ public partial class GameLogic
 
     public Transition On(in Input.RequestLoad input)
     {
-      Get<IAppRepo>().RequestGameLoad();
+      Get<IGameRepo>().RequestLoad();
       return ToSelf();
     }
   }

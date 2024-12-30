@@ -1,27 +1,16 @@
 namespace Shellguard.Game;
 
-using System;
-using System.IO.Abstractions;
-using System.Text.Json;
 using Chickensoft.AutoInject;
-using Chickensoft.Collections;
 using Chickensoft.GoDotLog;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
 using Chickensoft.SaveFileBuilder;
-using Chickensoft.Serialization;
-using Chickensoft.Serialization.Godot;
 using Godot;
 using Shellguard.Game.Domain;
 using Shellguard.Game.State;
 using Shellguard.Player;
-using Shellguard.Save;
 
-public interface IGame
-  : INode2D,
-    IProvide<IGameRepo>,
-    IProvide<ISaveChunk<GameData>>,
-    IProvide<EntityTable>
+public interface IGame : INode2D, IProvide<IGameRepo>, IProvide<ISaveChunk<GameData>>
 {
   void StartNewGame();
   void RequestLoadGame();
@@ -34,14 +23,6 @@ public partial class Game : Node2D, IGame
   private readonly GDLog _log = new(nameof(Game));
 
   #region Save
-  [Signal]
-  public delegate void SaveFileLoadedEventHandler();
-  public JsonSerializerOptions JsonOptions { get; set; } = default!;
-  public IFileSystem FileSystem { get; set; } = default!;
-  public IEnvironmentProvider Environment { get; set; } = default!;
-  public EntityTable EntityTable { get; set; } = new();
-
-  public ISaveFile<GameData> SaveFile { get; set; } = default!;
   public ISaveChunk<GameData> GameChunk { get; set; } = default!;
 
   #endregion
@@ -53,8 +34,6 @@ public partial class Game : Node2D, IGame
   #endregion
 
   #region Provisions
-  EntityTable IProvide<EntityTable>.Value() => EntityTable;
-
   ISaveChunk<GameData> IProvide<ISaveChunk<GameData>>.Value() => GameChunk;
 
   public IGameRepo Value() => GameRepo;
@@ -63,8 +42,17 @@ public partial class Game : Node2D, IGame
   #region Dependency Lifecycle
   public void Setup()
   {
-    GameRepo = new GameRepo();
     Logic = new GameLogic();
+    GameChunk = new SaveChunk<GameData>(
+      (chunk) =>
+      {
+        var gameData = new GameData() { PlayerData = chunk.GetChunkSaveData<PlayerData>() };
+        return gameData;
+      },
+      onLoad: (chunk, data) => chunk.LoadChunkSaveData(data.PlayerData)
+    );
+
+    GameRepo = new GameRepo(GameChunk);
     Logic.Set(GameRepo);
   }
 
@@ -72,9 +60,7 @@ public partial class Game : Node2D, IGame
   {
     Binding = Logic.Bind();
 
-    Binding
-      .Handle((in GameLogic.Output.SetPauseMode output) => SetGamePaused(output.IsPaused))
-      .Handle((in GameLogic.Output.StartSaving output) => OnStartSaving());
+    Binding.Handle((in GameLogic.Output.SetPauseMode output) => SetGamePaused(output.IsPaused));
 
     this.Provide();
   }
@@ -91,9 +77,6 @@ public partial class Game : Node2D, IGame
 
   #region Output Callbacks
   private void SetGamePaused(bool isPaused) => GetTree().Paused = isPaused;
-
-  private void OnStartSaving() =>
-    SaveFile.Save().ContinueWith(_ => Logic.Input(new GameLogic.Input.SaveCompleted()));
   #endregion
 
   #region Godot Lifecycle
