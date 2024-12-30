@@ -15,6 +15,7 @@ using Godot;
 using Shellguard.Game.Domain;
 using Shellguard.Game.State;
 using Shellguard.Player;
+using Shellguard.Save;
 
 public interface IGame
   : INode2D,
@@ -65,57 +66,10 @@ public partial class Game : Node2D, IGame
     GameRepo = new GameRepo();
     Logic = new GameLogic();
     Logic.Set(GameRepo);
-
-    FileSystem = new FileSystem();
-    var resolver = new SerializableTypeResolver();
-    // Tell our type type resolver about the Godot-specific converters.
-    GodotSerialization.Setup();
-    var upgradeDependencies = new Blackboard();
-    // Create a standard JsonSerializerOptions with our introspective type
-    // resolver and the logic blocks converter.
-    JsonOptions = new JsonSerializerOptions
-    {
-      Converters = { new SerializableTypeConverter(upgradeDependencies) },
-      TypeInfoResolver = resolver,
-      WriteIndented = true,
-    };
-
-    GameChunk = new SaveChunk<GameData>(
-      (chunk) =>
-      {
-        var gameData = new GameData() { PlayerData = chunk.GetChunkSaveData<PlayerData>() };
-        return gameData;
-      },
-      onLoad: (chunk, data) => chunk.LoadChunkSaveData(data.PlayerData)
-    );
   }
 
   public void OnResolved()
   {
-    SaveFile = new SaveFile<GameData>(
-      root: GameChunk,
-      onSave: async (GameData data) =>
-      {
-        var json = JsonSerializer.Serialize(data, JsonOptions);
-        var jsonasAString = json.ToString();
-        await FileSystem.File.WriteAllTextAsync(AppRepo.SAVE_FILE_PATH, json);
-      },
-      onLoad: async () =>
-      {
-        // Load the game data from disk.
-        if (!FileSystem.File.Exists(AppRepo.SAVE_FILE_PATH))
-        {
-          GD.Print("No save file to load :'(");
-          return null;
-        }
-
-        var json = await FileSystem.File.ReadAllTextAsync(AppRepo.SAVE_FILE_PATH);
-        return JsonSerializer.Deserialize<GameData>(json, JsonOptions);
-      }
-    );
-
-    Logic.Set(SaveFile);
-
     Binding = Logic.Bind();
 
     Binding
@@ -130,9 +84,9 @@ public partial class Game : Node2D, IGame
   #region Input Callbacks
   public void StartNewGame() => Logic.Input(new GameLogic.Input.StartGame());
 
-  public void RequestLoadGame() => SaveFile.Load();
+  public void RequestLoadGame() => Logic.Input(new GameLogic.Input.RequestLoad());
 
-  public void RequestSaveGame() => Logic.Input(new GameLogic.Input.SaveRequested());
+  public void RequestSaveGame() => Logic.Input(new GameLogic.Input.RequestSave());
   #endregion
 
   #region Output Callbacks

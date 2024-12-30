@@ -1,5 +1,6 @@
 namespace Shellguard.Game.State;
 
+using System;
 using Chickensoft.Introspection;
 using Chickensoft.LogicBlocks;
 using Shellguard.Game.Domain;
@@ -9,47 +10,40 @@ public partial class GameLogic
   [Meta]
   public abstract partial record State
     : StateLogic<State>,
-      IGet<Input.SaveRequested>,
-      IGet<Input.SaveCompleted>,
-      IGet<Input.LoadRequested>
+      IGet<Input.RequestSave>,
+      IGet<Input.RequestLoad>
   {
     protected State()
     {
       OnAttach(() =>
       {
         var gameRepo = Get<IGameRepo>();
-        gameRepo.IsPaused.Sync += OnIsPaused;
-        gameRepo.Saving += OnSaving;
+        gameRepo.IsPaused.Sync += OnGameIsPaused;
+        gameRepo.Saved += OnGameSaved;
       });
 
       OnDetach(() =>
       {
         var gameRepo = Get<IGameRepo>();
-        gameRepo.IsPaused.Sync -= OnIsPaused;
-        gameRepo.Saving -= OnSaving;
+        gameRepo.IsPaused.Sync -= OnGameIsPaused;
+        gameRepo.Saved -= OnGameSaved;
       });
     }
 
-    private void OnSaving() => Output(new Output.StartSaving());
+    private void OnGameSaved() => throw new NotImplementedException();
 
-    public Transition On(in Input.SaveRequested input)
+    private void OnGameIsPaused(bool isPaused) => Output(new Output.SetPauseMode(isPaused));
+
+    public Transition On(in Input.RequestSave input)
     {
       Get<IGameRepo>().RequestSave();
       return ToSelf();
     }
 
-    public Transition On(in Input.LoadRequested input)
+    public Transition On(in Input.RequestLoad input)
     {
-      Get<IGameRepo>().RequestLoad();
+      Get<IAppRepo>().RequestGameLoad();
       return ToSelf();
     }
-
-    public Transition On(in Input.SaveCompleted input)
-    {
-      Get<IGameRepo>().OnSaved();
-      return ToSelf();
-    }
-
-    private void OnIsPaused(bool isPaused) => Output(new Output.SetPauseMode(isPaused));
   }
 }

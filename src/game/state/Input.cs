@@ -16,11 +16,11 @@ public partial class GameLogic
 
     public readonly record struct PauseMenuTransitioned;
 
-    public readonly record struct SaveRequested;
+    public readonly record struct RequestSave;
 
     public readonly record struct SaveCompleted;
 
-    public readonly record struct LoadRequested;
+    public readonly record struct RequestLoad;
 
     public readonly record struct LoadCompleted;
 
