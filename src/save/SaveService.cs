@@ -9,16 +9,18 @@ using Chickensoft.SaveFileBuilder;
 using Chickensoft.Serialization;
 using Chickensoft.Serialization.Godot;
 using Godot;
+using Shellguard.Game;
 
 public interface ISaveService
 {
+  ISaveChunk<GameData> Chunk { get; set; }
   Task Save();
 }
 
 public interface ILoadService
 {
   Task Load();
-  bool GameFileExists();
+  bool GameFileExists(int slot);
 }
 
 public interface IGameFileService : ISaveService, ILoadService
@@ -26,23 +28,20 @@ public interface IGameFileService : ISaveService, ILoadService
   void SelectGameFile(int slot);
 }
 
-public class GameFileService<T> : IGameFileService
-  where T : class
+public class GameFileService : IGameFileService
 {
-  private readonly ISaveChunk<T> _saveChunk = default!;
+  public ISaveChunk<GameData> Chunk { get; set; } = default!;
   private readonly IFileSystem _fileSystem;
   private readonly JsonSerializerOptions _jsonOptions;
 
-  private int _slot;
-  private SaveFile<T> _saveFile = default!;
+  private SaveFile<GameData> _saveFile = default!;
 
-  public GameFileService(ISaveChunk<T> chunk)
+  public GameFileService()
   {
     var upgradeDependencies = new Blackboard();
     var resolver = new SerializableTypeResolver();
     GodotSerialization.Setup();
 
-    _saveChunk = chunk;
     _fileSystem = new FileSystem();
     _jsonOptions = new JsonSerializerOptions
     {
@@ -50,11 +49,9 @@ public class GameFileService<T> : IGameFileService
       TypeInfoResolver = resolver,
       WriteIndented = true,
     };
-
-    SelectGameFile(_slot);
   }
 
-  public bool GameFileExists() => File.Exists(GameFileService<T>.GetSaveFilePath(_slot));
+  public bool GameFileExists(int slot) => File.Exists(GetSaveFilePath(slot));
 
   public Task Load() => _saveFile.Load();
 
@@ -62,13 +59,11 @@ public class GameFileService<T> : IGameFileService
 
   public void SelectGameFile(int slot)
   {
-    _slot = slot;
+    var path = GetSaveFilePath(slot);
 
-    var path = GameFileService<T>.GetSaveFilePath(_slot);
-
-    _saveFile = new SaveFile<T>(
-      root: _saveChunk,
-      onSave: async (T data) =>
+    _saveFile = new SaveFile<GameData>(
+      root: Chunk,
+      onSave: async (GameData data) =>
       {
         var json = JsonSerializer.Serialize(data, _jsonOptions);
         var jsonasAString = json.ToString();
@@ -82,7 +77,7 @@ public class GameFileService<T> : IGameFileService
         }
 
         var json = await _fileSystem.File.ReadAllTextAsync(path);
-        return JsonSerializer.Deserialize<T>(json, _jsonOptions);
+        return JsonSerializer.Deserialize<GameData>(json, _jsonOptions);
       }
     );
   }
