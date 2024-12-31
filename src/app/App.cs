@@ -1,5 +1,6 @@
 namespace Shellguard;
 
+using System;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
@@ -9,11 +10,7 @@ using Shellguard.Game;
 using Shellguard.Save;
 using Shellguard.SaveData.App;
 
-public interface IApp
-  : INode,
-    IProvide<IAppRepo>,
-    IProvide<ISaveChunk<AppData>>,
-    IProvide<IGameFileService>;
+public interface IApp : INode, IProvide<IAppRepo>, IProvide<IGameFileService>;
 
 [Meta(typeof(IAutoNode))]
 public partial class App : Node, IApp
@@ -37,8 +34,6 @@ public partial class App : Node, IApp
   #region Provisions
   IAppRepo IProvide<IAppRepo>.Value() => AppRepo;
 
-  public ISaveChunk<AppData> Value() => AppChunk;
-
   IGameFileService IProvide<IGameFileService>.Value() => GameFileService;
   #endregion
 
@@ -58,16 +53,7 @@ public partial class App : Node, IApp
   #region Dependency Lifecycle
   public void Setup()
   {
-    AppChunk = new SaveChunk<AppData>(
-      (chunk) =>
-      {
-        var appData = new AppData() { GameData = chunk.GetChunkSaveData<GameData>() };
-        return appData;
-      },
-      onLoad: (chunk, data) => chunk.LoadChunkSaveData(data.GameData)
-    );
-    GameFileService = new GameFileService<AppData>(AppChunk);
-
+    GameFileService = new GameFileService();
     AppRepo = new AppRepo(GameFileService);
 
     Logic = new();
@@ -85,16 +71,16 @@ public partial class App : Node, IApp
       .Handle((in AppLogic.Output.LoadGame _) => OnOutputLoadGame())
       .Handle((in AppLogic.Output.HideGame _) => GameContainer.Visible = false)
       .Handle((in AppLogic.Output.RemoveGame _) => OnOutputRemoveGame())
-      .Handle((in AppLogic.Output.ShowMainMenu _) => MainMenu.Visible = true)
+      .Handle((in AppLogic.Output.ShowMainMenu _) => CallDeferred(nameof(OnOutputShowMainMenu)))
       .Handle((in AppLogic.Output.HideMainMenu _) => MainMenu.Visible = false)
-      .Handle((in AppLogic.Output.ShowGame _) => GameContainer.Visible = true)
-      .Handle((in AppLogic.Output.FadeIn _) => AnimationPlayer.Play("fade_in"))
-      .Handle((in AppLogic.Output.FadeOut _) => AnimationPlayer.Play("fade_out"));
+      .Handle((in AppLogic.Output.ShowGame _) => CallDeferred(nameof(OnOutputShowGame)))
+      .Handle((in AppLogic.Output.FadeIn _) => CallDeferred(nameof(OnOutputFadeIn)))
+      .Handle((in AppLogic.Output.FadeOut _) => OnOutputFadeOut())
+      .When<AppLogic.State>(state => GD.Print(state.GetType().Name));
 
     Logic.Start();
     this.Provide();
   }
-
   #endregion
 
   #region Godot Lifecycle
@@ -134,7 +120,7 @@ public partial class App : Node, IApp
   #endregion
 
   #region Output Callbacks
-  public void OnOutputSetupGame()
+  private void OnOutputSetupGame()
   {
     Game = _gameScene.Instantiate<IGame>();
     GameContainer.AddChildEx(Game);
@@ -142,7 +128,7 @@ public partial class App : Node, IApp
 
   private void OnOutputLoadGame() => Game.RequestLoadGame();
 
-  public void OnOutputRemoveGame()
+  private void OnOutputRemoveGame()
   {
     if (GameContainer.GetChildCount() == 0)
     {
@@ -154,6 +140,14 @@ public partial class App : Node, IApp
     game.QueueFree();
   }
 
-  public void OnOutputQuitApp() => GetTree().Quit();
+  private void OnOutputShowGame() => GameContainer.Visible = true;
+
+  private void OnOutputShowMainMenu() => MainMenu.Visible = true;
+
+  private void OnOutputFadeOut() => AnimationPlayer.Play("fade_out");
+
+  private void OnOutputFadeIn() => AnimationPlayer.Play("fade_in");
+
+  private void OnOutputQuitApp() => GetTree().Quit();
   #endregion
 }

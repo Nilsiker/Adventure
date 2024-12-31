@@ -18,6 +18,7 @@ public partial class AppLogic
           Output(new Output.SetupGame());
           Output(new Output.LoadGame());
         });
+        this.OnExit(() => Output(new Output.FadeIn()));
       }
 
       private void OnAppGameLoaded() => Input(new Input.GameReady());

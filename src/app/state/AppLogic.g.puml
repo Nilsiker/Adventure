@@ -1,12 +1,12 @@
 @startuml AppLogic
 state "AppLogic State" as Shellguard_AppLogic_State {
-  state "LeavingGame" as Shellguard_AppLogic_State_LeavingGame
-  state "InMainMenu" as Shellguard_AppLogic_State_InMainMenu
-  state "StartingNewGame" as Shellguard_AppLogic_State_StartingNewGame
-  state "LeavingMenu" as Shellguard_AppLogic_State_LeavingMenu
-  state "LoadingGame" as Shellguard_AppLogic_State_LoadingGame
   state "ClosingApplication" as Shellguard_AppLogic_State_ClosingApplication
   state "InGame" as Shellguard_AppLogic_State_InGame
+  state "InMainMenu" as Shellguard_AppLogic_State_InMainMenu
+  state "LeavingGame" as Shellguard_AppLogic_State_LeavingGame
+  state "LeavingMenu" as Shellguard_AppLogic_State_LeavingMenu
+  state "LoadingGame" as Shellguard_AppLogic_State_LoadingGame
+  state "StartingNewGame" as Shellguard_AppLogic_State_StartingNewGame
 }
 
 Shellguard_AppLogic_State_ClosingApplication --> Shellguard_AppLogic_State_ClosingApplication : FadeOutFinished
@@ -29,8 +29,10 @@ Shellguard_AppLogic_State_InMainMenu : OnEnter → ShowMainMenu
 Shellguard_AppLogic_State_LeavingGame : OnEnter → FadeOut
 Shellguard_AppLogic_State_LeavingGame : OnExit → FadeIn, RemoveGame
 Shellguard_AppLogic_State_LeavingMenu : OnEnter → FadeOut
-Shellguard_AppLogic_State_LeavingMenu : OnExit → FadeIn, HideMainMenu
+Shellguard_AppLogic_State_LeavingMenu : OnExit → HideMainMenu
+Shellguard_AppLogic_State_LeavingMenu : OnFadeOutFinished → FadeIn
 Shellguard_AppLogic_State_LoadingGame : OnEnter → LoadGame, SetupGame
+Shellguard_AppLogic_State_LoadingGame : OnExit → FadeIn
 Shellguard_AppLogic_State_StartingNewGame : OnEnter → SetupGame
 
 [*] --> Shellguard_AppLogic_State_InMainMenu

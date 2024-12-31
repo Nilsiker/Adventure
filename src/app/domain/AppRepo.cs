@@ -2,6 +2,7 @@ namespace Shellguard;
 
 using System;
 using Chickensoft.Collections;
+using Godot;
 using Shellguard.Save;
 
 public interface IAppRepo : IDisposable
@@ -18,12 +19,13 @@ public interface IAppRepo : IDisposable
   void RequestGameStart();
   void OnGameStarted();
   void RequestQuitApp();
+  void OnGameLoaded();
 }
 
 public partial class AppRepo(ILoadService loadService) : IAppRepo
 {
   public IAutoProp<bool> HasExistingGame => _hasExistingGame;
-  private readonly AutoProp<bool> _hasExistingGame = new(loadService.GameFileExists());
+  private readonly AutoProp<bool> _hasExistingGame = new(loadService.GameFileExists(0));
 
   public event Action? MainMenuRequested;
   public event Action? AppQuitRequested;
@@ -37,6 +39,8 @@ public partial class AppRepo(ILoadService loadService) : IAppRepo
   public void RequestGameStart() => GameStartRequested?.Invoke();
 
   public void OnGameStarted() => GameStarted?.Invoke();
+
+  public void OnGameLoaded() => GameLoaded?.Invoke();
 
   public void RequestQuitApp() => AppQuitRequested?.Invoke();
 

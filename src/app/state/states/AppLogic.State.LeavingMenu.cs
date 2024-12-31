@@ -14,12 +14,19 @@ public partial class AppLogic
         this.OnExit(() =>
         {
           Output(new Output.HideMainMenu());
-          Output(new Output.FadeIn());
         });
       }
 
-      public Transition On(in Input.FadeOutFinished input) =>
-        Get<Data>().ShouldLoadGame ? To<LoadingGame>() : To<StartingNewGame>();
+      public Transition On(in Input.FadeOutFinished input)
+      {
+        if (Get<Data>().ShouldLoadGame)
+        {
+          return To<LoadingGame>();
+        }
+
+        Output(new Output.FadeIn());
+        return To<StartingNewGame>();
+      }
     }
   }
 }

@@ -42,12 +42,11 @@ public partial class Game : Node2D, IGame
   #endregion
 
   #region Dependencies
-
-  [Dependency]
-  private ISaveChunk<AppData> AppChunk => this.DependOn<ISaveChunk<AppData>>();
-
   [Dependency]
   private IGameFileService GameFileService => this.DependOn<IGameFileService>();
+
+  [Dependency]
+  private IAppRepo AppRepo => this.DependOn<IAppRepo>();
   #endregion
 
   #region Dependency Lifecycle
@@ -67,10 +66,12 @@ public partial class Game : Node2D, IGame
 
   public void OnResolved()
   {
-    AppChunk.AddChunk(GameChunk);
+    GameFileService.Chunk = GameChunk;
+    GameFileService.SelectGameFile(0); // TODO later, do this in a more customizable way.
 
     GameRepo = new GameRepo(GameFileService);
     Logic.Set(GameRepo);
+    Logic.Set(AppRepo);
 
     Binding = Logic.Bind();
     Binding.Handle((in GameLogic.Output.SetPauseMode output) => SetGamePaused(output.IsPaused));

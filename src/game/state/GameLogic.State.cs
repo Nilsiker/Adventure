@@ -1,5 +1,6 @@
 namespace Shellguard.Game.State;
 
+using System;
 using Chickensoft.Introspection;
 using Chickensoft.LogicBlocks;
 using Shellguard.Game.Domain;
@@ -18,14 +19,18 @@ public partial class GameLogic
       {
         var gameRepo = Get<IGameRepo>();
         gameRepo.IsPaused.Sync += OnGameIsPaused;
+        gameRepo.Loaded += OnGameLoaded;
       });
 
       OnDetach(() =>
       {
         var gameRepo = Get<IGameRepo>();
         gameRepo.IsPaused.Sync -= OnGameIsPaused;
+        gameRepo.Loaded -= OnGameLoaded;
       });
     }
+
+    private void OnGameLoaded() => Get<IAppRepo>().OnGameLoaded();
 
     private void OnGameIsPaused(bool isPaused) => Output(new Output.SetPauseMode(isPaused));
 
