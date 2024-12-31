@@ -2,7 +2,6 @@ namespace Shellguard.Game.Domain;
 
 using System;
 using Chickensoft.Collections;
-using Chickensoft.SaveFileBuilder;
 using Shellguard.Save;
 
 public interface IGameRepo : IDisposable
@@ -22,7 +21,7 @@ public interface IGameRepo : IDisposable
   void RequestLoad();
 }
 
-public class GameRepo(ISaveChunk<GameData> chunk) : IGameRepo
+public class GameRepo(IGameFileService gameFileService) : IGameRepo
 {
   public IAutoProp<int> EggsCollected => _eggsCollected;
 
@@ -30,7 +29,7 @@ public class GameRepo(ISaveChunk<GameData> chunk) : IGameRepo
 
   private readonly AutoProp<int> _eggsCollected = new(0);
   private readonly AutoProp<bool> _isPaused = new(false);
-  private readonly SaveService _saveService = new(chunk);
+  private readonly IGameFileService _gameFileService = gameFileService;
 
   public event Action? Saving;
   public event Action? Saved;
@@ -66,12 +65,12 @@ public class GameRepo(ISaveChunk<GameData> chunk) : IGameRepo
   public void RequestSave()
   {
     Saving?.Invoke();
-    _saveService.Save().ContinueWith((_) => Saved?.Invoke());
+    _gameFileService.Save().ContinueWith((_) => Saved?.Invoke());
   }
 
   public void RequestLoad()
   {
     Loading?.Invoke();
-    _saveService.Load().ContinueWith((_) => Loaded?.Invoke());
+    _gameFileService.Load().ContinueWith((_) => Loaded?.Invoke());
   }
 }

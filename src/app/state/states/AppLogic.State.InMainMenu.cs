@@ -16,9 +16,7 @@ public partial class AppLogic
       {
         this.OnEnter(() =>
         {
-          Get<IAppRepo>().ScanForGameFile();
           Get<Data>().ShouldLoadGame = false;
-
           Output(new Output.ShowMainMenu());
         });
       }

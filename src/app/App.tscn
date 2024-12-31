@@ -63,6 +63,8 @@ process_mode = 3
 script = ExtResource("1_bi7yx")
 _gameScene = ExtResource("2_pvy06")
 
+[node name="Save" type="Node" parent="."]
+
 [node name="Soundtrack" type="AudioStreamPlayer" parent="."]
 
 [node name="UI" type="CanvasLayer" parent="."]

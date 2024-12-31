@@ -2,6 +2,7 @@ namespace Shellguard;
 
 using System;
 using Chickensoft.Collections;
+using Shellguard.Save;
 
 public interface IAppRepo : IDisposable
 {
@@ -13,17 +14,16 @@ public interface IAppRepo : IDisposable
   event Action? MainMenuRequested;
   event Action? AppQuitRequested;
 
-  void ScanForGameFile();
   void RequestMainMenu();
   void RequestGameStart();
   void OnGameStarted();
   void RequestQuitApp();
 }
 
-public partial class AppRepo : IAppRepo
+public partial class AppRepo(ILoadService loadService) : IAppRepo
 {
   public IAutoProp<bool> HasExistingGame => _hasExistingGame;
-  private readonly AutoProp<bool> _hasExistingGame;
+  private readonly AutoProp<bool> _hasExistingGame = new(loadService.GameFileExists());
 
   public event Action? MainMenuRequested;
   public event Action? AppQuitRequested;
@@ -31,13 +31,6 @@ public partial class AppRepo : IAppRepo
   public event Action? GameStarted;
   public event Action? GameLoadRequested;
   public event Action? GameLoaded;
-
-  public AppRepo()
-  {
-    _hasExistingGame = new AutoProp<bool>(false);
-  }
-
-  public void ScanForGameFile() => _hasExistingGame.OnNext(false);
 
   public void RequestMainMenu() => MainMenuRequested?.Invoke();
 

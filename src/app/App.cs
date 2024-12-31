@@ -3,14 +3,25 @@ namespace Shellguard;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
+using Chickensoft.SaveFileBuilder;
 using Godot;
 using Shellguard.Game;
+using Shellguard.Save;
+using Shellguard.SaveData.App;
 
-public interface IApp : INode, IProvide<IAppRepo>;
+public interface IApp
+  : INode,
+    IProvide<IAppRepo>,
+    IProvide<ISaveChunk<AppData>>,
+    IProvide<IGameFileService>;
 
 [Meta(typeof(IAutoNode))]
 public partial class App : Node, IApp
 {
+  #region Save
+  private IGameFileService GameFileService { get; set; } = default!;
+  #endregion
+
   #region Exports
   [Export]
   private PackedScene _gameScene = default!;
@@ -18,12 +29,17 @@ public partial class App : Node, IApp
 
   #region State
   private IAppRepo AppRepo { get; set; } = default!;
+  private ISaveChunk<AppData> AppChunk { get; set; } = default!;
   private AppLogic Logic { get; set; } = default!;
   private AppLogic.IBinding Binding { get; set; } = default!;
   #endregion
 
   #region Provisions
-  public IAppRepo Value() => AppRepo;
+  IAppRepo IProvide<IAppRepo>.Value() => AppRepo;
+
+  public ISaveChunk<AppData> Value() => AppChunk;
+
+  IGameFileService IProvide<IGameFileService>.Value() => GameFileService;
   #endregion
 
   #region Nodes
@@ -42,9 +58,19 @@ public partial class App : Node, IApp
   #region Dependency Lifecycle
   public void Setup()
   {
-    Logic = new();
-    AppRepo = new AppRepo();
+    AppChunk = new SaveChunk<AppData>(
+      (chunk) =>
+      {
+        var appData = new AppData() { GameData = chunk.GetChunkSaveData<GameData>() };
+        return appData;
+      },
+      onLoad: (chunk, data) => chunk.LoadChunkSaveData(data.GameData)
+    );
+    GameFileService = new GameFileService<AppData>(AppChunk);
 
+    AppRepo = new AppRepo(GameFileService);
+
+    Logic = new();
     Logic.Set(AppRepo);
   }
 

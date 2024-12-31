@@ -9,6 +9,8 @@ using Godot;
 using Shellguard.Game.Domain;
 using Shellguard.Game.State;
 using Shellguard.Player;
+using Shellguard.Save;
+using Shellguard.SaveData.App;
 
 public interface IGame : INode2D, IProvide<IGameRepo>, IProvide<ISaveChunk<GameData>>
 {
@@ -23,7 +25,7 @@ public partial class Game : Node2D, IGame
   private readonly GDLog _log = new(nameof(Game));
 
   #region Save
-  public ISaveChunk<GameData> GameChunk { get; set; } = default!;
+  private ISaveChunk<GameData> GameChunk { get; set; } = default!;
 
   #endregion
 
@@ -39,10 +41,18 @@ public partial class Game : Node2D, IGame
   public IGameRepo Value() => GameRepo;
   #endregion
 
+  #region Dependencies
+
+  [Dependency]
+  private ISaveChunk<AppData> AppChunk => this.DependOn<ISaveChunk<AppData>>();
+
+  [Dependency]
+  private IGameFileService GameFileService => this.DependOn<IGameFileService>();
+  #endregion
+
   #region Dependency Lifecycle
   public void Setup()
   {
-    Logic = new GameLogic();
     GameChunk = new SaveChunk<GameData>(
       (chunk) =>
       {
@@ -52,14 +62,17 @@ public partial class Game : Node2D, IGame
       onLoad: (chunk, data) => chunk.LoadChunkSaveData(data.PlayerData)
     );
 
-    GameRepo = new GameRepo(GameChunk);
-    Logic.Set(GameRepo);
+    Logic = new GameLogic();
   }
 
   public void OnResolved()
   {
-    Binding = Logic.Bind();
+    AppChunk.AddChunk(GameChunk);
 
+    GameRepo = new GameRepo(GameFileService);
+    Logic.Set(GameRepo);
+
+    Binding = Logic.Bind();
     Binding.Handle((in GameLogic.Output.SetPauseMode output) => SetGamePaused(output.IsPaused));
 
     this.Provide();

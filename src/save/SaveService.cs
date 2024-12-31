@@ -7,28 +7,42 @@ using System.Threading.Tasks;
 using Chickensoft.Collections;
 using Chickensoft.SaveFileBuilder;
 using Chickensoft.Serialization;
+using Chickensoft.Serialization.Godot;
 using Godot;
-using Shellguard.Game;
 
 public interface ISaveService
 {
   Task Save();
-  Task Load();
 }
 
-public class SaveService : ISaveService
+public interface ILoadService
 {
-  private readonly string _saveFilePath;
+  Task Load();
+  bool GameFileExists();
+}
+
+public interface IGameFileService : ISaveService, ILoadService
+{
+  void SelectGameFile(int slot);
+}
+
+public class GameFileService<T> : IGameFileService
+  where T : class
+{
+  private readonly ISaveChunk<T> _saveChunk = default!;
   private readonly IFileSystem _fileSystem;
   private readonly JsonSerializerOptions _jsonOptions;
-  private readonly SaveFile<GameData> _saveFile;
 
-  public SaveService(ISaveChunk<GameData> chunk)
+  private int _slot;
+  private SaveFile<T> _saveFile = default!;
+
+  public GameFileService(ISaveChunk<T> chunk)
   {
     var upgradeDependencies = new Blackboard();
     var resolver = new SerializableTypeResolver();
+    GodotSerialization.Setup();
 
-    _saveFilePath = Path.Join(OS.GetUserDataDir(), "game.json");
+    _saveChunk = chunk;
     _fileSystem = new FileSystem();
     _jsonOptions = new JsonSerializerOptions
     {
@@ -37,29 +51,42 @@ public class SaveService : ISaveService
       WriteIndented = true,
     };
 
-    _saveFile = new SaveFile<GameData>(
-      root: chunk,
-      onSave: async (GameData data) =>
-      {
-        var json = JsonSerializer.Serialize(data, _jsonOptions);
-        var jsonasAString = json.ToString();
-        await _fileSystem.File.WriteAllTextAsync(_saveFilePath, json);
-      },
-      onLoad: async () =>
-      {
-        // Load the game data from disk.
-        if (!_fileSystem.File.Exists(_saveFilePath))
-        {
-          return null;
-        }
-
-        var json = await _fileSystem.File.ReadAllTextAsync(_saveFilePath);
-        return JsonSerializer.Deserialize<GameData>(json, _jsonOptions);
-      }
-    );
+    SelectGameFile(_slot);
   }
+
+  public bool GameFileExists() => File.Exists(GameFileService<T>.GetSaveFilePath(_slot));
 
   public Task Load() => _saveFile.Load();
 
   public Task Save() => _saveFile.Save();
+
+  public void SelectGameFile(int slot)
+  {
+    _slot = slot;
+
+    var path = GameFileService<T>.GetSaveFilePath(_slot);
+
+    _saveFile = new SaveFile<T>(
+      root: _saveChunk,
+      onSave: async (T data) =>
+      {
+        var json = JsonSerializer.Serialize(data, _jsonOptions);
+        var jsonasAString = json.ToString();
+        await _fileSystem.File.WriteAllTextAsync(path, json);
+      },
+      onLoad: async () =>
+      {
+        if (!_fileSystem.File.Exists(path))
+        {
+          return null;
+        }
+
+        var json = await _fileSystem.File.ReadAllTextAsync(path);
+        return JsonSerializer.Deserialize<T>(json, _jsonOptions);
+      }
+    );
+  }
+
+  private static string GetSaveFilePath(int slot) =>
+    Path.Join(OS.GetUserDataDir(), $"game{slot}.json");
 }

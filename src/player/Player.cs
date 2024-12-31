@@ -50,15 +50,14 @@ public partial class Player : CharacterBody2D, IPlayer
   public void Setup()
   {
     Logic = new();
-
-    PlayerChunk = new SaveChunk<PlayerData>(
-      onSave: (chunk) => new PlayerData() { GlobalTransform = GlobalTransform },
-      onLoad: (chunk, data) => GlobalTransform = data.GlobalTransform
-    );
   }
 
   public void OnResolved()
   {
+    PlayerChunk = new SaveChunk<PlayerData>(
+      onSave: (chunk) => new PlayerData() { GlobalTransform = GlobalTransform },
+      onLoad: (chunk, data) => GlobalTransform = data.GlobalTransform
+    );
     GameChunk.AddChunk(PlayerChunk);
 
     Logic.Set(Weapon);
