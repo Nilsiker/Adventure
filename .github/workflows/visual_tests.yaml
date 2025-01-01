@@ -1,11 +1,10 @@
 name: 🖼 Visual Tests
 on:
   push:
+    pull_request:
     branches:
     - main
-  pull_request:
-    branches:
-    - main
+
 
 jobs:
   visual_tests:
@@ -37,6 +36,9 @@ jobs:
           lfs: true
           # Make sure any git submodules are checked out as well.
           submodules: 'recursive'
+          # allow for private submodules
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
 
       - name: 💽 Setup .NET SDK
         uses: actions/setup-dotnet@v4
