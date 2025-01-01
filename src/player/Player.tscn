@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/player/Player.cs" id="1_sqh1h"]
 [ext_resource type="PackedScene" uid="uid://cplgdxj3i5yk1" path="res://src/player/scenes/hammer_bonk.tscn" id="2_p4o3e"]
-[ext_resource type="Texture2D" uid="uid://g85m6td6htmr" path="res://src/player/player.png" id="3_ghkud"]
+[ext_resource type="Texture2D" uid="uid://wytgmfeuq3im" path="res://assets/aseprite/player.png" id="3_7gvb8"]
 [ext_resource type="Script" path="res://src/egg/EggCollector.cs" id="3_q263r"]
 [ext_resource type="PackedScene" uid="uid://dkn7dwcv3q4sy" path="res://src/weapon/Weapon.tscn" id="4_diodw"]
 [ext_resource type="AudioStream" uid="uid://0q6cfshuu4ra" path="res://assets/ovani/Foley SFX - Footsteps/Grass/Bare Step Grass Hard A.wav" id="6_b1efk"]
@@ -205,12 +205,13 @@ shape = SubResource("CapsuleShape2D_iscbd")
 [node name="Sprite" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 texture_filter = 1
-texture = ExtResource("3_ghkud")
+texture = ExtResource("3_7gvb8")
 offset = Vector2(0, -17)
 hframes = 6
 vframes = 5
 metadata/_aseprite_wizard_interface_config_ = {
 "layer_section": true,
+"output_section": true,
 "pending_changes": {}
 }
 metadata/_aseprite_wizard_config_ = {
@@ -218,7 +219,7 @@ metadata/_aseprite_wizard_config_ = {
 "keep_anim_length": false,
 "layers": [],
 "o_ex_p": "",
-"o_folder": "",
+"o_folder": "res://assets/aseprite",
 "o_name": "",
 "only_visible": true,
 "player": "AnimationPlayer",
