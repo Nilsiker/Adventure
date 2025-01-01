@@ -1,0 +1,4 @@
+@startuml BushLogic
+state "BushLogic State" as Shellguard_BushLogic_State
+[*] --> Shellguard_BushLogic_State
+@enduml

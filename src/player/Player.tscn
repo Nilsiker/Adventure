@@ -1,14 +1,14 @@
-[gd_scene load_steps=25 format=3 uid="uid://dlmofixc40ggb"]
+[gd_scene load_steps=26 format=3 uid="uid://dlmofixc40ggb"]
 
 [ext_resource type="Script" path="res://src/player/Player.cs" id="1_sqh1h"]
 [ext_resource type="PackedScene" uid="uid://cplgdxj3i5yk1" path="res://src/player/scenes/hammer_bonk.tscn" id="2_p4o3e"]
 [ext_resource type="Texture2D" uid="uid://wytgmfeuq3im" path="res://assets/aseprite/player.png" id="3_7gvb8"]
 [ext_resource type="Script" path="res://src/egg/EggCollector.cs" id="3_q263r"]
 [ext_resource type="PackedScene" uid="uid://dkn7dwcv3q4sy" path="res://src/weapon/Weapon.tscn" id="4_diodw"]
-[ext_resource type="AudioStream" uid="uid://0q6cfshuu4ra" path="res://assets/ovani/Foley SFX - Footsteps/Grass/Bare Step Grass Hard A.wav" id="6_b1efk"]
-[ext_resource type="AudioStream" uid="uid://dy65qorcyqa8g" path="res://assets/ovani/Foley SFX - Footsteps/Grass/Bare Step Grass Hard B.wav" id="7_vtchp"]
-[ext_resource type="AudioStream" uid="uid://cu1qgn0dfva35" path="res://assets/ovani/Foley SFX - Footsteps/Grass/Bare Step Grass Hard C.wav" id="8_fvj4c"]
-[ext_resource type="AudioStream" uid="uid://cmy5j351u1ep0" path="res://assets/ovani/Foley SFX - Footsteps/Grass/Bare Step Grass Hard D.wav" id="9_4j8bd"]
+[ext_resource type="AudioStream" uid="uid://bv5sm4u32vffq" path="res://assets/ovani/Foley SFX - Footsteps/Grass/Bare Step Grass Medium A.wav" id="6_ibdr1"]
+[ext_resource type="AudioStream" uid="uid://cav0etdrs30tc" path="res://assets/ovani/Foley SFX - Footsteps/Grass/Bare Step Grass Medium B.wav" id="7_f2yq2"]
+[ext_resource type="AudioStream" uid="uid://d2cq3u4xfqxid" path="res://assets/ovani/Foley SFX - Footsteps/Grass/Bare Step Grass Medium C.wav" id="8_pcoot"]
+[ext_resource type="AudioStream" uid="uid://d2hquxhkt2sqf" path="res://assets/ovani/Foley SFX - Footsteps/Grass/Bare Step Grass Medium D.wav" id="9_m4mj2"]
 [ext_resource type="AudioStream" uid="uid://bjpp3oc3vk0jt" path="res://assets/ovani/Medieval Fantasy Sound FX Pack/Axe/Axe Swoosh A.wav" id="10_fbvsm"]
 [ext_resource type="AudioStream" uid="uid://2hqhl3glgn5a" path="res://assets/ovani/Medieval Fantasy Sound FX Pack/Axe/Axe Swoosh B.wav" id="11_lyce4"]
 [ext_resource type="AudioStream" uid="uid://c58c2urcp8tjn" path="res://assets/ovani/Medieval Fantasy Sound FX Pack/Axe/Axe Swoosh C.wav" id="12_0mmx1"]
@@ -173,10 +173,10 @@ height = 16.0
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_pv27v"]
 streams_count = 4
-stream_0/stream = ExtResource("6_b1efk")
-stream_1/stream = ExtResource("7_vtchp")
-stream_2/stream = ExtResource("8_fvj4c")
-stream_3/stream = ExtResource("9_4j8bd")
+stream_0/stream = ExtResource("6_ibdr1")
+stream_1/stream = ExtResource("7_f2yq2")
+stream_2/stream = ExtResource("8_pcoot")
+stream_3/stream = ExtResource("9_m4mj2")
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_t4tsl"]
 random_pitch = 1.1
@@ -185,6 +185,9 @@ stream_0/stream = ExtResource("10_fbvsm")
 stream_1/stream = ExtResource("11_lyce4")
 stream_2/stream = ExtResource("12_0mmx1")
 stream_3/stream = ExtResource("13_gfvym")
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_f5rw5"]
+polygon = PackedVector2Array(-4, 5, -6, 4, -7, 3, -8, 0, -7, -3, -6, -4, -4, -5, 4, -5, 6, -4, 7, -3, 8, 0, 7, 3, 6, 4, 4, 5)
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_sqh1h")
@@ -209,6 +212,7 @@ texture = ExtResource("3_7gvb8")
 offset = Vector2(0, -17)
 hframes = 6
 vframes = 5
+frame = 25
 metadata/_aseprite_wizard_interface_config_ = {
 "layer_section": true,
 "output_section": true,
@@ -248,3 +252,6 @@ pitch_scale = 1.2
 [node name="Swing" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_t4tsl")
 volume_db = 3.0
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+occluder = SubResource("OccluderPolygon2D_f5rw5")

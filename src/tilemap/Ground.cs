@@ -26,8 +26,6 @@ public partial class Ground : TileMapLayer
       {
         return;
       }
-
-      GD.Print(data.Terrain);
     }
   }
 }

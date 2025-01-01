@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://dvgsan2qvx3u4"]
+
+[ext_resource type="Script" path="res://src/world/bush/Bush.cs" id="1_cl4kx"]
+[ext_resource type="Texture2D" uid="uid://dpfyisd31qxp3" path="res://assets/aseprite/bush.png" id="2_etitg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c41w6"]
+size = Vector2(27, 21)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rv2sx"]
+radius = 8.0
+height = 26.0
+
+[node name="Bush" type="Area2D"]
+script = ExtResource("1_cl4kx")
+_occlusionTransparency = 0.5
+
+[node name="Greenery" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture_filter = 1
+position = Vector2(-1, 16)
+texture = ExtResource("2_etitg")
+offset = Vector2(1.375, -27.965)
+metadata/_aseprite_wizard_interface_config_ = {
+"layer_section": true,
+"output_section": true,
+"pending_changes": {}
+}
+metadata/_aseprite_wizard_config_ = {
+"i_mode": 1,
+"keep_anim_length": false,
+"layers": [],
+"o_ex_p": "",
+"o_folder": "res://assets/aseprite",
+"o_name": "",
+"only_visible": false,
+"player": "",
+"slice": "",
+"source": "res://assets/aseprite/bush.aseprite"
+}
+metadata/_aseprite_wizard_source_file_hash_ = "385111723985a2f81682430efbc62e19"
+
+[node name="FadeArea" type="Area2D" parent="Greenery"]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Greenery/FadeArea"]
+position = Vector2(1.5, -27.5)
+shape = SubResource("RectangleShape2D_c41w6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.57079
+shape = SubResource("CapsuleShape2D_rv2sx")
