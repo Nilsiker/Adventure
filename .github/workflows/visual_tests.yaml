@@ -37,7 +37,7 @@ jobs:
           # Make sure any git submodules are checked out as well.
           submodules: 'recursive'
           # allow for private submodules
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.SHELLGUARD_ASSETS_PAT }}
           
 
       - name: 💽 Setup .NET SDK
