@@ -1,6 +1,5 @@
 namespace Shellguard.UI;
 
-using System;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
@@ -31,16 +30,16 @@ public partial class PauseMenu : Control, IPauseMenu
 
   #region Nodes
   [Node("%Resume")]
-  private IButton ResumeButton { get; set; } = default!;
+  private Button ResumeButton { get; set; } = default!;
 
   [Node("%Options")]
-  private IButton OptionsButton { get; set; } = default!;
+  private Button OptionsButton { get; set; } = default!;
 
   [Node("%QuitToMainMenu")]
-  private IButton QuitToMainMenuButton { get; set; } = default!;
+  private Button QuitToMainMenuButton { get; set; } = default!;
 
   [Node("%QuitToDesktop")]
-  private IButton QuitToDesktopButton { get; set; } = default!;
+  private Button QuitToDesktopButton { get; set; } = default!;
   #endregion
 
   #region Dependency Lifecycle
@@ -65,7 +64,6 @@ public partial class PauseMenu : Control, IPauseMenu
 
   public void OnReady()
   {
-    GD.Print(ResumeButton);
     ResumeButton.Pressed += OnResumeButtonPressed;
     QuitToMainMenuButton.Pressed += OnQuitMainMenuButtonPressed;
     QuitToDesktopButton.Pressed += OnQuitToDesktopButtonPressed;
@@ -157,7 +155,7 @@ public partial class PauseMenuLogic : LogicBlock<PauseMenuLogic.State>, IPauseMe
 
     public Transition On(in Input.QuitToDesktop input)
     {
-      Get<IAppRepo>().QuitApp();
+      Get<IAppRepo>().RequestQuitApp();
       return ToSelf();
     }
 

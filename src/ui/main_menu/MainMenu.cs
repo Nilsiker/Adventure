@@ -18,20 +18,26 @@ public partial class MainMenu : Control, IMainMenu
   [Signal]
   public delegate void QuitPressedEventHandler();
 
+  [Signal]
+  public delegate void LoadPressedEventHandler();
+
   #endregion
 
   #region Nodes
-  [Node("%Play")]
-  private IButton PlayButton { get; set; } = default!;
+  [Node]
+  private Button PlayButton { get; set; } = default!;
 
-  [Node("%Options")]
-  private IButton OptionsButton { get; set; } = default!;
+  [Node]
+  private Button LoadButton { get; set; } = default!;
 
-  [Node("%Credits")]
-  private IButton CreditsButton { get; set; } = default!;
+  [Node]
+  private Button OptionsButton { get; set; } = default!;
 
-  [Node("%Quit")]
-  private IButton QuitButton { get; set; } = default!;
+  [Node]
+  private Button CreditsButton { get; set; } = default!;
+
+  [Node]
+  private Button QuitButton { get; set; } = default!;
   #endregion
 
   #region Dependencies
@@ -44,10 +50,19 @@ public partial class MainMenu : Control, IMainMenu
   {
     // NOTE UI is stateless, if turns more complex, go through Logic.
     PlayButton.Pressed += OnPlayButtonPressed;
+    LoadButton.Pressed += OnLoadButtonPressed;
     OptionsButton.Pressed += OnOptionsButtonPressed;
     CreditsButton.Pressed += OnCreditsButtonPressed;
     QuitButton.Pressed += OnQuitButtonPressed;
-    GD.Print(AppRepo);
+
+    // NOTE: taking a shortcut since main menu is fairly basic now
+    AppRepo.HasExistingGame.Sync += OnAppRepoHasExistingGameSync;
+  }
+
+  private void OnAppRepoHasExistingGameSync(bool exists)
+  {
+    GD.Print("SAVE FILE", exists);
+    LoadButton.Visible = exists;
   }
   #endregion
 
@@ -60,14 +75,19 @@ public partial class MainMenu : Control, IMainMenu
   public void OnExitTree()
   {
     PlayButton.Pressed -= OnPlayButtonPressed;
+    LoadButton.Pressed -= OnLoadButtonPressed;
     OptionsButton.Pressed -= OnOptionsButtonPressed;
     CreditsButton.Pressed -= OnCreditsButtonPressed;
     QuitButton.Pressed -= OnQuitButtonPressed;
+
+    AppRepo.HasExistingGame.Sync -= OnAppRepoHasExistingGameSync;
   }
   #endregion
 
   #region Signal Callbacks
   private void OnPlayButtonPressed() => EmitSignal(SignalName.PlayPressed);
+
+  private void OnLoadButtonPressed() => EmitSignal(SignalName.LoadPressed);
 
   private void OnCreditsButtonPressed() => throw new NotImplementedException();
 

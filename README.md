@@ -4,6 +4,8 @@
 
 Shellguard is a game about a forest gnome caring for his home and protecting his livestock from dark beings.
 
+Shellguard uses external or closed-source assets (such as art, audio, etc) housed in a separate private repository. The source code is open-source, however!
+
 🐣 Game generated from a 🐤 Chickensoft [Template](https://github.com/chickensoft-games/GodotGame) — <https://chickensoft.games>
 
 ---
@@ -13,8 +15,6 @@ Shellguard is a game about a forest gnome caring for his home and protecting his
 </p>
 
 ## 🥚 Getting Started
-
-TODO
 
 <!-- Links -->
 

@@ -5,8 +5,8 @@ using Chickensoft.Serialization;
 using Godot;
 
 [Meta, Id("player_data")]
-public partial record class PlayerData
+public partial record PlayerData
 {
   [Save("global_transform")]
-  public required Transform3D GlobalTransform { get; init; }
+  public required Transform2D GlobalTransform { get; init; }
 }

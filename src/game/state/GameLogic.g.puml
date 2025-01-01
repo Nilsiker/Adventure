@@ -4,10 +4,12 @@ state "GameLogic State" as Shellguard_Game_State_GameLogic_State {
   state "Playing" as Shellguard_Game_State_GameLogic_State_Playing
 }
 
+Shellguard_Game_State_GameLogic_State --> Shellguard_Game_State_GameLogic_State : RequestLoad
+Shellguard_Game_State_GameLogic_State --> Shellguard_Game_State_GameLogic_State : RequestSave
 Shellguard_Game_State_GameLogic_State_Paused --> Shellguard_Game_State_GameLogic_State_Playing : PauseButtonPressed
 Shellguard_Game_State_GameLogic_State_Playing --> Shellguard_Game_State_GameLogic_State_Paused : PauseButtonPressed
 
-Shellguard_Game_State_GameLogic_State : OnIsPaused() → SetPauseMode
+Shellguard_Game_State_GameLogic_State : OnGameIsPaused() → SetPauseMode
 
 [*] --> Shellguard_Game_State_GameLogic_State_Playing
 @enduml

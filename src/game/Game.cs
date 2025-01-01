@@ -1,29 +1,22 @@
 namespace Shellguard.Game;
 
-using System;
-using System.IO.Abstractions;
-using System.Text.Json;
 using Chickensoft.AutoInject;
-using Chickensoft.Collections;
 using Chickensoft.GoDotLog;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
 using Chickensoft.SaveFileBuilder;
-using Chickensoft.Serialization;
-using Chickensoft.Serialization.Godot;
 using Godot;
 using Shellguard.Game.Domain;
 using Shellguard.Game.State;
+using Shellguard.Player;
+using Shellguard.Save;
+using Shellguard.SaveData.App;
 
-public interface IGame
-  : INode2D,
-    IProvide<IGameRepo>,
-    IProvide<ISaveChunk<GameData>>,
-    IProvide<EntityTable>
+public interface IGame : INode2D, IProvide<IGameRepo>, IProvide<ISaveChunk<GameData>>
 {
   void StartNewGame();
-  void LoadExistingGame();
-  void SaveGame();
+  void RequestLoadGame();
+  void RequestSaveGame();
 }
 
 [Meta(typeof(IAutoNode))]
@@ -31,26 +24,8 @@ public partial class Game : Node2D, IGame
 {
   private readonly GDLog _log = new(nameof(Game));
 
-  #region Interface
-  public void StartNewGame() => throw new NotImplementedException();
-
-  public void LoadExistingGame() => throw new NotImplementedException();
-
-  public void SaveGame() => throw new NotImplementedException();
-  #endregion
-
   #region Save
-  [Signal]
-  public delegate void SaveFileLoadedEventHandler();
-  public JsonSerializerOptions JsonOptions { get; set; } = default!;
-  public const string SAVE_FILE_NAME = "game.json";
-  public IFileSystem FileSystem { get; set; } = default!;
-  public IEnvironmentProvider Environment { get; set; } = default!;
-  public string SaveFilePath { get; set; } = default!;
-  public EntityTable EntityTable { get; set; } = new();
-
-  public ISaveFile<GameData> SaveFile { get; set; } = default!;
-  public ISaveChunk<GameData> GameChunk { get; set; } = default!;
+  private ISaveChunk<GameData> GameChunk { get; set; } = default!;
 
   #endregion
 
@@ -61,68 +36,58 @@ public partial class Game : Node2D, IGame
   #endregion
 
   #region Provisions
-  EntityTable IProvide<EntityTable>.Value() => EntityTable;
-
   ISaveChunk<GameData> IProvide<ISaveChunk<GameData>>.Value() => GameChunk;
 
   public IGameRepo Value() => GameRepo;
   #endregion
 
+  #region Dependencies
+  [Dependency]
+  private IGameFileService GameFileService => this.DependOn<IGameFileService>();
+
+  [Dependency]
+  private IAppRepo AppRepo => this.DependOn<IAppRepo>();
+  #endregion
+
   #region Dependency Lifecycle
   public void Setup()
   {
-    FileSystem = new FileSystem();
-    SaveFilePath = FileSystem.Path.Join(OS.GetUserDataDir(), SAVE_FILE_NAME);
-    var resolver = new SerializableTypeResolver();
-    // Tell our type type resolver about the Godot-specific converters.
-    GodotSerialization.Setup();
-    var upgradeDependencies = new Blackboard();
-    // Create a standard JsonSerializerOptions with our introspective type
-    // resolver and the logic blocks converter.
-    JsonOptions = new JsonSerializerOptions
-    {
-      Converters = { new SerializableTypeConverter(upgradeDependencies) },
-      TypeInfoResolver = resolver,
-      WriteIndented = true,
-    };
+    GameChunk = new SaveChunk<GameData>(
+      (chunk) =>
+      {
+        var gameData = new GameData() { PlayerData = chunk.GetChunkSaveData<PlayerData>() };
+        return gameData;
+      },
+      onLoad: (chunk, data) => chunk.LoadChunkSaveData(data.PlayerData)
+    );
 
-    GameRepo = new GameRepo();
     Logic = new GameLogic();
-    Logic.Set(GameRepo);
   }
 
   public void OnResolved()
   {
-    SaveFile = new SaveFile<GameData>(
-      root: GameChunk,
-      onSave: async (GameData data) =>
-      {
-        var json = JsonSerializer.Serialize(data, JsonOptions);
-        await FileSystem.File.WriteAllTextAsync(SaveFilePath, json);
-      },
-      onLoad: async () =>
-      {
-        // Load the game data from disk.
-        if (!FileSystem.File.Exists(SaveFilePath))
-        {
-          GD.Print("No save file to load :'(");
-          return null;
-        }
+    GameFileService.Chunk = GameChunk;
+    GameFileService.SelectGameFile(0); // TODO later, do this in a more customizable way.
 
-        var json = await FileSystem.File.ReadAllTextAsync(SaveFilePath);
-        return JsonSerializer.Deserialize<GameData>(json, JsonOptions);
-      }
-    );
+    GameRepo = new GameRepo(GameFileService);
+    Logic.Set(GameRepo);
+    Logic.Set(AppRepo);
 
     Binding = Logic.Bind();
-
-    Binding.When<GameLogic.State>(state => GD.Print(state.ToString()));
     Binding.Handle((in GameLogic.Output.SetPauseMode output) => SetGamePaused(output.IsPaused));
 
     this.Provide();
   }
   #endregion
 
+
+  #region Input Callbacks
+  public void StartNewGame() => Logic.Input(new GameLogic.Input.StartGame());
+
+  public void RequestLoadGame() => Logic.Input(new GameLogic.Input.RequestLoad());
+
+  public void RequestSaveGame() => Logic.Input(new GameLogic.Input.RequestSave());
+  #endregion
 
   #region Output Callbacks
   private void SetGamePaused(bool isPaused) => GetTree().Paused = isPaused;
@@ -135,12 +100,15 @@ public partial class Game : Node2D, IGame
   {
     if (Input.IsActionJustPressed(Inputs.Esc))
     {
-      GD.Print("esc");
       Logic.Input(new GameLogic.Input.PauseButtonPressed());
     }
     else if (Input.IsActionJustPressed(Inputs.Quicksave))
     {
-      GameRepo.RequestSave(); // TODO this is debug only, remove
+      RequestSaveGame();
+    }
+    else if (Input.IsActionJustPressed(Inputs.Quickload))
+    {
+      RequestLoadGame();
     }
   }
 

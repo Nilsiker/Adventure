@@ -24,7 +24,7 @@ public partial class SaveNotification : TextureRect, ITextureRect
 
   #region Nodes
   [Node("AnimationPlayer")]
-  private IAnimationPlayer AnimationPlayer { get; set; } = default!;
+  private AnimationPlayer AnimationPlayer { get; set; } = default!;
   #endregion
 
   #region Dependency Lifecycle
@@ -34,7 +34,7 @@ public partial class SaveNotification : TextureRect, ITextureRect
   {
     // Bind functions to state outputs here
     GameRepo.Saving += OnGameSaving;
-    GameRepo.Saved += OnGameSaved;
+    GameRepo.Saved += OnGameSavedDeferred;
   }
   #endregion
 
@@ -51,18 +51,24 @@ public partial class SaveNotification : TextureRect, ITextureRect
   public void OnExitTree()
   {
     GameRepo.Saving -= OnGameSaving;
-    GameRepo.Saved -= OnGameSaved;
+    GameRepo.Saved -= OnGameSavedDeferred;
   }
   #endregion
 
+
+  private void OnGameSavedDeferred() => CallDeferred(nameof(OnGameSaved));
+
   private void OnGameSaved()
   {
+    GD.Print("Saved");
     Texture = _savedTexture;
     AnimationPlayer.Play("fade_out");
   }
 
   private void OnGameSaving()
   {
+    GD.Print("Saving");
+
     Texture = _savingTexture;
     AnimationPlayer.Play("blink");
   }

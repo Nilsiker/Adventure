@@ -16,7 +16,10 @@ public interface IEgg : IArea2D
 [Meta(typeof(IAutoNode))]
 public partial class Egg : Area2D, IEgg
 {
-  public override void _Notification(int what) => this.Notify(what);
+  #region State
+  public IEggLogic Logic { get; private set; } = default!;
+  private EggLogic.IBinding Binding { get; set; } = default!;
+  #endregion
 
   #region Dependencies
   [Dependency]
@@ -24,18 +27,15 @@ public partial class Egg : Area2D, IEgg
   #endregion
 
   #region Nodes
-  [Node("%Sprite")]
+  [Node]
   private Sprite2D Sprite { get; set; } = default!;
   #endregion
 
-  public IEggLogic Logic { get; private set; } = default!;
-  private EggLogic.IBinding Binding { get; set; } = default!;
-
-  public void OnReady() => AreaEntered += OnCollectorDetectorAreaEntered;
+  #region Dependency Lifecycle
+  public void Setup() => Logic = new EggLogic();
 
   public void OnResolved()
   {
-    Logic = new EggLogic();
     Logic.Set(GameRepo);
     Logic.Set(new EggLogic.Data());
 
@@ -43,6 +43,12 @@ public partial class Egg : Area2D, IEgg
     Binding.Handle((in EggLogic.Output.OffsetChanged output) => Sprite.Offset = output.Offset);
     Binding.Handle((in EggLogic.Output.SelfDestruct _) => QueueFree());
   }
+  #endregion
+
+  #region Godot Lifecycle
+  public override void _Notification(int what) => this.Notify(what);
+
+  public void OnReady() => AreaEntered += OnCollectorDetectorAreaEntered;
 
   public override void _PhysicsProcess(double delta) =>
     Logic.Input(new EggLogic.Input.PhysicsProcess(delta));
@@ -62,4 +68,5 @@ public partial class Egg : Area2D, IEgg
     Logic.Stop();
     Binding.Dispose();
   }
+  #endregion§
 }

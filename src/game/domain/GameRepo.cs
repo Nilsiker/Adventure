@@ -1,46 +1,40 @@
 namespace Shellguard.Game.Domain;
 
 using System;
-using System.Threading.Tasks;
 using Chickensoft.Collections;
+using Shellguard.Save;
 
 public interface IGameRepo : IDisposable
 {
-  event Action<EGameOverReason>? Ended;
-  event Action? Saving;
-  event Action? Saved;
-
   IAutoProp<int> EggsCollected { get; }
   IAutoProp<bool> IsPaused { get; }
 
-  void OnGameEnded(EGameOverReason gameOverReason);
+  event Action? Saving;
+  event Action? Saved;
+  event Action? Loading;
+  event Action? Loaded;
   void OnEggCollected();
 
   void Pause();
   void Resume();
   void RequestSave();
+  void RequestLoad();
 }
 
-public class GameRepo : IGameRepo
+public class GameRepo(IGameFileService gameFileService) : IGameRepo
 {
   public IAutoProp<int> EggsCollected => _eggsCollected;
 
   public IAutoProp<bool> IsPaused => _isPaused;
 
-  public event Action<EGameOverReason>? Ended;
+  private readonly AutoProp<int> _eggsCollected = new(0);
+  private readonly AutoProp<bool> _isPaused = new(false);
+  private readonly IGameFileService _gameFileService = gameFileService;
+
   public event Action? Saving;
   public event Action? Saved;
-
-  private readonly AutoProp<int> _eggsCollected;
-  private readonly AutoProp<bool> _isPaused;
-
-  public GameRepo()
-  {
-    _eggsCollected = new AutoProp<int>(0);
-    _isPaused = new AutoProp<bool>(false);
-  }
-
-  public void OnGameEnded(EGameOverReason gameOverReason) => Ended?.Invoke(gameOverReason);
+  public event Action? Loading;
+  public event Action? Loaded;
 
   public void Pause() => _isPaused.OnNext(true);
 
@@ -53,6 +47,11 @@ public class GameRepo : IGameRepo
 
     _isPaused.OnCompleted();
     _isPaused.Dispose();
+
+    Saving = null;
+    Saved = null;
+    Loading = null;
+    Loaded = null;
   }
 
   public void Dispose()
@@ -63,10 +62,15 @@ public class GameRepo : IGameRepo
 
   public void OnEggCollected() => _eggsCollected.OnNext(_eggsCollected.Value + 1);
 
-  public async void RequestSave()
+  public void RequestSave()
   {
     Saving?.Invoke();
-    await Task.Delay(2000);
-    Saved?.Invoke();
+    _gameFileService.Save().ContinueWith((_) => Saved?.Invoke());
+  }
+
+  public void RequestLoad()
+  {
+    Loading?.Invoke();
+    _gameFileService.Load().ContinueWith((_) => Loaded?.Invoke());
   }
 }

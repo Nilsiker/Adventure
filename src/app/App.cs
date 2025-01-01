@@ -1,16 +1,24 @@
 namespace Shellguard;
 
+using System;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
+using Chickensoft.SaveFileBuilder;
 using Godot;
 using Shellguard.Game;
+using Shellguard.Save;
+using Shellguard.SaveData.App;
 
-public interface IApp : INode, IProvide<IAppRepo>;
+public interface IApp : INode, IProvide<IAppRepo>, IProvide<IGameFileService>;
 
 [Meta(typeof(IAutoNode))]
 public partial class App : Node, IApp
 {
+  #region Save
+  private IGameFileService GameFileService { get; set; } = default!;
+  #endregion
+
   #region Exports
   [Export]
   private PackedScene _gameScene = default!;
@@ -18,12 +26,15 @@ public partial class App : Node, IApp
 
   #region State
   private IAppRepo AppRepo { get; set; } = default!;
+  private ISaveChunk<AppData> AppChunk { get; set; } = default!;
   private AppLogic Logic { get; set; } = default!;
   private AppLogic.IBinding Binding { get; set; } = default!;
   #endregion
 
   #region Provisions
-  public IAppRepo Value() => AppRepo;
+  IAppRepo IProvide<IAppRepo>.Value() => AppRepo;
+
+  IGameFileService IProvide<IGameFileService>.Value() => GameFileService;
   #endregion
 
   #region Nodes
@@ -31,10 +42,10 @@ public partial class App : Node, IApp
   private Node2D GameContainer { get; set; } = default!;
 
   [Node("%MainMenu")]
-  private IControl MainMenu { get; set; } = default!;
+  private Control MainMenu { get; set; } = default!;
 
   [Node("AnimationPlayer")]
-  private IAnimationPlayer AnimationPlayer { get; set; } = default!;
+  private AnimationPlayer AnimationPlayer { get; set; } = default!;
 
   private IGame Game { get; set; } = default!;
   #endregion
@@ -42,9 +53,10 @@ public partial class App : Node, IApp
   #region Dependency Lifecycle
   public void Setup()
   {
-    Logic = new();
-    AppRepo = new AppRepo();
+    GameFileService = new GameFileService();
+    AppRepo = new AppRepo(GameFileService);
 
+    Logic = new();
     Logic.Set(AppRepo);
   }
 
@@ -54,21 +66,17 @@ public partial class App : Node, IApp
 
     // Bind functions to state outputs here
     Binding
-      .Handle((in AppLogic.Output.CloseApplication _) => OnQuitApp())
-      .Handle((in AppLogic.Output.SetupGame _) => OnSetupGame())
+      .Handle((in AppLogic.Output.CloseApplication _) => OnOutputQuitApp())
+      .Handle((in AppLogic.Output.SetupGame _) => OnOutputSetupGame())
+      .Handle((in AppLogic.Output.LoadGame _) => OnOutputLoadGame())
       .Handle((in AppLogic.Output.HideGame _) => GameContainer.Visible = false)
-      .Handle((in AppLogic.Output.RemoveGame _) => OnRemoveGame())
-      .Handle((in AppLogic.Output.ShowMainMenu _) => MainMenu.Visible = true)
+      .Handle((in AppLogic.Output.RemoveGame _) => OnOutputRemoveGame())
+      .Handle((in AppLogic.Output.ShowMainMenu _) => CallDeferred(nameof(OnOutputShowMainMenu)))
       .Handle((in AppLogic.Output.HideMainMenu _) => MainMenu.Visible = false)
-      .Handle((in AppLogic.Output.ShowGame _) => GameContainer.Visible = true)
-      .Handle(
-        (in AppLogic.Output.FadeIn _) =>
-        {
-          AnimationPlayer.Play("fade_in");
-          GD.Print("fadein");
-        }
-      )
-      .Handle((in AppLogic.Output.Blackout _) => AnimationPlayer.Play("fade_out"));
+      .Handle((in AppLogic.Output.ShowGame _) => CallDeferred(nameof(OnOutputShowGame)))
+      .Handle((in AppLogic.Output.FadeIn _) => CallDeferred(nameof(OnOutputFadeIn)))
+      .Handle((in AppLogic.Output.FadeOut _) => OnOutputFadeOut())
+      .When<AppLogic.State>(state => GD.Print(state.GetType().Name));
 
     Logic.Start();
     this.Provide();
@@ -100,34 +108,46 @@ public partial class App : Node, IApp
   {
     if (animName == "fade_out")
     {
-      Logic.Input(new AppLogic.Input.BlackoutFinished());
+      Logic.Input(new AppLogic.Input.FadeOutFinished());
     }
   }
 
   private void NewGame() => Logic.Input(new AppLogic.Input.NewGame());
 
+  private void LoadGame() => Logic.Input(new AppLogic.Input.LoadGame());
+
   private void QuitApp() => Logic.Input(new AppLogic.Input.QuitApp());
   #endregion
 
   #region Output Callbacks
-  public void OnSetupGame()
+  private void OnOutputSetupGame()
   {
-    var game = _gameScene.Instantiate();
-    GameContainer.AddChildEx(game);
+    Game = _gameScene.Instantiate<IGame>();
+    GameContainer.AddChildEx(Game);
   }
 
-  public void OnRemoveGame()
+  private void OnOutputLoadGame() => Game.RequestLoadGame();
+
+  private void OnOutputRemoveGame()
   {
     if (GameContainer.GetChildCount() == 0)
     {
       return;
     }
 
-    var game = GameContainer.GetChild(0); // TODO this is called on every Main Menu state, and causes error on first app laod.
+    var game = GameContainer.GetChild(0);
     GameContainer.RemoveChildEx(game);
     game.QueueFree();
   }
 
-  public void OnQuitApp() => GetTree().Quit();
+  private void OnOutputShowGame() => GameContainer.Visible = true;
+
+  private void OnOutputShowMainMenu() => MainMenu.Visible = true;
+
+  private void OnOutputFadeOut() => AnimationPlayer.Play("fade_out");
+
+  private void OnOutputFadeIn() => AnimationPlayer.Play("fade_in");
+
+  private void OnOutputQuitApp() => GetTree().Quit();
   #endregion
 }

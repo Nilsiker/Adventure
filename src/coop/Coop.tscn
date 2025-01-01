@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ctqmgxbki7i03"]
 
 [ext_resource type="Script" path="res://src/coop/Coop.cs" id="1_m3qyv"]
-[ext_resource type="Texture2D" uid="uid://c28wec0h5po4a" path="res://src/coop/coop.png" id="1_ysa17"]
+[ext_resource type="Texture2D" uid="uid://c28wec0h5po4a" path="res://assets/aseprite/coop.png" id="1_ysa17"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0irs1"]
 size = Vector2(32, 30)

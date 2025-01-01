@@ -4,12 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://dlmofixc40ggb" path="res://src/player/Player.tscn" id="2_i5xp0"]
 [ext_resource type="PackedScene" uid="uid://c3ntb3vrkivf6" path="res://src/egg/Egg.tscn" id="3_2703n"]
 [ext_resource type="PackedScene" uid="uid://cjgy551m7xu2y" path="res://src/ui/hud/HUD.tscn" id="4_4llmj"]
-[ext_resource type="Texture2D" uid="uid://b2u7d00v8ka4n" path="res://src/tilemap/visuals/tilemap.png" id="6_a1vec"]
+[ext_resource type="Texture2D" uid="uid://b2u7d00v8ka4n" path="res://assets/aseprite/tilemap.png" id="6_a1vec"]
 [ext_resource type="Script" path="res://src/tilemap/Ground.cs" id="6_w00go"]
 [ext_resource type="PackedScene" uid="uid://ctqmgxbki7i03" path="res://src/coop/Coop.tscn" id="8_j5ald"]
-[ext_resource type="Texture2D" uid="uid://qx536tka6pe4" path="res://src/chicken/visuals/eganta.png" id="9_gspk6"]
+[ext_resource type="Texture2D" uid="uid://qx536tka6pe4" path="res://assets/aseprite/eganta.png" id="9_gspk6"]
 [ext_resource type="PackedScene" uid="uid://bugujp5udm6s4" path="res://src/ui/pause_menu/PauseMenu.tscn" id="10_6ffr8"]
-[ext_resource type="Texture2D" uid="uid://dcqum2hakssii" path="res://src/fence.png" id="10_udue6"]
+[ext_resource type="Texture2D" uid="uid://dcqum2hakssii" path="res://assets/aseprite/fence.png" id="10_udue6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1toge"]
 texture = ExtResource("6_a1vec")

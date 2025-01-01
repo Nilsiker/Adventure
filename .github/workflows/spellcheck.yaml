@@ -1,6 +1,8 @@
 name: '🧑‍🏫 Spellcheck'
 on:
   push:
+    branches:
+    - main
 
 jobs:
   spellcheck:
