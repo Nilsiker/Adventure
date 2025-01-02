@@ -20,8 +20,6 @@ public partial class World : Node2D, IWorld
   #endregion
 
   #region Nodes
-  [Node]
-  private Node Terrain { get; set; } = default!;
   #endregion
 
   #region Dependency Lifecycle
@@ -32,10 +30,7 @@ public partial class World : Node2D, IWorld
     Binding = Logic.Bind();
 
     // Bind functions to state outputs here
-    foreach (var child in Terrain.GetChildren())
-    {
-      child.Call("_update_tileset");
-    }
+
     Logic.Start();
   }
   #endregion
