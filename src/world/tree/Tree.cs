@@ -7,7 +7,10 @@ using Chickensoft.LogicBlocks;
 using Godot;
 using Shellguard.Player;
 
-public interface ITree : IStaticBody2D { }
+public interface ITree : IStaticBody2D
+{
+  void Chop(float strength);
+}
 
 [Meta(typeof(IAutoNode))]
 public partial class Tree : StaticBody2D, ITree
@@ -39,7 +42,7 @@ public partial class Tree : StaticBody2D, ITree
     FadeArea.BodyExited += OnFadeAreaBodyExited;
   }
 
-  Tween _canopyFadeTween;
+  private Tween? _canopyFadeTween;
 
   private void OnFadeAreaBodyExited(Node2D body)
   {
@@ -109,6 +112,10 @@ public partial class Tree : StaticBody2D, ITree
 
   #region Output Callbacks
   #endregion
+
+  #region IChoppable
+  public void Chop(float strength) { }
+  #endregion
 }
 
 public interface ITreeLogic : ILogicBlock<TreeLogic.State>;
@@ -118,6 +125,21 @@ public interface ITreeLogic : ILogicBlock<TreeLogic.State>;
 public partial class TreeLogic : LogicBlock<TreeLogic.State>, ITreeLogic
 {
   public override Transition GetInitialState() => To<State>();
+
+  public enum Stage
+  {
+    Seedling,
+    Sapling,
+    Young,
+    Mature,
+  }
+
+  public struct Data
+  {
+    public float Health;
+    public Stage Stage;
+    public int Age;
+  }
 
   public static class Input { }
 

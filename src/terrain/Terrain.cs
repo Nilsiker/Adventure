@@ -22,7 +22,7 @@ public partial class Terrain : Node, INode, ITerrain
 {
   #region Exports
   [Export]
-  private Array<Layer> _layers;
+  private Array<Layer> _layers = [];
   #endregion
 
   #region State
