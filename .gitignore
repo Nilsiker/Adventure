@@ -14,3 +14,6 @@ obj/
 
 addons/
 _assets/
+addons/*
+!addons/.editorconfig
+.addons/*

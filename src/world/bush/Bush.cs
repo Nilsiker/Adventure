@@ -39,7 +39,7 @@ public partial class Bush : Area2D, IBush
     FadeArea.BodyExited += OnFadeAreaBodyExited;
   }
 
-  Tween _canopyFadeTween;
+  private Tween _canopyFadeTween = default!;
 
   private void OnFadeAreaBodyExited(Node2D body)
   {

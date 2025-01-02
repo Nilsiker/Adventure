@@ -1,0 +1,24 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://cmmn6c8cs6s1u"]
+
+[ext_resource type="Texture2D" uid="uid://cga5qv6ec8dfb" path="res://assets/aseprite/tileset_grass.png" id="1_5o0ox"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_h1b7f"]
+texture = ExtResource("1_5o0ox")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+
+[resource]
+sources/1 = SubResource("TileSetAtlasSource_h1b7f")

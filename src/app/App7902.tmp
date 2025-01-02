@@ -1,0 +1,94 @@
+[gd_scene load_steps=8 format=3 uid="uid://c6kcpi5ifej81"]
+
+[ext_resource type="PackedScene" uid="uid://b5hwjhs1mve4" path="res://src/ui/main_menu/MainMenu.tscn" id="1_a12ia"]
+[ext_resource type="Script" path="res://src/app/App.cs" id="1_bi7yx"]
+[ext_resource type="PackedScene" uid="uid://bmmkpsnp7c31l" path="res://src/game/Game.tscn" id="2_pvy06"]
+
+[sub_resource type="Animation" id="Animation_xdrll"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("UI/Blackout:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_extr3"]
+resource_name = "fade_in"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("UI/Blackout:color")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0.0836, 0.0836, 0.11, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_51wg8"]
+resource_name = "fade_out"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("UI/Blackout:color")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.0836, 0.0836, 0.11, 0), Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_y4eqn"]
+_data = {
+"RESET": SubResource("Animation_xdrll"),
+"fade_in": SubResource("Animation_extr3"),
+"fade_out": SubResource("Animation_51wg8")
+}
+
+[node name="App" type="Node"]
+process_mode = 3
+script = ExtResource("1_bi7yx")
+_gameScene = ExtResource("2_pvy06")
+
+[node name="Save" type="Node" parent="."]
+
+[node name="Soundtrack" type="AudioStreamPlayer" parent="."]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MainMenu" parent="UI" instance=ExtResource("1_a12ia")]
+unique_name_in_owner = true
+top_level = true
+
+[node name="Blackout" type="ColorRect" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_y4eqn")
+}
+
+[node name="GameContainer" type="Node2D" parent="."]
+
+[connection signal="LoadPressed" from="UI/MainMenu" to="." method="LoadGame"]
+[connection signal="PlayPressed" from="UI/MainMenu" to="." method="NewGame"]
+[connection signal="QuitPressed" from="UI/MainMenu" to="." method="QuitApp"]

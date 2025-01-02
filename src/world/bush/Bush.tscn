@@ -49,3 +49,5 @@ shape = SubResource("RectangleShape2D_c41w6")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 rotation = 1.57079
 shape = SubResource("CapsuleShape2D_rv2sx")
+
+[connection signal="draw" from="Greenery" to="." method="OnGreeneryDraw"]
