@@ -1,4 +1,35 @@
 @startuml TreeLogic
-state "TreeLogic State" as Shellguard_TreeLogic_State
-[*] --> Shellguard_TreeLogic_State
+state "TreeLogic State" as Shellguard_Tree_TreeLogic_State {
+  state "Mature" as Shellguard_Tree_TreeLogic_State_Mature {
+    state "Stump" as Shellguard_Tree_TreeLogic_State_Mature_Stump
+  }
+  state "Sapling" as Shellguard_Tree_TreeLogic_State_Sapling
+  state "Seedling" as Shellguard_Tree_TreeLogic_State_Seedling
+  state "Young" as Shellguard_Tree_TreeLogic_State_Young {
+    state "Stump" as Shellguard_Tree_TreeLogic_State_Young_Stump
+  }
+}
+
+Shellguard_Tree_TreeLogic_State --> Shellguard_Tree_TreeLogic_State : Age
+Shellguard_Tree_TreeLogic_State --> Shellguard_Tree_TreeLogic_State : Damage
+Shellguard_Tree_TreeLogic_State --> Shellguard_Tree_TreeLogic_State : OccludingEntity
+Shellguard_Tree_TreeLogic_State_Mature --> Shellguard_Tree_TreeLogic_State_Mature_Stump : ChopDown
+Shellguard_Tree_TreeLogic_State_Mature_Stump --> Shellguard_Tree_TreeLogic_State_Mature_Stump : ChopDown
+Shellguard_Tree_TreeLogic_State_Sapling --> Shellguard_Tree_TreeLogic_State_Sapling : ChopDown
+Shellguard_Tree_TreeLogic_State_Sapling --> Shellguard_Tree_TreeLogic_State_Young : IncreaseMaturity
+Shellguard_Tree_TreeLogic_State_Seedling --> Shellguard_Tree_TreeLogic_State_Sapling : IncreaseMaturity
+Shellguard_Tree_TreeLogic_State_Seedling --> Shellguard_Tree_TreeLogic_State_Seedling : ChopDown
+Shellguard_Tree_TreeLogic_State_Young --> Shellguard_Tree_TreeLogic_State_Mature : IncreaseMaturity
+Shellguard_Tree_TreeLogic_State_Young --> Shellguard_Tree_TreeLogic_State_Young_Stump : ChopDown
+Shellguard_Tree_TreeLogic_State_Young_Stump --> Shellguard_Tree_TreeLogic_State_Young_Stump : ChopDown
+
+Shellguard_Tree_TreeLogic_State : OnDamage → Rustle
+Shellguard_Tree_TreeLogic_State : OnEnter → StageUpdated
+Shellguard_Tree_TreeLogic_State : OnOccludingEntity → UpdateTransparency
+Shellguard_Tree_TreeLogic_State_Mature_Stump : OnChopDown → Destroy
+Shellguard_Tree_TreeLogic_State_Sapling : OnChopDown → Destroy
+Shellguard_Tree_TreeLogic_State_Seedling : OnChopDown → Destroy
+Shellguard_Tree_TreeLogic_State_Young_Stump : OnChopDown → Destroy
+
+[*] --> Shellguard_Tree_TreeLogic_State_Seedling
 @enduml

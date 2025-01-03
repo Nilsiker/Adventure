@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dvwev8c4mp8fw"]
+[gd_scene load_steps=9 format=3 uid="uid://dvwev8c4mp8fw"]
 
 [ext_resource type="Script" path="res://src/world/tree/Tree.cs" id="1_i2ua8"]
 [ext_resource type="Texture2D" uid="uid://c7l8evo24v4q3" path="res://assets/aseprite/canopy.png" id="2_6qw3r"]
@@ -10,6 +10,79 @@ size = Vector2(52, 59.75)
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rv2sx"]
 radius = 8.0
 height = 26.0
+
+[sub_resource type="Animation" id="Animation_caiac"]
+resource_name = "rustle"
+length = 0.12
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Canopy:offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.0531818, 0.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1.375, -43.9), Vector2(0.585, -43.9), Vector2(2.55, -43.9), Vector2(1.375, -43.9)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Trunk:offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.0666667, 0.0914187),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1.375, -43.9), Vector2(0.585, -43.9), Vector2(2.55, -43.9), Vector2(1.375, -43.9)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Canopy:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.0334333, 0.0531818, 0.1, 0.12),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.0, -0.0349066, 0.0349066, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_ak7j2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Canopy:offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1.375, -43.9)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Canopy:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_iphw7"]
+_data = {
+"RESET": SubResource("Animation_ak7j2"),
+"rustle": SubResource("Animation_caiac")
+}
 
 [node name="Tree" type="StaticBody2D"]
 script = ExtResource("1_i2ua8")
@@ -73,3 +146,9 @@ shape = SubResource("RectangleShape2D_c41w6")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 rotation = 1.57079
 shape = SubResource("CapsuleShape2D_rv2sx")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_iphw7")
+}

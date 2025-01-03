@@ -1,4 +1,4 @@
-namespace Shellguard;
+namespace Shellguard.Tree;
 
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;

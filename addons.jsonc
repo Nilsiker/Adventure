@@ -10,12 +10,6 @@
   // "path": "addons", // default
   // "cache": ".addons", // default
   "addons": {
-    "imrp": { // name must match the folder name in the repository
-      "url": "https://github.com/MakovWait/improved_resource_picker",
-      // "source": "remote", // default
-      // "checkout": "main", // default
-      "subfolder": "addons/imrp"
-    },
     "TileMapDual": {
       "url": "https://github.com/pablogila/TileMapDual",
       "checkout": "v4.0.2-dev2",

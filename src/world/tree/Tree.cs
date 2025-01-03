@@ -1,16 +1,14 @@
-namespace Shellguard;
+namespace Shellguard.Tree;
 
+using System;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
-using Chickensoft.LogicBlocks;
 using Godot;
 using Shellguard.Player;
+using Shellguard.Traits;
 
-public interface ITree : IStaticBody2D
-{
-  void Chop(float strength);
-}
+public interface ITree : IStaticBody2D, IDamageable { }
 
 [Meta(typeof(IAutoNode))]
 public partial class Tree : StaticBody2D, ITree
@@ -30,6 +28,9 @@ public partial class Tree : StaticBody2D, ITree
   private Area2D FadeArea { get; set; } = default!;
 
   [Node]
+  private AnimationPlayer AnimationPlayer { get; set; } = default!;
+
+  [Node]
   private Sprite2D Canopy { get; set; } = default!;
   #endregion
 
@@ -42,50 +43,31 @@ public partial class Tree : StaticBody2D, ITree
     FadeArea.BodyExited += OnFadeAreaBodyExited;
   }
 
-  private Tween? _canopyFadeTween;
-
-  private void OnFadeAreaBodyExited(Node2D body)
-  {
-    if (body is IPlayer)
-    {
-      if (_canopyFadeTween != null && _canopyFadeTween.IsRunning())
-      {
-        _canopyFadeTween.Kill();
-      }
-
-      _canopyFadeTween = CreateTween();
-      _canopyFadeTween.TweenProperty(Canopy, "modulate:a", 1.0f, 1.0 - Canopy.Modulate.A);
-    }
-  }
-
-  private void OnFadeAreaBodyEntered(Node2D body)
-  {
-    if (body is IPlayer)
-    {
-      if (_canopyFadeTween != null && _canopyFadeTween.IsRunning())
-      {
-        _canopyFadeTween.Kill();
-      }
-
-      _canopyFadeTween = CreateTween();
-      _canopyFadeTween.TweenProperty(
-        Canopy,
-        "modulate:a",
-        _occlusionTransparency,
-        Canopy.Modulate.A - _occlusionTransparency
-      );
-    }
-  }
-
   public void OnResolved()
   {
     Binding = Logic.Bind();
 
     // Bind functions to state outputs here
+    Binding
+      .Handle(
+        (in TreeLogic.Output.UpdateTransparency output) => OnOutputUpdateTransparency(output.Alpha)
+      )
+      .Handle((in TreeLogic.Output.Rustle output) => OnOutputRustle(output.Strength));
+
+    Logic.Set(
+      new TreeLogic.Data
+      {
+        Age = 0.0f,
+        Health = 1.0f,
+        TimeToMature = 10.0f,
+      }
+    );
 
     Logic.Start();
   }
   #endregion
+
+
 
   #region Godot Lifecycle
   public override void _Notification(int what) => this.Notify(what);
@@ -108,12 +90,56 @@ public partial class Tree : StaticBody2D, ITree
   #endregion
 
   #region Input Callbacks
+  private void OnFadeAreaBodyEntered(Node2D body)
+  {
+    if (body is IPlayer)
+    {
+      Logic.Input(new TreeLogic.Input.OccludingEntity(true));
+    }
+  }
+
+  private void OnFadeAreaBodyExited(Node2D body)
+  {
+    if (body is IPlayer)
+    {
+      Logic.Input(new TreeLogic.Input.OccludingEntity(false));
+    }
+  }
   #endregion
 
   #region Output Callbacks
-  #endregion
+  private Tween? _canopyFadeTween; // NOTE is there a better place to put this?
 
-  #region IChoppable
-  public void Chop(float strength) { }
+  private void OnOutputUpdateTransparency(float alpha)
+  {
+    if (_canopyFadeTween != null && _canopyFadeTween.IsRunning())
+    {
+      _canopyFadeTween.Kill();
+    }
+
+    _canopyFadeTween = CreateTween();
+    _canopyFadeTween.TweenProperty(
+      Canopy,
+      "modulate:a",
+      alpha,
+      1.0 - Math.Abs(Canopy.Modulate.A - alpha)
+    );
+  }
+
+  private Tween? _rustleTween; // NOTE is there a better place to put this?
+
+  private void OnOutputRustle(float strength) => AnimationPlayer.Play("rustle");
+
+  #endregion
+  public override void _UnhandledInput(InputEvent @event)
+  {
+    if (Input.IsKeyLabelPressed(Key.P))
+    {
+      Logic.Input(new TreeLogic.Input.Damage(1.0f));
+    }
+  }
+
+  #region IDamageable
+  public void Damage(float damage) => Logic.Input(new TreeLogic.Input.Damage(damage));
   #endregion
 }

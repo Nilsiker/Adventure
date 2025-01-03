@@ -2,7 +2,6 @@ namespace Shellguard;
 
 using System;
 using Chickensoft.Collections;
-using Godot;
 using Shellguard.Save;
 
 public interface IAppRepo : IDisposable
