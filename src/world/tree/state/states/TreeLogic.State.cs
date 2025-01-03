@@ -1,6 +1,7 @@
 namespace Shellguard.Tree;
 
 using Chickensoft.LogicBlocks;
+using Godot;
 
 public partial class TreeLogic
 {
@@ -10,15 +11,22 @@ public partial class TreeLogic
       IGet<Input.Damage>,
       IGet<Input.OccludingEntity>
   {
+    protected abstract EStage Stage { get; }
+    protected abstract float Health { get; }
+    protected abstract float TimeToMature { get; }
+
     public State()
     {
-      OnAttach(() => { });
+      OnAttach(() =>
+      {
+        var data = Get<Data>();
+        data.Health = Health;
+        data.TimeToMature = TimeToMature;
+      });
       OnDetach(() => { });
 
       this.OnEnter(() => Output(new Output.StageUpdated(Stage)));
     }
-
-    protected abstract EStage Stage { get; }
 
     public State(StateLogic<State> original)
       : base(original) { }

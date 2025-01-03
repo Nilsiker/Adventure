@@ -15,7 +15,8 @@ public partial class Tree : StaticBody2D, ITree
 {
   #region Exports
   [Export]
-  private float _occlusionTransparency = 0.6f;
+  private TreeSettings Settings { get; set; } =
+    GD.Load<TreeSettings>("res://src/world/tree/visuals/DefaultTreeSettings.tres");
   #endregion
 
   #region State
@@ -42,6 +43,8 @@ public partial class Tree : StaticBody2D, ITree
   {
     Logic = new();
 
+    Logic.Set(Settings as ITreeSettings);
+
     FadeArea.BodyEntered += OnFadeAreaBodyEntered;
     FadeArea.BodyExited += OnFadeAreaBodyExited;
   }
@@ -56,7 +59,10 @@ public partial class Tree : StaticBody2D, ITree
         (in TreeLogic.Output.UpdateTransparency output) => OnOutputUpdateTransparency(output.Alpha)
       )
       .Handle((in TreeLogic.Output.Rustle output) => OnOutputRustle(output.Strength))
-      .Handle((in TreeLogic.Output.Damaged _) => OnOutputDamaged());
+      .Handle((in TreeLogic.Output.Damaged _) => OnOutputDamaged())
+      .Handle((in TreeLogic.Output.Destroy _) => OnOutputDestroyed());
+
+    Binding.When<TreeLogic.State>(state => GD.Print(state.GetType().FullName));
 
     Logic.Set(
       new TreeLogic.Data
@@ -73,18 +79,13 @@ public partial class Tree : StaticBody2D, ITree
 
 
 
+
   #region Godot Lifecycle
   public override void _Notification(int what) => this.Notify(what);
 
-  public void OnReady()
-  {
-    SetProcess(true);
-    SetPhysicsProcess(true);
-  }
+  public void OnReady() => SetProcess(true);
 
-  public void OnProcess(double delta) { }
-
-  public void OnPhysicsProcess(double delta) { }
+  public void OnProcess(double delta) => Logic.Input(new TreeLogic.Input.Age((float)delta));
 
   public void OnExitTree()
   {
@@ -132,9 +133,16 @@ public partial class Tree : StaticBody2D, ITree
 
   private Tween? _rustleTween; // NOTE is there a better place to put this?
 
-  private void OnOutputRustle(float strength) => AnimationPlayer.Play("rustle");
+  private void OnOutputRustle(float strength)
+  {
+    AnimationPlayer.Play("rustle");
+    GetNode<CpuParticles2D>("Leaves").Emitting = true;
+  }
 
   private void OnOutputDamaged() => AudioChop.Play();
+
+  private void OnOutputDestroyed() => QueueFree();
+
   #endregion
 
   public override void _UnhandledInput(InputEvent @event)

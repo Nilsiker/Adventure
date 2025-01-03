@@ -1,5 +1,7 @@
 namespace Shellguard.Tree;
 
+using Chickensoft.LogicBlocks;
+
 public partial class TreeLogic
 {
   public partial record State
@@ -13,6 +15,10 @@ public partial class TreeLogic
       }
 
       protected override EStage Stage => EStage.Sapling;
+
+      protected override float Health => 1;
+
+      protected override float TimeToMature => Get<ITreeSettings>().SaplingTimeToMature;
 
       public Transition On(in Input.ChopDown input)
       {

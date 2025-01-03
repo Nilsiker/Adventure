@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dvwev8c4mp8fw"]
+[gd_scene load_steps=17 format=3 uid="uid://dvwev8c4mp8fw"]
 
 [ext_resource type="Script" path="res://src/world/tree/Tree.cs" id="1_i2ua8"]
 [ext_resource type="Texture2D" uid="uid://c7l8evo24v4q3" path="res://assets/aseprite/canopy.png" id="2_6qw3r"]
@@ -15,6 +15,33 @@ size = Vector2(52, 59.75)
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rv2sx"]
 radius = 8.0
 height = 26.0
+
+[sub_resource type="Animation" id="Animation_ak7j2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Canopy:offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1.375, -43.9)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Canopy:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_caiac"]
 resource_name = "rustle"
@@ -56,33 +83,6 @@ tracks/2/keys = {
 "values": [0.0, 0.0, 0.0, -0.0349066, 0.0349066, 0.0]
 }
 
-[sub_resource type="Animation" id="Animation_ak7j2"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Canopy:offset")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1.375, -43.9)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Canopy:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_iphw7"]
 _data = {
 "RESET": SubResource("Animation_ak7j2"),
@@ -98,9 +98,14 @@ stream_2/stream = ExtResource("6_5ql43")
 stream_3/stream = ExtResource("7_x63tw")
 stream_4/stream = ExtResource("8_o4kqe")
 
+[sub_resource type="Gradient" id="Gradient_m8sru"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_kuvde"]
+colors = PackedColorArray(0.423529, 0.439216, 0.32549, 1, 0.101961, 0.109804, 0.0941176, 1)
+
 [node name="Tree" type="StaticBody2D"]
 script = ExtResource("1_i2ua8")
-_occlusionTransparency = 0.5
 
 [node name="Trunk" type="Sprite2D" parent="."]
 texture_filter = 1
@@ -154,6 +159,7 @@ metadata/_aseprite_wizard_source_file_hash_ = "bf08c2a8d2ea1f857f9834a8bfbfab72"
 unique_name_in_owner = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Canopy/FadeArea"]
+visible = false
 position = Vector2(0, -63.125)
 shape = SubResource("RectangleShape2D_c41w6")
 
@@ -170,4 +176,26 @@ libraries = {
 [node name="AudioChop" type="AudioStreamPlayer2D" parent="."]
 unique_name_in_owner = true
 stream = SubResource("AudioStreamRandomizer_esxqg")
+volume_db = -3.0
 pitch_scale = 0.75
+
+[node name="Leaves" type="CPUParticles2D" parent="."]
+z_index = 1
+position = Vector2(0, -59)
+emitting = false
+amount = 20
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+emission_shape = 1
+emission_sphere_radius = 30.0
+spread = 180.0
+gravity = Vector2(0, 160)
+initial_velocity_max = 60.0
+angular_velocity_max = 180.0
+radial_accel_min = -3.0
+radial_accel_max = 3.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+color_ramp = SubResource("Gradient_m8sru")
+color_initial_ramp = SubResource("Gradient_kuvde")

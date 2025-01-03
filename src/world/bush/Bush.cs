@@ -18,8 +18,8 @@ public partial class Bush : Area2D, IBush
   #endregion
 
   #region State
-  private TreeLogic Logic { get; set; } = default!;
-  private TreeLogic.IBinding Binding { get; set; } = default!;
+  private BushLogic Logic { get; set; } = default!;
+  private BushLogic.IBinding Binding { get; set; } = default!;
   #endregion
 
   #region Nodes

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TreeSettings" load_steps=2 format=3 uid="uid://qst24se030ga"]
+
+[ext_resource type="Script" path="res://src/world/tree/TreeSettings.cs" id="1_81paf"]
+
+[resource]
+script = ExtResource("1_81paf")
+YoungHealth = 10.0
+MatureHealth = 20.0
+SeedlingTimeToMature = 5.0
+SaplingTimeToMature = 10.0
+YoungTimeToMature = 10.0

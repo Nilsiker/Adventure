@@ -17,7 +17,10 @@ public partial class WeaponLogic : LogicBlock<WeaponLogic.State>
       OnDetach(() => { });
     }
 
-    public partial record Aiming : State { }
+    public partial record Aiming : State, IGet<Input.QueueAttack>
+    {
+      public Transition On(in Input.QueueAttack input) => To<Swinging>();
+    }
 
     public partial record Swinging : State { }
   }

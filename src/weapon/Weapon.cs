@@ -37,17 +37,24 @@ public partial class Weapon : Area2D, IWeapon
   {
     Binding = Logic.Bind();
     Binding.Handle(
-      (in WeaponLogic.Output.CheckForDamageables output) => Monitoring = output.Monitoring
+      (in WeaponLogic.Output.CheckForDamageables output) =>
+        OnOutputCheckForDamageables(output.Monitoring)
     );
 
     Logic.Start();
   }
+
+  #region Output Callbacks
+  private void OnOutputCheckForDamageables(bool monitoring) => Monitoring = monitoring;
+  #endregion
 
   #region Interface
   public Vector2 Direction => Vector2.FromAngle(GlobalRotation);
   public string Animation => _animation;
 
   public void Attack() => Logic.Input(new WeaponLogic.Input.QueueAttack());
+
+  public void StopAttack() => Logic.Input(new WeaponLogic.Input.FinishAttack());
 
   public void Aim(Vector2 atPosition)
   {
