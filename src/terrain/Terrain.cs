@@ -36,15 +36,7 @@ public partial class Terrain : Node, INode, ITerrain
   #endregion
 
   #region Dependency Lifecycle
-  public void Setup()
-  {
-    Logic = new();
-
-    foreach (var child in GetChildren().OfType<TileMapLayer>())
-    {
-      child.Call("_update_tileset");
-    }
-  }
+  public void Setup() => Logic = new();
 
   public void OnResolved()
   {
