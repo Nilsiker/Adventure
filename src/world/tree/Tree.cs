@@ -55,7 +55,8 @@ public partial class Tree : StaticBody2D, ITree
       .Handle(
         (in TreeLogic.Output.UpdateTransparency output) => OnOutputUpdateTransparency(output.Alpha)
       )
-      .Handle((in TreeLogic.Output.Rustle output) => OnOutputRustle(output.Strength));
+      .Handle((in TreeLogic.Output.Rustle output) => OnOutputRustle(output.Strength))
+      .Handle((in TreeLogic.Output.Damaged _) => OnOutputDamaged());
 
     Logic.Set(
       new TreeLogic.Data
@@ -133,7 +134,9 @@ public partial class Tree : StaticBody2D, ITree
 
   private void OnOutputRustle(float strength) => AnimationPlayer.Play("rustle");
 
+  private void OnOutputDamaged() => AudioChop.Play();
   #endregion
+
   public override void _UnhandledInput(InputEvent @event)
   {
     if (Input.IsKeyLabelPressed(Key.P))
@@ -143,10 +146,6 @@ public partial class Tree : StaticBody2D, ITree
   }
 
   #region IDamageable
-  public void Damage(float damage)
-  {
-    Logic.Input(new TreeLogic.Input.Damage(damage));
-    AudioChop.Play(); // TODO go through Logic?
-  }
+  public void Damage(float damage) => Logic.Input(new TreeLogic.Input.Damage(damage));
   #endregion
 }

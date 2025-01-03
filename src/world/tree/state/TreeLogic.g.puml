@@ -23,7 +23,7 @@ Shellguard_Tree_TreeLogic_State_Young --> Shellguard_Tree_TreeLogic_State_Mature
 Shellguard_Tree_TreeLogic_State_Young --> Shellguard_Tree_TreeLogic_State_Young_Stump : ChopDown
 Shellguard_Tree_TreeLogic_State_Young_Stump --> Shellguard_Tree_TreeLogic_State_Young_Stump : ChopDown
 
-Shellguard_Tree_TreeLogic_State : OnDamage → Rustle
+Shellguard_Tree_TreeLogic_State : OnDamage → Damaged, Rustle
 Shellguard_Tree_TreeLogic_State : OnEnter → StageUpdated
 Shellguard_Tree_TreeLogic_State : OnOccludingEntity → UpdateTransparency
 Shellguard_Tree_TreeLogic_State_Mature_Stump : OnChopDown → Destroy

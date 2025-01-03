@@ -42,6 +42,7 @@ public partial class TreeLogic
       data.Health -= input.Amount;
 
       Output(new Output.Rustle(input.Amount));
+      Output(new Output.Damaged());
 
       if (data.Health <= 0)
       {

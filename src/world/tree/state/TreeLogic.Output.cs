@@ -10,6 +10,8 @@ public partial class TreeLogic
 
     public record struct Rustle(float Strength);
 
+    public record struct Damaged;
+
     public record struct ProduceWood(int Amount); // TODO replace with Produce/Drop Item method, passing item data?
 
     public record struct Destroy();
