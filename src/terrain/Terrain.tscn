@@ -49,7 +49,6 @@ shader_parameter/fill_texture = ExtResource("6_f4guw")
 
 [node name="Terrain" type="Node"]
 script = ExtResource("1_2dihw")
-_layers = [0, 1]
 
 [node name="Dirt" type="TileMapLayer" parent="."]
 self_modulate = Color(1, 1, 1, 0)
@@ -73,5 +72,6 @@ texture_resolution = Vector2i(64, 64)
 
 [node name="DebugLabel" type="Label" parent="."]
 unique_name_in_owner = true
+visible = false
 offset_right = 40.0
 offset_bottom = 23.0

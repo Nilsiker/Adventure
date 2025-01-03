@@ -21,8 +21,6 @@ public interface ITerrain : INode { }
 public partial class Terrain : Node, INode, ITerrain
 {
   #region Exports
-  [Export]
-  private Array<Layer> _layers = [];
   #endregion
 
   #region State
@@ -57,10 +55,7 @@ public partial class Terrain : Node, INode, ITerrain
     SetPhysicsProcess(true);
   }
 
-  public void OnProcess(double delta)
-  {
-    CheckTopLayer();
-  }
+  public void OnProcess(double delta) => CheckTopLayer();
 
   public void OnPhysicsProcess(double delta) { }
 
@@ -86,7 +81,6 @@ public partial class Terrain : Node, INode, ITerrain
         return;
       }
     }
-    DebugLabel.Visible = false;
   }
   #endregion
 

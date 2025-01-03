@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/world/tree/Tree.cs" id="1_i2ua8"]
 [ext_resource type="Texture2D" uid="uid://c7l8evo24v4q3" path="res://assets/aseprite/canopy.png" id="2_6qw3r"]
-[ext_resource type="Texture2D" uid="uid://cn4d6m2yfyxwx" path="res://assets/aseprite/trunk.png" id="2_xg36r"]
+[ext_resource type="Texture2D" uid="uid://dfumwjwxbm81u" path="res://assets/aseprite/.png" id="2_th0do"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c41w6"]
 size = Vector2(52, 59.75)
@@ -17,7 +17,7 @@ _occlusionTransparency = 0.5
 
 [node name="Trunk" type="Sprite2D" parent="."]
 texture_filter = 1
-texture = ExtResource("2_xg36r")
+texture = ExtResource("2_th0do")
 offset = Vector2(1.375, -43.9)
 metadata/_aseprite_wizard_interface_config_ = {
 "layer_section": true,
@@ -36,7 +36,7 @@ metadata/_aseprite_wizard_config_ = {
 "slice": "",
 "source": "res://assets/aseprite/tree.aseprite"
 }
-metadata/_aseprite_wizard_source_file_hash_ = "8641acfc4a7163d40757be15e3d4481c"
+metadata/_aseprite_wizard_source_file_hash_ = "ed1581518124f3ce920f618ea4549d62"
 
 [node name="Canopy" type="Sprite2D" parent="."]
 unique_name_in_owner = true
@@ -61,7 +61,7 @@ metadata/_aseprite_wizard_config_ = {
 "slice": "",
 "source": "res://assets/aseprite/tree.aseprite"
 }
-metadata/_aseprite_wizard_source_file_hash_ = "7b63652231478ea3c5f81fa728220fb7"
+metadata/_aseprite_wizard_source_file_hash_ = "bf08c2a8d2ea1f857f9834a8bfbfab72"
 
 [node name="FadeArea" type="Area2D" parent="Canopy"]
 unique_name_in_owner = true
