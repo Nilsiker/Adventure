@@ -31,6 +31,9 @@ public partial class Tree : StaticBody2D, ITree
   private AnimationPlayer AnimationPlayer { get; set; } = default!;
 
   [Node]
+  private AudioStreamPlayer2D AudioChop { get; set; } = default!;
+
+  [Node]
   private Sprite2D Canopy { get; set; } = default!;
   #endregion
 
@@ -135,11 +138,15 @@ public partial class Tree : StaticBody2D, ITree
   {
     if (Input.IsKeyLabelPressed(Key.P))
     {
-      Logic.Input(new TreeLogic.Input.Damage(1.0f));
+      Damage(1.0f);
     }
   }
 
   #region IDamageable
-  public void Damage(float damage) => Logic.Input(new TreeLogic.Input.Damage(damage));
+  public void Damage(float damage)
+  {
+    Logic.Input(new TreeLogic.Input.Damage(damage));
+    AudioChop.Play(); // TODO go through Logic?
+  }
   #endregion
 }

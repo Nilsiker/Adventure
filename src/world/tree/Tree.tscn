@@ -1,8 +1,13 @@
-[gd_scene load_steps=9 format=3 uid="uid://dvwev8c4mp8fw"]
+[gd_scene load_steps=15 format=3 uid="uid://dvwev8c4mp8fw"]
 
 [ext_resource type="Script" path="res://src/world/tree/Tree.cs" id="1_i2ua8"]
 [ext_resource type="Texture2D" uid="uid://c7l8evo24v4q3" path="res://assets/aseprite/canopy.png" id="2_6qw3r"]
 [ext_resource type="Texture2D" uid="uid://dfumwjwxbm81u" path="res://assets/aseprite/.png" id="2_th0do"]
+[ext_resource type="AudioStream" uid="uid://8n8ik7fey2de" path="res://assets/ovani/Harvesting/Wood/Wood Chop Solid A.wav" id="4_ka2ud"]
+[ext_resource type="AudioStream" uid="uid://dn44j1kgdl6sd" path="res://assets/ovani/Harvesting/Wood/Wood Chop Solid B.wav" id="5_1hcxh"]
+[ext_resource type="AudioStream" uid="uid://baegodon8r255" path="res://assets/ovani/Harvesting/Wood/Wood Chop Solid C.wav" id="6_5ql43"]
+[ext_resource type="AudioStream" uid="uid://dpgwk66sq1t38" path="res://assets/ovani/Harvesting/Wood/Wood Chop Solid D.wav" id="7_x63tw"]
+[ext_resource type="AudioStream" uid="uid://cc0lt5qpfmre" path="res://assets/ovani/Harvesting/Wood/Wood Chop Solid E.wav" id="8_o4kqe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c41w6"]
 size = Vector2(52, 59.75)
@@ -84,6 +89,15 @@ _data = {
 "rustle": SubResource("Animation_caiac")
 }
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_esxqg"]
+random_pitch = 1.1
+streams_count = 5
+stream_0/stream = ExtResource("4_ka2ud")
+stream_1/stream = ExtResource("5_1hcxh")
+stream_2/stream = ExtResource("6_5ql43")
+stream_3/stream = ExtResource("7_x63tw")
+stream_4/stream = ExtResource("8_o4kqe")
+
 [node name="Tree" type="StaticBody2D"]
 script = ExtResource("1_i2ua8")
 _occlusionTransparency = 0.5
@@ -152,3 +166,8 @@ unique_name_in_owner = true
 libraries = {
 "": SubResource("AnimationLibrary_iphw7")
 }
+
+[node name="AudioChop" type="AudioStreamPlayer2D" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamRandomizer_esxqg")
+pitch_scale = 0.75
