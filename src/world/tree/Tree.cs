@@ -8,10 +8,10 @@ using Godot;
 using Shellguard.Player;
 using Shellguard.Traits;
 
-public interface ITree : IStaticBody2D, IDamageable { }
+public interface ITree : INode2D, IDamageable { }
 
 [Meta(typeof(IAutoNode))]
-public partial class Tree : StaticBody2D, ITree
+public partial class Tree : Node2D, ITree
 {
   #region Exports
   [Export]

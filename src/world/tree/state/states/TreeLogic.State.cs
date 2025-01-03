@@ -1,7 +1,6 @@
 namespace Shellguard.Tree;
 
 using Chickensoft.LogicBlocks;
-using Godot;
 
 public partial class TreeLogic
 {

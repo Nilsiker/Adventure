@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dvwev8c4mp8fw"]
+[gd_scene load_steps=23 format=3 uid="uid://dvwev8c4mp8fw"]
 
 [ext_resource type="Script" path="res://src/world/tree/Tree.cs" id="1_i2ua8"]
 [ext_resource type="Texture2D" uid="uid://c7l8evo24v4q3" path="res://assets/aseprite/canopy.png" id="2_6qw3r"]
@@ -9,19 +9,19 @@
 [ext_resource type="AudioStream" uid="uid://dpgwk66sq1t38" path="res://assets/ovani/Harvesting/Wood/Wood Chop Solid D.wav" id="7_x63tw"]
 [ext_resource type="AudioStream" uid="uid://cc0lt5qpfmre" path="res://assets/ovani/Harvesting/Wood/Wood Chop Solid E.wav" id="8_o4kqe"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_c41w6"]
-size = Vector2(52, 59.75)
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rv2sx"]
 radius = 8.0
 height = 26.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c41w6"]
+size = Vector2(52, 59.75)
 
 [sub_resource type="Animation" id="Animation_ak7j2"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Canopy:offset")
+tracks/0/path = NodePath("Canopy/CanopySprite:offset")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -33,7 +33,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Canopy:rotation")
+tracks/1/path = NodePath("Canopy/CanopySprite:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -49,7 +49,7 @@ length = 0.12
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Canopy:offset")
+tracks/0/path = NodePath("Canopy/CanopySprite:offset")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -61,7 +61,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Trunk:offset")
+tracks/1/path = NodePath("Trunk/TrunkSprite:offset")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -73,7 +73,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Canopy:rotation")
+tracks/2/path = NodePath("Canopy/CanopySprite:rotation")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -83,10 +83,184 @@ tracks/2/keys = {
 "values": [0.0, 0.0, 0.0, -0.0349066, 0.0349066, 0.0]
 }
 
+[sub_resource type="Animation" id="Animation_64gmt"]
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Trunk/TrunkSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Canopy/CanopySprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_4jl4x"]
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Trunk/TrunkSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Canopy/CanopySprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_plwj5"]
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Trunk/TrunkSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Canopy/CanopySprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+
+[sub_resource type="Animation" id="Animation_a282a"]
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Trunk/TrunkSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Canopy/CanopySprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+
+[sub_resource type="Animation" id="Animation_r1o8u"]
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Trunk/TrunkSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Canopy/CanopySprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_82cd2"]
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Trunk/TrunkSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [5]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Canopy/CanopySprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_iphw7"]
 _data = {
 "RESET": SubResource("Animation_ak7j2"),
-"rustle": SubResource("Animation_caiac")
+"mature": SubResource("Animation_a282a"),
+"mature_stump": SubResource("Animation_82cd2"),
+"rustle": SubResource("Animation_caiac"),
+"sapling": SubResource("Animation_4jl4x"),
+"seedling": SubResource("Animation_64gmt"),
+"young": SubResource("Animation_plwj5"),
+"young_stump": SubResource("Animation_r1o8u")
 }
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_esxqg"]
@@ -104,68 +278,74 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 [sub_resource type="Gradient" id="Gradient_kuvde"]
 colors = PackedColorArray(0.423529, 0.439216, 0.32549, 1, 0.101961, 0.109804, 0.0941176, 1)
 
-[node name="Tree" type="StaticBody2D"]
+[node name="Tree" type="Node2D"]
 script = ExtResource("1_i2ua8")
 
-[node name="Trunk" type="Sprite2D" parent="."]
+[node name="Trunk" type="StaticBody2D" parent="."]
+
+[node name="TrunkSprite" type="Sprite2D" parent="Trunk"]
 texture_filter = 1
 texture = ExtResource("2_th0do")
 offset = Vector2(1.375, -43.9)
+hframes = 3
+vframes = 2
 metadata/_aseprite_wizard_interface_config_ = {
 "layer_section": true,
 "output_section": true,
 "pending_changes": {}
 }
 metadata/_aseprite_wizard_config_ = {
-"i_mode": 1,
+"i_mode": 0,
 "keep_anim_length": false,
 "layers": ["trunk", "shadow"],
 "o_ex_p": "",
 "o_folder": "res://assets/aseprite",
 "o_name": "",
 "only_visible": false,
-"player": "",
+"player": "AnimationPlayer",
 "slice": "",
 "source": "res://assets/aseprite/tree.aseprite"
 }
-metadata/_aseprite_wizard_source_file_hash_ = "ed1581518124f3ce920f618ea4549d62"
+metadata/_aseprite_wizard_source_file_hash_ = "a767fcf6582b5105fbe5ac0ed40dd446"
 
-[node name="Canopy" type="Sprite2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Trunk"]
+rotation = 1.57079
+shape = SubResource("CapsuleShape2D_rv2sx")
+
+[node name="Canopy" type="Area2D" parent="."]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Canopy"]
+visible = false
+position = Vector2(0, -63.125)
+shape = SubResource("RectangleShape2D_c41w6")
+
+[node name="CanopySprite" type="Sprite2D" parent="Canopy"]
 unique_name_in_owner = true
 z_index = 1
 texture_filter = 1
 texture = ExtResource("2_6qw3r")
 offset = Vector2(1.375, -43.9)
+hframes = 2
+vframes = 2
 metadata/_aseprite_wizard_interface_config_ = {
 "layer_section": true,
 "output_section": true,
 "pending_changes": {}
 }
 metadata/_aseprite_wizard_config_ = {
-"i_mode": 1,
+"i_mode": 0,
 "keep_anim_length": false,
 "layers": ["canopy"],
 "o_ex_p": "",
 "o_folder": "res://assets/aseprite",
 "o_name": "",
 "only_visible": false,
-"player": "",
+"player": "AnimationPlayer",
 "slice": "",
 "source": "res://assets/aseprite/tree.aseprite"
 }
-metadata/_aseprite_wizard_source_file_hash_ = "bf08c2a8d2ea1f857f9834a8bfbfab72"
-
-[node name="FadeArea" type="Area2D" parent="Canopy"]
-unique_name_in_owner = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Canopy/FadeArea"]
-visible = false
-position = Vector2(0, -63.125)
-shape = SubResource("RectangleShape2D_c41w6")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-rotation = 1.57079
-shape = SubResource("CapsuleShape2D_rv2sx")
+metadata/_aseprite_wizard_source_file_hash_ = "a767fcf6582b5105fbe5ac0ed40dd446"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true
