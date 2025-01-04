@@ -1,9 +1,9 @@
 @startuml TreeLogic
 state "TreeLogic State" as Shellguard_Tree_TreeLogic_State {
+  state "Sapling" as Shellguard_Tree_TreeLogic_State_Sapling
   state "Mature" as Shellguard_Tree_TreeLogic_State_Mature {
     state "Stump" as Shellguard_Tree_TreeLogic_State_Mature_Stump
   }
-  state "Sapling" as Shellguard_Tree_TreeLogic_State_Sapling
   state "Seedling" as Shellguard_Tree_TreeLogic_State_Seedling
   state "Young" as Shellguard_Tree_TreeLogic_State_Young {
     state "Stump" as Shellguard_Tree_TreeLogic_State_Young_Stump

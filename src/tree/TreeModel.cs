@@ -4,7 +4,9 @@ using System;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
+using Chickensoft.SaveFileBuilder;
 using Godot;
+using Shellguard.Game;
 
 public interface ITreeModel : INode2D { }
 
@@ -12,6 +14,10 @@ public interface ITreeModel : INode2D { }
 public partial class TreeModel : Node2D, ITreeModel
 {
   #region Exports
+  #endregion
+
+  #region Save
+  private ISaveChunk<TreeData> TreeChunk { get; set; }
   #endregion
 
   #region Nodes
@@ -32,6 +38,9 @@ public partial class TreeModel : Node2D, ITreeModel
 
   #region Dependencies
   [Dependency]
+  private ISaveChunk<GameData> GameChunk => this.DependOn<ISaveChunk<GameData>>();
+
+  [Dependency]
   private ITreeLogic Logic => this.DependOn<ITreeLogic>();
   #endregion
 
@@ -48,6 +57,20 @@ public partial class TreeModel : Node2D, ITreeModel
 
   public void OnResolved()
   {
+    TreeChunk = new SaveChunk<TreeData>(
+      onSave: (chunk) =>
+        new TreeData()
+        {
+          Age = 0,
+          Health = 0,
+          TimeToMature = 0,
+        },
+      onLoad: (chunk, data) => { }
+    );
+    GameChunk.AddChunk(TreeChunk);
+    // TODO don't do this here, we need a TreeManager class that keeps track of trees and spawns the nodes.
+    // ... EntityTable is really close
+
     Binding = Logic.Bind();
     Binding
       .Handle(
@@ -55,7 +78,6 @@ public partial class TreeModel : Node2D, ITreeModel
       )
       .Handle((in TreeLogic.Output.StageUpdated output) => OnOutputStageUpdated(output.Stage));
   }
-
   #endregion
 
 
