@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dvgsan2qvx3u4"]
 
-[ext_resource type="Script" path="res://src/world/bush/Bush.cs" id="1_cl4kx"]
+[ext_resource type="Script" path="res://src/bush/Bush.cs" id="1_cl4kx"]
 [ext_resource type="Texture2D" uid="uid://dpfyisd31qxp3" path="res://assets/aseprite/bush.png" id="2_etitg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c41w6"]

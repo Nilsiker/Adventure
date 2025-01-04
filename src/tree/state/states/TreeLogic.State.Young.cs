@@ -1,24 +1,28 @@
 namespace Shellguard.Tree;
 
+using System.Linq;
 using Chickensoft.LogicBlocks;
 
 public partial class TreeLogic
 {
   public partial record State
   {
-    public partial record Mature : State, IGet<Input.ChopDown>, IGet<Input.OccludingEntity>
+    public partial record Young
+      : State,
+        IGet<Input.IncreaseMaturity>,
+        IGet<Input.ChopDown>,
+        IGet<Input.OccludingEntity>
     {
-      protected override EStage Stage => EStage.Mature;
-      protected override float Health => Get<ITreeSettings>().MatureHealth;
-      protected override float TimeToMature => 0;
+      protected override int Stage => 2;
 
-      public Mature()
+      public Young()
+        : base()
       {
         OnAttach(() => { });
         OnDetach(() => { });
-
-        this.OnEnter(() => Output(new Output.StageUpdated(EStage.Mature)));
       }
+
+      public Transition On(in Input.IncreaseMaturity input) => To<Mature>();
 
       public virtual Transition On(in Input.ChopDown input) => To<Stump>();
 

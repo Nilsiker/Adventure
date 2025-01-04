@@ -24,20 +24,14 @@ Shellguard_Tree_TreeLogic_State_Young --> Shellguard_Tree_TreeLogic_State_Young 
 Shellguard_Tree_TreeLogic_State_Young --> Shellguard_Tree_TreeLogic_State_Young_Stump : ChopDown
 Shellguard_Tree_TreeLogic_State_Young_Stump --> Shellguard_Tree_TreeLogic_State_Young_Stump : ChopDown
 
+Shellguard_Tree_TreeLogic_State : None → StageUpdated
 Shellguard_Tree_TreeLogic_State : OnDamage → Damaged, Rustle
-Shellguard_Tree_TreeLogic_State : OnEnter → StageUpdated
-Shellguard_Tree_TreeLogic_State_Mature : OnEnter → StageUpdated
 Shellguard_Tree_TreeLogic_State_Mature : OnOccludingEntity → UpdateTransparency
 Shellguard_Tree_TreeLogic_State_Mature_Stump : OnChopDown → Destroy
-Shellguard_Tree_TreeLogic_State_Mature_Stump : OnEnter → StageUpdated
 Shellguard_Tree_TreeLogic_State_Sapling : OnChopDown → Destroy
-Shellguard_Tree_TreeLogic_State_Sapling : OnEnter → StageUpdated
 Shellguard_Tree_TreeLogic_State_Seedling : OnChopDown → Destroy
-Shellguard_Tree_TreeLogic_State_Seedling : OnEnter → StageUpdated
-Shellguard_Tree_TreeLogic_State_Young : OnEnter → StageUpdated
 Shellguard_Tree_TreeLogic_State_Young : OnOccludingEntity → UpdateTransparency
 Shellguard_Tree_TreeLogic_State_Young_Stump : OnChopDown → Destroy
-Shellguard_Tree_TreeLogic_State_Young_Stump : OnEnter → StageUpdated
 
 [*] --> Shellguard_Tree_TreeLogic_State_Seedling
 @enduml

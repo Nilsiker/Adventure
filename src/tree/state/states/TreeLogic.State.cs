@@ -1,26 +1,26 @@
 namespace Shellguard.Tree;
 
+using System.Linq;
 using Chickensoft.LogicBlocks;
 
 public partial class TreeLogic
 {
   public abstract partial record State : StateLogic<State>, IGet<Input.Age>, IGet<Input.Damage>
   {
-    protected abstract EStage Stage { get; }
-    protected abstract float Health { get; }
-    protected abstract float TimeToMature { get; }
+    protected abstract int Stage { get; }
 
     public State()
     {
       OnAttach(() =>
       {
-        var data = Get<Data>();
-        data.Health = Health;
-        data.TimeToMature = TimeToMature;
+        var settings = Get<ITreeSettings>();
+        var data = Get<TreeData>();
+        data.Age = 0;
+        data.Health = settings.GetStages().ElementAt(Stage).Health;
+        data.TimeToMature = settings.GetStages().ElementAt(Stage).TimeToMature;
+        Output(new Output.StageUpdated(Stage));
       });
       OnDetach(() => { });
-
-      this.OnEnter(() => Output(new Output.StageUpdated(Stage)));
     }
 
     public State(StateLogic<State> original)
@@ -28,7 +28,7 @@ public partial class TreeLogic
 
     public Transition On(in Input.Age input)
     {
-      var data = Get<Data>();
+      var data = Get<TreeData>();
       data.Age += input.Time;
 
       if (data.Age > data.TimeToMature)
@@ -41,7 +41,7 @@ public partial class TreeLogic
 
     public Transition On(in Input.Damage input)
     {
-      var data = Get<Data>();
+      var data = Get<TreeData>();
       data.Health -= input.Amount;
 
       Output(new Output.Rustle(input.Amount));

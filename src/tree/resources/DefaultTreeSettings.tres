@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="TreeSettings" load_steps=7 format=3 uid="uid://ccjw08641g4ig"]
+
+[ext_resource type="Script" path="res://src/tree/resources/TreeStage.cs" id="1_cfpba"]
+[ext_resource type="Script" path="res://src/tree/resources/TreeSettings.cs" id="2_g7ibh"]
+
+[sub_resource type="Resource" id="Resource_vfl2x"]
+script = ExtResource("1_cfpba")
+Health = 1.0
+TimeToMature = 4.0
+
+[sub_resource type="Resource" id="Resource_gshmm"]
+script = ExtResource("1_cfpba")
+Health = 1.0
+TimeToMature = 4.0
+
+[sub_resource type="Resource" id="Resource_qhl51"]
+script = ExtResource("1_cfpba")
+Health = 5.0
+TimeToMature = 4.0
+
+[sub_resource type="Resource" id="Resource_dum6f"]
+script = ExtResource("1_cfpba")
+Health = 10.0
+TimeToMature = -1.0
+
+[resource]
+script = ExtResource("2_g7ibh")
+Stages = [SubResource("Resource_vfl2x"), SubResource("Resource_gshmm"), SubResource("Resource_qhl51"), SubResource("Resource_dum6f")]

@@ -1,4 +1,4 @@
 @startuml TerrainLogic
-state "TerrainLogic State" as ShellGuard_TerrainLogic_State
-[*] --> ShellGuard_TerrainLogic_State
+state "TerrainLogic State" as Shellguard_TerrainLogic_State
+[*] --> Shellguard_TerrainLogic_State
 @enduml

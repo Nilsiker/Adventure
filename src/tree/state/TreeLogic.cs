@@ -13,11 +13,4 @@ public partial class TreeLogic : LogicBlock<TreeLogic.State>, ITreeLogic
   public override Transition GetInitialState() => To<State.Seedling>();
 
   protected override void HandleError(Exception e) => throw e;
-
-  public class Data
-  {
-    public float Health;
-    public float Age;
-    public float TimeToMature;
-  }
 }

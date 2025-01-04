@@ -1,6 +1,8 @@
 namespace Shellguard.Tree;
 
+using System.Linq;
 using Chickensoft.LogicBlocks;
+using Godot;
 
 public partial class TreeLogic
 {
@@ -8,16 +10,13 @@ public partial class TreeLogic
   {
     public partial record Seedling : State, IGet<Input.IncreaseMaturity>, IGet<Input.ChopDown>
     {
-      protected override EStage Stage => EStage.Seedling;
-      protected override float Health => 1;
-      protected override float TimeToMature => Get<ITreeSettings>().SeedlingTimeToMature;
+      protected override int Stage => 0;
 
       public Seedling()
+        : base()
       {
         OnAttach(() => { });
         OnDetach(() => { });
-
-        this.OnEnter(() => Output(new Output.StageUpdated(EStage.Seedling)));
       }
 
       public virtual Transition On(in Input.IncreaseMaturity input) => To<Sapling>();

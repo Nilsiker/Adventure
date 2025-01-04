@@ -1,10 +1,14 @@
 namespace Shellguard.Tree;
 
+using Chickensoft.GodotNodeInterfaces;
+
 public partial class TreeLogic
 {
   public static class Output
   {
-    public record struct StageUpdated(EStage Stage); // TODO replace with stage enum to decouple from Godot?
+    public record struct StageUpdated(int Stage);
+
+    public record struct CanopyUpdated(ITexture2D? Texture);
 
     public record struct UpdateTransparency(float Alpha);
 

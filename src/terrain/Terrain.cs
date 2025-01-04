@@ -1,4 +1,4 @@
-namespace ShellGuard;
+namespace Shellguard;
 
 using System;
 using System.Linq;
