@@ -16,6 +16,8 @@ public partial class TreeLogic
       {
         OnAttach(() => { });
         OnDetach(() => { });
+
+        this.OnEnter(() => Output(new Output.StageUpdated(EStage.Seedling)));
       }
 
       public virtual Transition On(in Input.IncreaseMaturity input) => To<Sapling>();

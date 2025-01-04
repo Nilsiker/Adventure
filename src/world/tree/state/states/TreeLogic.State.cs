@@ -4,11 +4,7 @@ using Chickensoft.LogicBlocks;
 
 public partial class TreeLogic
 {
-  public abstract partial record State
-    : StateLogic<State>,
-      IGet<Input.Age>,
-      IGet<Input.Damage>,
-      IGet<Input.OccludingEntity>
+  public abstract partial record State : StateLogic<State>, IGet<Input.Age>, IGet<Input.Damage>
   {
     protected abstract EStage Stage { get; }
     protected abstract float Health { get; }
@@ -56,12 +52,6 @@ public partial class TreeLogic
         Input(new Input.ChopDown());
       }
 
-      return ToSelf();
-    }
-
-    public Transition On(in Input.OccludingEntity input)
-    {
-      Output(new Output.UpdateTransparency(input.Occluding ? 0.5f : 1.0f));
       return ToSelf();
     }
   }

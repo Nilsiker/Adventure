@@ -8,4 +8,4 @@ YoungHealth = 10.0
 MatureHealth = 20.0
 SeedlingTimeToMature = 5.0
 SaplingTimeToMature = 10.0
-YoungTimeToMature = 10.0
+YoungTimeToMature = 15.0

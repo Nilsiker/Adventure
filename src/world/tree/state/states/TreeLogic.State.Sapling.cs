@@ -12,6 +12,8 @@ public partial class TreeLogic
       {
         OnAttach(() => { });
         OnDetach(() => { });
+
+        this.OnEnter(() => Output(new Output.StageUpdated(EStage.Sapling)));
       }
 
       protected override EStage Stage => EStage.Sapling;

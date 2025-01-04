@@ -1,5 +1,7 @@
 namespace Shellguard.Tree;
 
+using Chickensoft.LogicBlocks;
+
 public partial class TreeLogic
 {
   public partial record State
@@ -12,6 +14,8 @@ public partial class TreeLogic
         {
           OnAttach(() => { });
           OnDetach(() => { });
+
+          this.OnEnter(() => Output(new Output.StageUpdated(EStage.MatureStump)));
         }
 
         protected override EStage Stage => EStage.MatureStump;

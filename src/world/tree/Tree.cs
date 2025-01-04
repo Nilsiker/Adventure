@@ -26,7 +26,7 @@ public partial class Tree : Node2D, ITree
 
   #region Nodes
   [Node]
-  private Area2D FadeArea { get; set; } = default!;
+  private Area2D CanopyArea { get; set; } = default!;
 
   [Node]
   private AnimationPlayer AnimationPlayer { get; set; } = default!;
@@ -35,7 +35,7 @@ public partial class Tree : Node2D, ITree
   private AudioStreamPlayer2D AudioChop { get; set; } = default!;
 
   [Node]
-  private Sprite2D Canopy { get; set; } = default!;
+  private Sprite2D CanopySprite { get; set; } = default!;
   #endregion
 
   #region Dependency Lifecycle
@@ -45,8 +45,8 @@ public partial class Tree : Node2D, ITree
 
     Logic.Set(Settings as ITreeSettings);
 
-    FadeArea.BodyEntered += OnFadeAreaBodyEntered;
-    FadeArea.BodyExited += OnFadeAreaBodyExited;
+    CanopyArea.BodyEntered += OnFadeAreaBodyEntered;
+    CanopyArea.BodyExited += OnFadeAreaBodyExited;
   }
 
   public void OnResolved()
@@ -60,6 +60,7 @@ public partial class Tree : Node2D, ITree
       )
       .Handle((in TreeLogic.Output.Rustle output) => OnOutputRustle(output.Strength))
       .Handle((in TreeLogic.Output.Damaged _) => OnOutputDamaged())
+      .Handle((in TreeLogic.Output.StageUpdated output) => OnOutputStageUpdated(output.Stage))
       .Handle((in TreeLogic.Output.Destroy _) => OnOutputDestroyed());
 
     Binding.When<TreeLogic.State>(state => GD.Print(state.GetType().FullName));
@@ -76,9 +77,6 @@ public partial class Tree : Node2D, ITree
     Logic.Start();
   }
   #endregion
-
-
-
 
   #region Godot Lifecycle
   public override void _Notification(int what) => this.Notify(what);
@@ -124,14 +122,12 @@ public partial class Tree : Node2D, ITree
 
     _canopyFadeTween = CreateTween();
     _canopyFadeTween.TweenProperty(
-      Canopy,
+      CanopySprite,
       "modulate:a",
       alpha,
-      1.0 - Math.Abs(Canopy.Modulate.A - alpha)
+      1.0 - Math.Abs(CanopySprite.Modulate.A - alpha)
     );
   }
-
-  private Tween? _rustleTween; // NOTE is there a better place to put this?
 
   private void OnOutputRustle(float strength)
   {
@@ -143,6 +139,21 @@ public partial class Tree : Node2D, ITree
 
   private void OnOutputDestroyed() => QueueFree();
 
+  private void OnOutputStageUpdated(EStage stage)
+  {
+    var anim = stage switch
+    {
+      EStage.Seedling => "seedling",
+      EStage.Sapling => "sapling",
+      EStage.Young => "young",
+      EStage.Mature => "mature",
+      EStage.YoungStump => "young_stump",
+      EStage.MatureStump => "mature_stump",
+      _ => throw new NotImplementedException(),
+    };
+
+    AnimationPlayer.Play(anim);
+  }
   #endregion
 
   public override void _UnhandledInput(InputEvent @event)
