@@ -3,7 +3,6 @@ namespace Shellguard.Game;
 using System.Collections.Generic;
 using System.Linq;
 using Chickensoft.AutoInject;
-using Chickensoft.Collections;
 using Chickensoft.GoDotLog;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
@@ -33,8 +32,12 @@ public partial class Game : Node2D, IGame
 
   #region Save
   private ISaveChunk<GameData> GameChunk { get; set; } = default!;
-  private Dictionary<string, TreeData> TreeDictionary { get; set; } = [];
+  private Dictionary<string, TreeData> TreeDictionary { get; set; } = default!;
+  #endregion
 
+  #region Exports
+  [Export]
+  private PackedScene _treeScene;
   #endregion
 
   #region Nodes
@@ -67,6 +70,12 @@ public partial class Game : Node2D, IGame
   #region Dependency Lifecycle
   public void Setup()
   {
+    TreeDictionary = Trees
+      .GetChildren()
+      .OfType<Shellguard.Tree.Tree>()
+      .Select(tree => new KeyValuePair<string, TreeData>(tree.Name, tree.Data))
+      .ToDictionary();
+
     GameChunk = new SaveChunk<GameData>(
       onSave: (chunk) =>
       {
@@ -86,7 +95,28 @@ public partial class Game : Node2D, IGame
       onLoad: (chunk, data) =>
       {
         chunk.LoadChunkSaveData(data.PlayerData);
+
+        // Game is currently responsible for spawning all trees.
+        // NOTE instead look at how the gamedemo does it, and imitate that for now? MapChunk with a grid, maybe?
         TreeDictionary = data.TreeDictionary;
+        foreach (var child in Trees.GetChildren())
+        {
+          child.QueueFree();
+        }
+
+        List<Node> nodes = [];
+        foreach (var pair in TreeDictionary)
+        {
+          var tree = _treeScene.Instantiate<Shellguard.Tree.Tree>();
+          tree.Name = pair.Key;
+          tree.Data = pair.Value;
+          nodes.Add(tree);
+        }
+
+        foreach (var node in nodes)
+        {
+          Trees.AddChild(node);
+        }
       }
     );
 

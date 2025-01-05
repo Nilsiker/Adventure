@@ -1,5 +1,6 @@
 namespace Shellguard.Tree;
 
+using System;
 using System.Collections.Generic;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
@@ -12,29 +13,19 @@ public interface ITree : INode2D, IDamageable { }
 [Meta(typeof(IAutoNode))]
 public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 {
-  public Tree()
-  {
-    Data = new()
-    {
-      Age = -1,
-      Health = -1,
-      TimeToMature = -1,
-    };
-  }
-
-  public Tree(string name, TreeData data)
-  {
-    Name = name;
-    Data = data;
-  }
-
   #region Exports
   [Export]
   private TreeSettings Settings { get; set; } = default!;
   #endregion
 
   #region State
-  public TreeData Data { get; set; }
+  public TreeData Data { get; set; } =
+    new()
+    {
+      Age = -1,
+      Health = -1,
+      TimeToMature = -1,
+    };
   private TreeLogic Logic { get; set; } = default!;
   private TreeLogic.IBinding Binding { get; set; } = default!;
   #endregion
@@ -75,12 +66,13 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 
     Binding.When<TreeLogic.State>(state => GD.Print(state.GetType().FullName));
 
+    GD.Print(Data == null);
     Logic.Set(Data);
 
     this.Provide();
     Logic.Start();
 
-    TreeDictionary.Add(Name, Data);
+    TreeDictionary.TryAdd(Name, Data);
   }
   #endregion
 
