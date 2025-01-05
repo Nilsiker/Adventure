@@ -1,9 +1,9 @@
 @startuml PlayerLogic
 state "PlayerLogic State" as Shellguard_Player_State_PlayerLogic_State {
-  state "Idle" as Shellguard_Player_State_PlayerLogic_State_Idle
-  state "Moving" as Shellguard_Player_State_PlayerLogic_State_Moving
   state "Attacking" as Shellguard_Player_State_PlayerLogic_State_Attacking
   state "Disabled" as Shellguard_Player_State_PlayerLogic_State_Disabled
+  state "Idle" as Shellguard_Player_State_PlayerLogic_State_Idle
+  state "Moving" as Shellguard_Player_State_PlayerLogic_State_Moving
 }
 
 Shellguard_Player_State_PlayerLogic_State_Attacking --> Shellguard_Player_State_PlayerLogic_State_Attacking : AnimationFinished

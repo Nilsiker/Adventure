@@ -1,6 +1,7 @@
 namespace Shellguard.Game;
 
 using Chickensoft.AutoInject;
+using Chickensoft.Collections;
 using Chickensoft.GoDotLog;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
@@ -10,7 +11,6 @@ using Shellguard.Game.Domain;
 using Shellguard.Game.State;
 using Shellguard.Player;
 using Shellguard.Save;
-using Shellguard.SaveData.App;
 
 public interface IGame : INode2D, IProvide<IGameRepo>, IProvide<ISaveChunk<GameData>>
 {
@@ -26,6 +26,7 @@ public partial class Game : Node2D, IGame
 
   #region Save
   private ISaveChunk<GameData> GameChunk { get; set; } = default!;
+  private EntityTable EntityTable { get; set; } = new();
 
   #endregion
 

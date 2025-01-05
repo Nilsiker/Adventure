@@ -3,7 +3,9 @@ namespace Shellguard.Tree;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
+using Chickensoft.SaveFileBuilder;
 using Godot;
+using Shellguard.Game;
 using Shellguard.Traits;
 
 public interface ITree : INode2D, IDamageable { }
@@ -11,6 +13,10 @@ public interface ITree : INode2D, IDamageable { }
 [Meta(typeof(IAutoNode))]
 public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 {
+  #region Save
+  private ISaveChunk<TreeData> TreeChunk { get; set; } = default!;
+  #endregion
+
   #region Exports
   [Export]
   private TreeSettings Settings { get; set; } = default!;
@@ -22,7 +28,6 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
   #endregion
 
   #region Nodes
-
   [Node]
   private AudioStreamPlayer2D AudioChop { get; set; } = default!;
 
@@ -30,6 +35,11 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 
   #region Provisions
   public ITreeLogic Value() => Logic;
+  #endregion
+
+  #region Dependencies
+  [Dependency]
+  private ISaveChunk<GameData> GameChunk => this.DependOn<ISaveChunk<GameData>>();
   #endregion
 
   #region Dependency Lifecycle
@@ -42,6 +52,20 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 
   public void OnResolved()
   {
+    TreeChunk = new SaveChunk<TreeData>(
+      onSave: (chunk) =>
+        new TreeData()
+        {
+          Age = 0,
+          Health = 0,
+          TimeToMature = 0,
+        },
+      onLoad: (chunk, data) => { }
+    );
+    // GameChunk.AddChunk(TreeChunk);
+    // TODO don't do this here, we need a TreeManager class that keeps track of trees and spawns the nodes.
+    // ... EntityTable is really close
+
     Binding = Logic.Bind();
 
     // Bind functions to state outputs here
@@ -54,9 +78,9 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
     Logic.Set(
       new TreeData
       {
-        Age = 0.0f,
-        Health = 1.0f,
-        TimeToMature = 10.0f,
+        Age = 0,
+        Health = 1,
+        TimeToMature = -1,
       }
     );
 
@@ -71,7 +95,7 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 
   public void OnReady() => SetProcess(true);
 
-  public void OnProcess(double delta) => Logic.Input(new TreeLogic.Input.Age((float)delta));
+  public void OnProcess(double delta) => Age((float)delta);
 
   public void OnExitTree()
   {
@@ -81,6 +105,7 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
   #endregion
 
   #region Input Callbacks
+  private void Age(float time) => Logic.Input(new TreeLogic.Input.Age(time));
   #endregion
 
   #region Output Callbacks

@@ -47,10 +47,7 @@ public partial class Player : CharacterBody2D, IPlayer
 
 
   #region Dependency Lifecycle
-  public void Setup()
-  {
-    Logic = new();
-  }
+  public void Setup() => Logic = new();
 
   public void OnResolved()
   {
