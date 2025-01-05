@@ -24,6 +24,7 @@ script = ExtResource("1_i2ua8")
 Settings = ExtResource("2_l14yo")
 
 [node name="TreeModel" parent="." instance=ExtResource("2_4avck")]
+position = Vector2(0, -38)
 
 [node name="AudioChop" type="AudioStreamPlayer2D" parent="."]
 unique_name_in_owner = true

@@ -1,6 +1,5 @@
 namespace Shellguard.Tree;
 
-using System.Collections.Generic;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
@@ -36,10 +35,6 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
   #endregion
 
   #region Dependencies
-  [Dependency]
-  private Dictionary<string, TreeData> TreeDictionary =>
-    this.DependOn<Dictionary<string, TreeData>>();
-
   #endregion
 
   #region Dependency Lifecycle
@@ -78,8 +73,6 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 
   public void OnExitTree()
   {
-    TreeDictionary.Remove(Name);
-
     Logic.Stop();
     Binding.Dispose();
   }

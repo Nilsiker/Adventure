@@ -22,8 +22,6 @@ public partial class World : Node2D, IWorld
 
 
   #region Nodes
-  [Node]
-  private ObjectLayer ObjectLayer { get; set; } = default!;
   #endregion
 
   #region State
