@@ -1,3 +1,0 @@
-@startuml EggLogic
-state "EggLogic State" as State
-@enduml

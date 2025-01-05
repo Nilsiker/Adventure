@@ -1,52 +1,39 @@
 namespace Shellguard.World;
 
+using System.Collections.Generic;
+using System.Linq;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
 using Chickensoft.LogicBlocks;
-using Chickensoft.SaveFileBuilder;
 using Godot;
-using Shellguard.Save;
+using ITree = Tree.ITree;
 
-public interface IWorld : INode2D { }
+public interface IObjectLayer : ITileMapLayer
+{
+  IEnumerable<ITree> Trees { get; }
+}
 
 [Meta(typeof(IAutoNode))]
-public partial class World : Node2D, IWorld
+public partial class ObjectLayer : TileMapLayer, IObjectLayer
 {
-  #region Save
-  private ISaveChunk<WorldData> WorldChunk { get; set; } = default!;
-  #endregion
+  public IEnumerable<ITree> Trees => GetChildren().OfType<ITree>();
 
   #region Exports
-  #endregion
-
-
-  #region Nodes
-  [Node]
-  private ObjectLayer ObjectLayer { get; set; } = default!;
+  [Export]
+  private PackedScene? _treeScene;
   #endregion
 
   #region State
-  private WorldLogic Logic { get; set; } = default!;
-  private WorldLogic.IBinding Binding { get; set; } = default!;
+  private TreeLayerLogic Logic { get; set; } = default!;
+  private TreeLayerLogic.IBinding Binding { get; set; } = default!;
   #endregion
-
 
   #region Dependency Lifecycle
   public void Setup() => Logic = new();
 
   public void OnResolved()
   {
-    WorldChunk = new SaveChunk<WorldData>(
-      onSave: (chunk) =>
-        new()
-        {
-          Trees =
-          [ /* TODO assign */
-          ],
-        },
-      onLoad: (chunk, data) => { }
-    );
     Binding = Logic.Bind();
 
     // Bind functions to state outputs here
@@ -80,15 +67,33 @@ public partial class World : Node2D, IWorld
 
   #region Output Callbacks
   #endregion
+
+  public override void _UnhandledInput(InputEvent @event) => base._UnhandledInput(@event);
 }
 
-public interface IWorldLogic : ILogicBlock<WorldLogic.State>;
+public interface ITreeLayerLogic : ILogicBlock<TreeLayerLogic.State>;
 
 [Meta]
 [LogicBlock(typeof(State), Diagram = true)]
-public partial class WorldLogic : LogicBlock<WorldLogic.State>, IWorldLogic
+public partial class TreeLayerLogic : LogicBlock<TreeLayerLogic.State>, ITreeLayerLogic
 {
   public override Transition GetInitialState() => To<State>();
+
+  public static class Input
+  {
+    public record struct Initialize;
+
+    public record struct AddTree(Vector2I Position);
+
+    public record struct RemoveTree(Vector2I Position);
+  }
+
+  public static class Output
+  {
+    public record struct TreeAdded(Vector2I Position);
+
+    public record struct TreeRemoved(Vector2I Position);
+  }
 
   public partial record State : StateLogic<State>
   {

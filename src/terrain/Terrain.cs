@@ -7,7 +7,6 @@ using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
 using Chickensoft.LogicBlocks;
 using Godot;
-using Godot.Collections;
 
 public enum Layer
 {

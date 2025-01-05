@@ -1,62 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://cjgy551m7xu2y"]
+[gd_scene load_steps=3 format=3 uid="uid://cjgy551m7xu2y"]
 
 [ext_resource type="Script" path="res://src/ui/hud/HUD.cs" id="1_07sf8"]
-[ext_resource type="Texture2D" uid="uid://do04yv1q4ngrk" path="res://assets/game-icons/new-born.svg" id="2_bgwqf"]
-[ext_resource type="Texture2D" uid="uid://x0i13u0461i8" path="res://assets/game-icons/egg-eye.svg" id="2_jwynr"]
-[ext_resource type="Script" path="res://src/ui/save_notification/SaveNotification.cs" id="3_o2ueq"]
-
-[sub_resource type="Animation" id="Animation_0kxik"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_ycnoi"]
-resource_name = "blink"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:modulate")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0.168627), Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_222hf"]
-resource_name = "fade_out"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_i1ct2"]
-_data = {
-"RESET": SubResource("Animation_0kxik"),
-"blink": SubResource("Animation_ycnoi"),
-"fade_out": SubResource("Animation_222hf")
-}
+[ext_resource type="PackedScene" uid="uid://bkg248lwbsplf" path="res://src/ui/save_notification/SaveNotification.tscn" id="2_iffte"]
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -79,36 +24,5 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="EggUI" type="HBoxContainer" parent="Margins"]
+[node name="SaveNotification" parent="Margins" instance=ExtResource("2_iffte")]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-
-[node name="EggLabel" type="Label" parent="Margins/EggUI"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "EGGS:"
-
-[node name="EggValue" type="Label" parent="Margins/EggUI"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "0
-"
-
-[node name="SaveNotification" type="TextureRect" parent="Margins"]
-modulate = Color(1, 1, 1, 0)
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-texture = ExtResource("2_bgwqf")
-expand_mode = 1
-script = ExtResource("3_o2ueq")
-_savingTexture = ExtResource("2_jwynr")
-_savedTexture = ExtResource("2_bgwqf")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Margins/SaveNotification"]
-libraries = {
-"": SubResource("AnimationLibrary_i1ct2")
-}

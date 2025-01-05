@@ -1,6 +1,5 @@
 namespace Shellguard.Tree;
 
-using System;
 using System.Collections.Generic;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
@@ -8,7 +7,10 @@ using Chickensoft.Introspection;
 using Godot;
 using Shellguard.Traits;
 
-public interface ITree : INode2D, IDamageable { }
+public interface ITree : INode2D, IDamageable
+{
+  ITreeLogic Logic { get; }
+}
 
 [Meta(typeof(IAutoNode))]
 public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
@@ -19,14 +21,7 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
   #endregion
 
   #region State
-  public TreeData Data { get; set; } =
-    new()
-    {
-      Age = -1,
-      Health = -1,
-      TimeToMature = -1,
-    };
-  private TreeLogic Logic { get; set; } = default!;
+  public ITreeLogic Logic { get; set; } = default!;
   private TreeLogic.IBinding Binding { get; set; } = default!;
   #endregion
 
@@ -50,7 +45,7 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
   #region Dependency Lifecycle
   public void Setup()
   {
-    Logic = new();
+    Logic = new TreeLogic();
 
     Logic.Set(Settings as ITreeSettings);
   }
@@ -66,14 +61,12 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 
     Binding.When<TreeLogic.State>(state => GD.Print(state.GetType().FullName));
 
-    GD.Print(Data == null);
-    Logic.Set(Data);
+    Logic.Set(new TreeLogic.Data());
 
     this.Provide();
     Logic.Start();
-
-    TreeDictionary.TryAdd(Name, Data);
   }
+
   #endregion
 
   #region Godot Lifecycle

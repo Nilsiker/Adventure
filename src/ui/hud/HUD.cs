@@ -20,11 +20,6 @@ public partial class HUD : Control
   public IGameRepo GameRepo => this.DependOn<IGameRepo>();
   #endregion
 
-  #region Nodes
-  [Node("%EggValue")]
-  private Label EggValue { get; set; } = default!;
-  #endregion
-
   public void Setup() => Logic = new HUDLogic();
 
   public void OnResolved()
@@ -32,14 +27,10 @@ public partial class HUD : Control
     Logic.Set(GameRepo);
 
     Binding = Logic.Bind();
-    Binding
-      .Handle((in HUDLogic.Output.EggsCollectedChanged output) => SetEggLabelCount(output.Count))
-      .Handle((in HUDLogic.Output.VisilibilityChanged output) => Visible = output.Visible);
+    Binding.Handle((in HUDLogic.Output.VisilibilityChanged output) => Visible = output.Visible);
 
     Logic.Start();
   }
-
-  private void SetEggLabelCount(int count) => EggValue.Text = count.ToString();
 
   public void OnExitTree()
   {

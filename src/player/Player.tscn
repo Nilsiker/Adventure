@@ -1,9 +1,8 @@
-[gd_scene load_steps=26 format=3 uid="uid://dlmofixc40ggb"]
+[gd_scene load_steps=25 format=3 uid="uid://dlmofixc40ggb"]
 
 [ext_resource type="Script" path="res://src/player/Player.cs" id="1_sqh1h"]
 [ext_resource type="PackedScene" uid="uid://cplgdxj3i5yk1" path="res://src/player/scenes/hammer_bonk.tscn" id="2_p4o3e"]
 [ext_resource type="Texture2D" uid="uid://wytgmfeuq3im" path="res://assets/aseprite/player.png" id="3_7gvb8"]
-[ext_resource type="Script" path="res://src/egg/EggCollector.cs" id="3_q263r"]
 [ext_resource type="PackedScene" uid="uid://dkn7dwcv3q4sy" path="res://src/weapon/Weapon.tscn" id="4_diodw"]
 [ext_resource type="AudioStream" uid="uid://bv5sm4u32vffq" path="res://assets/ovani/Foley SFX - Footsteps/Grass/Bare Step Grass Medium A.wav" id="6_ibdr1"]
 [ext_resource type="AudioStream" uid="uid://cav0etdrs30tc" path="res://assets/ovani/Foley SFX - Footsteps/Grass/Bare Step Grass Medium B.wav" id="7_f2yq2"]
@@ -231,13 +230,6 @@ metadata/_aseprite_wizard_config_ = {
 "source": "res://assets/aseprite/player.aseprite"
 }
 metadata/_aseprite_wizard_source_file_hash_ = "41420c920ac3970b60ee1d342241ed58"
-
-[node name="EggCollector" type="Area2D" parent="."]
-script = ExtResource("3_q263r")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EggCollector"]
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_iscbd")
 
 [node name="Weapon" parent="." instance=ExtResource("4_diodw")]
 unique_name_in_owner = true

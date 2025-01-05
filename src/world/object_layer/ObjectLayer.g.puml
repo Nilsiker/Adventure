@@ -1,0 +1,4 @@
+@startuml TreeLayerLogic
+state "TreeLayerLogic State" as Shellguard_World_TreeLayerLogic_State
+[*] --> Shellguard_World_TreeLayerLogic_State
+@enduml

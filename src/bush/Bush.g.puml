@@ -1,4 +1,0 @@
-@startuml BushLogic
-state "BushLogic State" as Shellguard_Tree_BushLogic_State
-[*] --> Shellguard_Tree_BushLogic_State
-@enduml

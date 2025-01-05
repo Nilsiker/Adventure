@@ -14,7 +14,7 @@ public partial class TreeLogic
       OnAttach(() =>
       {
         var settings = Get<ITreeSettings>();
-        var data = Get<TreeData>();
+        var data = Get<Data>();
         data.Age = 0;
         data.Health = settings.GetStages().ElementAt(Stage).Health;
         data.TimeToMature = settings.GetStages().ElementAt(Stage).TimeToMature;
@@ -28,7 +28,7 @@ public partial class TreeLogic
 
     public Transition On(in Input.Age input)
     {
-      var data = Get<TreeData>();
+      var data = Get<Data>();
       data.Age += input.Time;
 
       if (data.Age > data.TimeToMature)
@@ -41,7 +41,7 @@ public partial class TreeLogic
 
     public Transition On(in Input.Damage input)
     {
-      var data = Get<TreeData>();
+      var data = Get<Data>();
       data.Health -= input.Amount;
 
       Output(new Output.Rustle(input.Amount));
