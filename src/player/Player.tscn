@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dlmofixc40ggb"]
+[gd_scene load_steps=26 format=3 uid="uid://dlmofixc40ggb"]
 
 [ext_resource type="Script" path="res://src/player/Player.cs" id="1_sqh1h"]
 [ext_resource type="PackedScene" uid="uid://cplgdxj3i5yk1" path="res://src/player/scenes/hammer_bonk.tscn" id="2_p4o3e"]
@@ -12,6 +12,7 @@
 [ext_resource type="AudioStream" uid="uid://2hqhl3glgn5a" path="res://assets/ovani/Medieval Fantasy Sound FX Pack/Axe/Axe Swoosh B.wav" id="11_lyce4"]
 [ext_resource type="AudioStream" uid="uid://c58c2urcp8tjn" path="res://assets/ovani/Medieval Fantasy Sound FX Pack/Axe/Axe Swoosh C.wav" id="12_0mmx1"]
 [ext_resource type="AudioStream" uid="uid://bxdebte1q4u1k" path="res://assets/ovani/Medieval Fantasy Sound FX Pack/Axe/Axe Swoosh D.wav" id="13_gfvym"]
+[ext_resource type="PackedScene" uid="uid://bx8df15h0mtnr" path="res://src/item_placer/ItemPlacer.tscn" id="13_ivocm"]
 
 [sub_resource type="Animation" id="Animation_or46f"]
 length = 0.39
@@ -247,3 +248,8 @@ volume_db = 3.0
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
 occluder = SubResource("OccluderPolygon2D_f5rw5")
+
+[node name="Components" type="Node2D" parent="."]
+
+[node name="ItemPlacer" parent="Components" instance=ExtResource("13_ivocm")]
+unique_name_in_owner = true

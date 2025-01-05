@@ -1,5 +1,6 @@
 namespace Shellguard.World;
 
+using System.Collections.Generic;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
@@ -8,7 +9,7 @@ using Chickensoft.SaveFileBuilder;
 using Godot;
 using Shellguard.Save;
 
-public interface IWorld : INode2D { }
+public interface IWorld : INode2D, IProvide<IWorldRepo> { }
 
 [Meta(typeof(IAutoNode))]
 public partial class World : Node2D, IWorld
@@ -22,11 +23,18 @@ public partial class World : Node2D, IWorld
 
 
   #region Nodes
+  [Node]
+  private Sprite2D Cursor { get; set; } = default!;
   #endregion
 
   #region State
+  private WorldRepo WorldRepo { get; set; } = new();
   private WorldLogic Logic { get; set; } = default!;
   private WorldLogic.IBinding Binding { get; set; } = default!;
+  #endregion
+
+  #region Provisions
+  public IWorldRepo Value() => WorldRepo;
   #endregion
 
 
@@ -48,7 +56,14 @@ public partial class World : Node2D, IWorld
     Binding = Logic.Bind();
 
     // Bind functions to state outputs here
+    Binding.Handle(
+      (in WorldLogic.Output.SelectedTilesUpdated output) =>
+        OnOutputSelectedTilesUpdated(output.Tiles)
+    );
 
+    this.Provide();
+
+    Logic.Set(WorldRepo as IWorldRepo);
     Logic.Start();
   }
   #endregion
@@ -56,15 +71,7 @@ public partial class World : Node2D, IWorld
   #region Godot Lifecycle
   public override void _Notification(int what) => this.Notify(what);
 
-  public void OnReady()
-  {
-    SetProcess(true);
-    SetPhysicsProcess(true);
-  }
-
-  public void OnProcess(double delta) { }
-
-  public void OnPhysicsProcess(double delta) { }
+  public void OnReady() { }
 
   public void OnExitTree()
   {
@@ -73,10 +80,14 @@ public partial class World : Node2D, IWorld
   }
   #endregion
 
-  #region Input Callbacks
-  #endregion
-
   #region Output Callbacks
+  private void OnOutputSelectedTilesUpdated(IEnumerable<Vector2I> tiles)
+  {
+    foreach (var tile in tiles)
+    {
+      Cursor.GlobalPosition = tile;
+    }
+  }
   #endregion
 }
 
@@ -86,14 +97,30 @@ public interface IWorldLogic : ILogicBlock<WorldLogic.State>;
 [LogicBlock(typeof(State), Diagram = true)]
 public partial class WorldLogic : LogicBlock<WorldLogic.State>, IWorldLogic
 {
+  public static class Output
+  {
+    public record struct SelectedTilesUpdated(IEnumerable<Vector2I> Tiles);
+  }
+
   public override Transition GetInitialState() => To<State>();
 
   public partial record State : StateLogic<State>
   {
     public State()
     {
-      OnAttach(() => { });
-      OnDetach(() => { });
+      OnAttach(() =>
+      {
+        var world = Get<IWorldRepo>();
+        world.SelectedTiles.Sync += OnSelectedTilesSync;
+      });
+      OnDetach(() =>
+      {
+        var world = Get<IWorldRepo>();
+        world.SelectedTiles.Sync -= OnSelectedTilesSync;
+      });
     }
+
+    private void OnSelectedTilesSync(HashSet<Vector2I> tiles) =>
+      Output(new Output.SelectedTilesUpdated(tiles));
   }
 }

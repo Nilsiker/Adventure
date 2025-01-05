@@ -34,6 +34,9 @@ public partial class Player : CharacterBody2D, IPlayer
   private IWeapon Weapon { get; set; } = default!;
 
   [Node]
+  private IItemPlacer TileSelector { get; set; } = default!;
+
+  [Node]
   private AnimationPlayer AnimationPlayer { get; set; } = default!;
 
   [Node]
@@ -94,6 +97,12 @@ public partial class Player : CharacterBody2D, IPlayer
       )
     );
 
+    if (!Input.GetVector(Inputs.Left, Inputs.Right, Inputs.Up, Inputs.Down).IsZeroApprox())
+    {
+      TileSelector.UpdateSelectDirection(
+        Input.GetVector(Inputs.Left, Inputs.Right, Inputs.Up, Inputs.Down)
+      );
+    }
     // Aim weapon (Go through logic?)
     Weapon.Aim(GetGlobalMousePosition());
   }

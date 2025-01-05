@@ -1,0 +1,15 @@
+@startuml TileSelectorLogic
+state "TileSelectorLogic State" as Shellguard_TileSelectorLogic_State {
+  state "Enabled" as Shellguard_TileSelectorLogic_State_Enabled
+  state "Disabled" as Shellguard_TileSelectorLogic_State_Disabled
+}
+
+Shellguard_TileSelectorLogic_State_Disabled --> Shellguard_TileSelectorLogic_State_Enabled : Enable
+Shellguard_TileSelectorLogic_State_Enabled --> Shellguard_TileSelectorLogic_State_Disabled : Disable
+Shellguard_TileSelectorLogic_State_Enabled --> Shellguard_TileSelectorLogic_State_Enabled : SelectAt
+
+Shellguard_TileSelectorLogic_State_Disabled : OnEnter → UpdateCursorVisibility
+Shellguard_TileSelectorLogic_State_Enabled : OnEnter → UpdateCursorVisibility
+
+[*] --> Shellguard_TileSelectorLogic_State_Enabled
+@enduml

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bx8df15h0mtnr"]
+
+[ext_resource type="Script" path="res://src/item_placer/ItemPlacer.cs" id="1_5up0k"]
+
+[node name="TileSelector" type="Node2D"]
+script = ExtResource("1_5up0k")
