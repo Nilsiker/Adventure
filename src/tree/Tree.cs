@@ -1,11 +1,10 @@
 namespace Shellguard.Tree;
 
+using System.Collections.Generic;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
 using Chickensoft.Introspection;
-using Chickensoft.SaveFileBuilder;
 using Godot;
-using Shellguard.Game;
 using Shellguard.Traits;
 
 public interface ITree : INode2D, IDamageable { }
@@ -13,9 +12,21 @@ public interface ITree : INode2D, IDamageable { }
 [Meta(typeof(IAutoNode))]
 public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 {
-  #region Save
-  private ISaveChunk<TreeData> TreeChunk { get; set; } = default!;
-  #endregion
+  public Tree()
+  {
+    Data = new()
+    {
+      Age = -1,
+      Health = -1,
+      TimeToMature = -1,
+    };
+  }
+
+  public Tree(string name, TreeData data)
+  {
+    Name = name;
+    Data = data;
+  }
 
   #region Exports
   [Export]
@@ -23,6 +34,7 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
   #endregion
 
   #region State
+  public TreeData Data { get; set; }
   private TreeLogic Logic { get; set; } = default!;
   private TreeLogic.IBinding Binding { get; set; } = default!;
   #endregion
@@ -39,7 +51,9 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 
   #region Dependencies
   [Dependency]
-  private ISaveChunk<GameData> GameChunk => this.DependOn<ISaveChunk<GameData>>();
+  private Dictionary<string, TreeData> TreeDictionary =>
+    this.DependOn<Dictionary<string, TreeData>>();
+
   #endregion
 
   #region Dependency Lifecycle
@@ -52,20 +66,6 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 
   public void OnResolved()
   {
-    TreeChunk = new SaveChunk<TreeData>(
-      onSave: (chunk) =>
-        new TreeData()
-        {
-          Age = 0,
-          Health = 0,
-          TimeToMature = 0,
-        },
-      onLoad: (chunk, data) => { }
-    );
-    // GameChunk.AddChunk(TreeChunk);
-    // TODO don't do this here, we need a TreeManager class that keeps track of trees and spawns the nodes.
-    // ... EntityTable is really close
-
     Binding = Logic.Bind();
 
     // Bind functions to state outputs here
@@ -75,18 +75,12 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 
     Binding.When<TreeLogic.State>(state => GD.Print(state.GetType().FullName));
 
-    Logic.Set(
-      new TreeData
-      {
-        Age = 0,
-        Health = 1,
-        TimeToMature = -1,
-      }
-    );
+    Logic.Set(Data);
 
     this.Provide();
-
     Logic.Start();
+
+    TreeDictionary.Add(Name, Data);
   }
   #endregion
 
@@ -99,6 +93,8 @@ public partial class Tree : Node2D, ITree, IProvide<ITreeLogic>
 
   public void OnExitTree()
   {
+    TreeDictionary.Remove(Name);
+
     Logic.Stop();
     Binding.Dispose();
   }

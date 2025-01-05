@@ -92,67 +92,68 @@ energy = 0.5
 shadow_color = Color(0.25, 0.1325, 0.1325, 0)
 texture = SubResource("GradientTexture2D_6w2od")
 
-[node name="Greenery" type="Node2D" parent="World"]
+[node name="Trees" type="Node2D" parent="World"]
+unique_name_in_owner = true
 y_sort_enabled = true
 
-[node name="Tree" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-65, -42)
 
-[node name="Tree2" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree2" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-99, -64)
 
-[node name="Tree3" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree3" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-51, -80)
 
-[node name="Tree5" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree5" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(10, -83)
 
-[node name="Tree6" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree6" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-155, 39)
 
-[node name="Tree7" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree7" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-189, 17)
 
-[node name="Tree8" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree8" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-141, 1)
 
-[node name="Tree9" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree9" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-105, 35)
 
-[node name="Tree11" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree11" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-140, 115)
 
-[node name="Tree12" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree12" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-174, 93)
 
-[node name="Tree14" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree14" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-90, 111)
 
-[node name="Tree15" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree15" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-65, 74)
 
-[node name="Tree17" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree17" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-97, 144)
 
-[node name="Tree18" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree18" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-49, 128)
 
-[node name="Tree19" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree19" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(-13, 162)
 
-[node name="Tree20" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree20" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(12, 125)
 
-[node name="Tree24" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree24" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(85, 172)
 
-[node name="Tree25" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree25" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(147, 137)
 
-[node name="Tree26" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree26" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(197, 180)
 
-[node name="Tree30" parent="World/Greenery" instance=ExtResource("7_siuyp")]
+[node name="Tree30" parent="World/Trees" instance=ExtResource("7_siuyp")]
 position = Vector2(272, 139)
 
 [node name="Enemies" type="Node2D" parent="World"]

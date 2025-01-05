@@ -8,5 +8,5 @@ using Godot;
 public partial record PlayerData
 {
   [Save("global_transform")]
-  public required Transform2D GlobalTransform { get; init; }
+  public required Transform2D GlobalTransform { get; set; }
 }

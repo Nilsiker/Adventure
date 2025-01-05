@@ -1,5 +1,7 @@
 namespace Shellguard.Game;
 
+using System.Collections.Generic;
+using System.Linq;
 using Chickensoft.AutoInject;
 using Chickensoft.Collections;
 using Chickensoft.GoDotLog;
@@ -11,8 +13,13 @@ using Shellguard.Game.Domain;
 using Shellguard.Game.State;
 using Shellguard.Player;
 using Shellguard.Save;
+using Shellguard.Tree;
 
-public interface IGame : INode2D, IProvide<IGameRepo>, IProvide<ISaveChunk<GameData>>
+public interface IGame
+  : INode2D,
+    IProvide<IGameRepo>,
+    IProvide<ISaveChunk<GameData>>,
+    IProvide<Dictionary<string, TreeData>>
 {
   void StartNewGame();
   void RequestLoadGame();
@@ -26,8 +33,13 @@ public partial class Game : Node2D, IGame
 
   #region Save
   private ISaveChunk<GameData> GameChunk { get; set; } = default!;
-  private EntityTable EntityTable { get; set; } = new();
+  private Dictionary<string, TreeData> TreeDictionary { get; set; } = [];
 
+  #endregion
+
+  #region Nodes
+  [Node]
+  private Node2D Trees { get; set; } = default!;
   #endregion
 
   #region State
@@ -38,6 +50,8 @@ public partial class Game : Node2D, IGame
 
   #region Provisions
   ISaveChunk<GameData> IProvide<ISaveChunk<GameData>>.Value() => GameChunk;
+
+  Dictionary<string, TreeData> IProvide<Dictionary<string, TreeData>>.Value() => TreeDictionary;
 
   public IGameRepo Value() => GameRepo;
   #endregion
@@ -54,12 +68,26 @@ public partial class Game : Node2D, IGame
   public void Setup()
   {
     GameChunk = new SaveChunk<GameData>(
-      (chunk) =>
+      onSave: (chunk) =>
       {
-        var gameData = new GameData() { PlayerData = chunk.GetChunkSaveData<PlayerData>() };
+        var gameData = new GameData()
+        {
+          PlayerData = chunk.GetChunkSaveData<PlayerData>(),
+          TreeDictionary = TreeDictionary,
+        };
+
+        foreach (var entry in TreeDictionary)
+        {
+          GD.Print(entry.Key);
+        }
+
         return gameData;
       },
-      onLoad: (chunk, data) => chunk.LoadChunkSaveData(data.PlayerData)
+      onLoad: (chunk, data) =>
+      {
+        chunk.LoadChunkSaveData(data.PlayerData);
+        TreeDictionary = data.TreeDictionary;
+      }
     );
 
     Logic = new GameLogic();
