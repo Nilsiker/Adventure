@@ -13,3 +13,12 @@ Mossy, cozy forest vibes during daytime. Oppressive, eerie darkness during night
 ## Visuals
 
 Pixel art characters (16x16, 32x32 and 64x64 sprites) and environments.
+
+
+## Mechanics
+
+### Base Survival Mechanics
+
+### Combat
+
+### 

@@ -1,6 +1,5 @@
 namespace Shellguard.World;
 
-using System;
 using System.Collections.Generic;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
@@ -8,6 +7,7 @@ using Chickensoft.Introspection;
 using Chickensoft.LogicBlocks;
 using Chickensoft.SaveFileBuilder;
 using Godot;
+using Shellguard.Game;
 using Shellguard.Save;
 
 public interface IWorld : INode2D, IProvide<IWorldRepo> { }
@@ -22,7 +22,6 @@ public partial class World : Node2D, IWorld
   #region Exports
   #endregion
 
-
   #region Nodes
   [Node]
   private Sprite2D Cursor { get; set; } = default!;
@@ -36,6 +35,11 @@ public partial class World : Node2D, IWorld
 
   #region Provisions
   public IWorldRepo Value() => WorldRepo;
+  #endregion
+
+  #region Dependencies
+  [Dependency]
+  private ISaveChunk<GameData> GameChunk => this.DependOn<ISaveChunk<GameData>>();
   #endregion
 
 
@@ -54,13 +58,11 @@ public partial class World : Node2D, IWorld
         },
       onLoad: (chunk, data) => { }
     );
+    GameChunk.AddChunk(WorldChunk);
+
     Binding = Logic.Bind();
 
     // Bind functions to state outputs here
-    Binding.Handle(
-      (in WorldLogic.Output.SelectedTilesUpdated output) =>
-        OnOutputSelectedTilesUpdated(output.Tiles)
-    );
 
     this.Provide();
 
