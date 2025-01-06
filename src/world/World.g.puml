@@ -1,6 +1,4 @@
 @startuml WorldLogic
 state "WorldLogic State" as Shellguard_World_WorldLogic_State
-Shellguard_World_WorldLogic_State : OnSelectedTilesSync() → SelectedTilesUpdated
-
 [*] --> Shellguard_World_WorldLogic_State
 @enduml

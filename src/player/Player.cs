@@ -34,7 +34,7 @@ public partial class Player : CharacterBody2D, IPlayer
   private IWeapon Weapon { get; set; } = default!;
 
   [Node]
-  private IItemPlacer TileSelector { get; set; } = default!;
+  private IItemPlacer ItemPlacer { get; set; } = default!;
 
   [Node]
   private AnimationPlayer AnimationPlayer { get; set; } = default!;
@@ -99,7 +99,7 @@ public partial class Player : CharacterBody2D, IPlayer
 
     if (!Input.GetVector(Inputs.Left, Inputs.Right, Inputs.Up, Inputs.Down).IsZeroApprox())
     {
-      TileSelector.UpdateSelectDirection(
+      ItemPlacer.UpdateSelectDirection(
         Input.GetVector(Inputs.Left, Inputs.Right, Inputs.Up, Inputs.Down)
       );
     }

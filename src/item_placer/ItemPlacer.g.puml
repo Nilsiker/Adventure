@@ -1,15 +1,17 @@
-@startuml TileSelectorLogic
-state "TileSelectorLogic State" as Shellguard_TileSelectorLogic_State {
-  state "Enabled" as Shellguard_TileSelectorLogic_State_Enabled
-  state "Disabled" as Shellguard_TileSelectorLogic_State_Disabled
+@startuml ItemPlacerLogic
+state "ItemPlacerLogic State" as Shellguard_ItemPlacerLogic_State {
+  state "Enabled" as Shellguard_ItemPlacerLogic_State_Enabled
+  state "Disabled" as Shellguard_ItemPlacerLogic_State_Disabled
 }
 
-Shellguard_TileSelectorLogic_State_Disabled --> Shellguard_TileSelectorLogic_State_Enabled : Enable
-Shellguard_TileSelectorLogic_State_Enabled --> Shellguard_TileSelectorLogic_State_Disabled : Disable
-Shellguard_TileSelectorLogic_State_Enabled --> Shellguard_TileSelectorLogic_State_Enabled : SelectAt
+Shellguard_ItemPlacerLogic_State_Disabled --> Shellguard_ItemPlacerLogic_State_Enabled : Enable
+Shellguard_ItemPlacerLogic_State_Enabled --> Shellguard_ItemPlacerLogic_State_Disabled : Disable
+Shellguard_ItemPlacerLogic_State_Enabled --> Shellguard_ItemPlacerLogic_State_Enabled : TryPlantTree
+Shellguard_ItemPlacerLogic_State_Enabled --> Shellguard_ItemPlacerLogic_State_Enabled : TryUpdatePosition
 
-Shellguard_TileSelectorLogic_State_Disabled : OnEnter → UpdateCursorVisibility
-Shellguard_TileSelectorLogic_State_Enabled : OnEnter → UpdateCursorVisibility
+Shellguard_ItemPlacerLogic_State_Disabled : OnEnter → UpdateCursorVisibility
+Shellguard_ItemPlacerLogic_State_Enabled : OnEnter → UpdateCursorVisibility
+Shellguard_ItemPlacerLogic_State_Enabled : OnTryUpdatePosition → UpdatePosition
 
-[*] --> Shellguard_TileSelectorLogic_State_Enabled
+[*] --> Shellguard_ItemPlacerLogic_State_Enabled
 @enduml

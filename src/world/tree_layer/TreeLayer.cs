@@ -1,5 +1,6 @@
 namespace Shellguard.World;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Chickensoft.AutoInject;
@@ -25,8 +26,13 @@ public partial class TreeLayer : TileMapLayer, ITreeLayer
   #endregion
 
   #region State
-  private ObjectLayerLogic Logic { get; set; } = default!;
-  private ObjectLayerLogic.IBinding Binding { get; set; } = default!;
+  private TreeLayerLogic Logic { get; set; } = default!;
+  private TreeLayerLogic.IBinding Binding { get; set; } = default!;
+  #endregion
+
+  #region Dependencies
+  [Dependency]
+  private IWorldRepo WorldRepo => this.DependOn<IWorldRepo>();
   #endregion
 
   #region Dependency Lifecycle
@@ -38,12 +44,12 @@ public partial class TreeLayer : TileMapLayer, ITreeLayer
 
     // Bind functions to state outputs here
     Binding
-      .Handle((in ObjectLayerLogic.Output.SpawnTree output) => OnOutputSpawnTree(output.Position))
-      .Handle(
-        (in ObjectLayerLogic.Output.DisableTileRendering _) => OnOutputDisableTileRendering()
-      );
+      .Handle((in TreeLayerLogic.Output.SpawnTree output) => OnOutputSpawnTree(output.Position))
+      .Handle((in TreeLayerLogic.Output.DisableTileRendering _) => OnOutputDisableTileRendering());
 
-    Logic.Input(new ObjectLayerLogic.Input.Initialize([.. GetUsedCells()]));
+    Logic.Set(WorldRepo);
+
+    Logic.Input(new TreeLayerLogic.Input.Initialize([.. GetUsedCells()]));
   }
 
   #endregion
@@ -77,48 +83,27 @@ public partial class TreeLayer : TileMapLayer, ITreeLayer
   private void OnOutputSpawnTree(Vector2I position)
   {
     var node = _treeScene.Instantiate<Node2D>();
-    node.GlobalPosition = ToGlobal(MapToLocal(position));
+    node.GlobalPosition = position;
     AddChild(node);
+    GD.Print(node);
   }
 
   private object OnOutputDisableTileRendering() => Enabled = false;
 
   #endregion
-
-  public override void _UnhandledInput(InputEvent @event)
-  {
-    if (
-      @event is InputEventMouseButton button
-      && button.IsPressed()
-      && button.ButtonIndex == MouseButton.Left
-    )
-    {
-      var cell = LocalToMap(GetLocalMousePosition());
-      GD.Print(GetCellSourceId(cell));
-      if (GetCellSourceId(cell) == -1)
-      {
-        SetCell(cell, 0, Vector2I.Zero);
-        Logic.Input(new ObjectLayerLogic.Input.AddTree(cell));
-      }
-    }
-  }
 }
 
-public interface IObjectLayerLogic : ILogicBlock<ObjectLayerLogic.State>;
+public interface IObjectLayerLogic : ILogicBlock<TreeLayerLogic.State>;
 
 [Meta]
 [LogicBlock(typeof(State), Diagram = true)]
-public partial class ObjectLayerLogic : LogicBlock<ObjectLayerLogic.State>, IObjectLayerLogic
+public partial class TreeLayerLogic : LogicBlock<TreeLayerLogic.State>, IObjectLayerLogic
 {
   public override Transition GetInitialState() => To<State>();
 
   public static class Input
   {
     public record struct Initialize(Vector2I[] Positions);
-
-    public record struct AddTree(Vector2I Position);
-
-    public record struct RemoveTree(Vector2I Position);
   }
 
   public static class Output
@@ -130,19 +115,15 @@ public partial class ObjectLayerLogic : LogicBlock<ObjectLayerLogic.State>, IObj
     public record struct DisableTileRendering;
   }
 
-  public partial record State : StateLogic<State>, IGet<Input.AddTree>, IGet<Input.Initialize>
+  public partial record State : StateLogic<State>, IGet<Input.Initialize>
   {
     public State()
     {
-      OnAttach(() => { });
-      OnDetach(() => { });
+      OnAttach(() => Get<IWorldRepo>().TreePlanted += OnWorldTreePlanted);
+      OnDetach(() => Get<IWorldRepo>().TreePlanted -= OnWorldTreePlanted);
     }
 
-    public Transition On(in Input.AddTree input)
-    {
-      Output(new Output.SpawnTree(input.Position));
-      return ToSelf();
-    }
+    private void OnWorldTreePlanted(Vector2I position) => Output(new Output.SpawnTree(position));
 
     public Transition On(in Input.Initialize input)
     {

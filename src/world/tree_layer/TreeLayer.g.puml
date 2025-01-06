@@ -1,11 +1,10 @@
-@startuml ObjectLayerLogic
-state "ObjectLayerLogic State" as Shellguard_World_ObjectLayerLogic_State
+@startuml TreeLayerLogic
+state "TreeLayerLogic State" as Shellguard_World_TreeLayerLogic_State
 
-Shellguard_World_ObjectLayerLogic_State --> Shellguard_World_ObjectLayerLogic_State : AddTree
-Shellguard_World_ObjectLayerLogic_State --> Shellguard_World_ObjectLayerLogic_State : Initialize
+Shellguard_World_TreeLayerLogic_State --> Shellguard_World_TreeLayerLogic_State : Initialize
 
-Shellguard_World_ObjectLayerLogic_State : OnAddTree → SpawnTree
-Shellguard_World_ObjectLayerLogic_State : OnInitialize → DisableTileRendering, SpawnTree
+Shellguard_World_TreeLayerLogic_State : OnInitialize → DisableTileRendering, SpawnTree
+Shellguard_World_TreeLayerLogic_State : OnWorldTreePlanted() → SpawnTree
 
-[*] --> Shellguard_World_ObjectLayerLogic_State
+[*] --> Shellguard_World_TreeLayerLogic_State
 @enduml

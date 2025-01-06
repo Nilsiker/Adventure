@@ -1,5 +1,6 @@
 namespace Shellguard.World;
 
+using System;
 using System.Collections.Generic;
 using Chickensoft.AutoInject;
 using Chickensoft.GodotNodeInterfaces;
@@ -100,6 +101,8 @@ public partial class WorldLogic : LogicBlock<WorldLogic.State>, IWorldLogic
   public static class Output
   {
     public record struct SelectedTilesUpdated(IEnumerable<Vector2I> Tiles);
+
+    public record struct TreePlanted(Vector2I Position);
   }
 
   public override Transition GetInitialState() => To<State>();
@@ -108,19 +111,8 @@ public partial class WorldLogic : LogicBlock<WorldLogic.State>, IWorldLogic
   {
     public State()
     {
-      OnAttach(() =>
-      {
-        var world = Get<IWorldRepo>();
-        world.SelectedTiles.Sync += OnSelectedTilesSync;
-      });
-      OnDetach(() =>
-      {
-        var world = Get<IWorldRepo>();
-        world.SelectedTiles.Sync -= OnSelectedTilesSync;
-      });
+      OnAttach(() => { });
+      OnDetach(() => { });
     }
-
-    private void OnSelectedTilesSync(HashSet<Vector2I> tiles) =>
-      Output(new Output.SelectedTilesUpdated(tiles));
   }
 }
